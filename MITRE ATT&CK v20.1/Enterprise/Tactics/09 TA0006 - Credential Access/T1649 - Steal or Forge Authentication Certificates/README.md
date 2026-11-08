@@ -1,0 +1,46 @@
+# T1649 - Steal or Forge Authentication Certificates
+
+[Enterprise](../../../README.md) / [Credential Access](../README.md)
+
+Adversaries may steal or forge certificates used for authentication to access remote systems or resources. Digital certificates are often used to sign and encrypt messages and/or files. Certificates are also used as authentication material. For example, Entra ID device certificates and Active Directory Certificate Services (AD CS) certificates bind to an identity and can be used as credentials for domain accounts.(Citation: O365 Blog Azure AD Device IDs)(Citation: Microsoft AD CS Overview)
+
+Authentication certificates can be both stolen and forged. For example, AD CS certificates can be stolen from encrypted storage (in the Registry or files)(Citation: APT29 Deep Look at Credential Roaming), misplaced certificate files (i.e. [Unsecured Credentials](https://attack.mitre.org/techniques/T1552)), or directly from the Windows certificate store via various crypto APIs.(Citation: SpecterOps Certified Pre Owned)(Citation: GitHub CertStealer)(Citation: GitHub GhostPack Certificates) With appropriate enrollment rights, users and/or machines within a domain can also request and/or manually renew certificates from enterprise certificate authorities (CA). This enrollment process defines various settings and permissions associated with the certificate. Of note, the certificate’s extended key usage (EKU) values define signing, encryption, and authentication use cases, while the certificate’s subject alternative name (SAN) values define the certificate owner’s alternate names.(Citation: Medium Certified Pre Owned)
+
+Abusing certificates for authentication credentials may enable other behaviors such as [Lateral Movement](https://attack.mitre.org/tactics/TA0008). Certificate-related misconfigurations may also enable opportunities for [Privilege Escalation](https://attack.mitre.org/tactics/TA0004), by way of allowing users to impersonate or assume privileged accounts or permissions via the identities (SANs) associated with a certificate. These abuses may also enable [Persistence](https://attack.mitre.org/tactics/TA0003) via stealing or forging certificates that can be used as [Valid Accounts](https://attack.mitre.org/techniques/T1078) for the duration of the certificate's validity, despite user password resets. Authentication certificates can also be stolen and forged for machine accounts.
+
+Adversaries who have access to root (or subordinate) CA certificate private keys (or mechanisms protecting/managing these keys) may also establish [Persistence](https://attack.mitre.org/tactics/TA0003) by forging arbitrary authentication certificates for the victim domain (known as “golden” certificates).(Citation: Medium Certified Pre Owned) Adversaries may also target certificates and related services in order to access other forms of credentials, such as [Golden Ticket](https://attack.mitre.org/techniques/T1558/001) ticket-granting tickets (TGT) or NTLM plaintext.(Citation: Medium Certified Pre Owned)
+
+[MITRE ATT&CK record](https://attack.mitre.org/techniques/T1649)
+
+**Tactics**  [Credential Access](../README.md)
+
+**Platforms**  [Windows](../../../Platforms/Windows.md), [Linux](../../../Platforms/Linux.md), [macOS](../../../Platforms/macOS.md), [Identity Provider](../../../Platforms/Identity%20Provider.md)
+
+## Detection strategies
+
+- [DET0240 - Detection Strategy for Steal or Forge Authentication Certificates](../../../Defenses/Detection%20Strategies/DET0240%20-%20Detection%20Strategy%20for%20Steal%20or%20Forge%20Authentication%20Certificates.md)
+
+## Procedure examples
+
+- [S0677 - AADInternals](../../../Threat%20Intelligence/Software/Tools/S0677%20-%20AADInternals.md) — [AADInternals](https://attack.mitre.org/software/S0677) can create and export various authentication certificates, including those associated with Azure AD joined/registered devices.(Citation: AADInternals Documentation) [AADInternals Documentation](https://o365blog.com/aadinternals)
+- [G0016 - APT29](../../../Threat%20Intelligence/Groups/G0016%20-%20APT29.md) — [APT29](https://attack.mitre.org/groups/G0016) has abused misconfigured AD CS certificate templates to impersonate admin users and create additional authentication certificates.(Citation: Mandiant APT29 Trello) [Mandiant APT29 Trello](https://www.mandiant.com/resources/tracking-apt29-phishing-campaigns)
+- [S0002 - Mimikatz](../../../Threat%20Intelligence/Software/Tools/S0002%20-%20Mimikatz.md) — [Mimikatz](https://attack.mitre.org/software/S0002)'s `CRYPTO` module can create and export various types of authentication certificates.(Citation: Adsecurity Mimikatz Guide) [Adsecurity Mimikatz Guide](https://adsecurity.org/?page_id=1821)
+- [S9043 - Mini Shai-Hulud](../../../Threat%20Intelligence/Software/Malware/S9043%20-%20Mini%20Shai-Hulud.md) — [Mini Shai-Hulud](https://attack.mitre.org/software/S9043) has collected victim client certificates to assist in signed authentication assertion with Azure environments.(Citation: Hunt.io TeamPCP Toolkit MAY 2026) [Hunt.io TeamPCP Toolkit MAY 2026](https://hunt.io/blog/teampcp-python-toolkit-firescale-github-c2-takedown)
+- [G1059 - NIMBUS MANTICORE](../../../Threat%20Intelligence/Groups/G1059%20-%20NIMBUS%20MANTICORE.md) — [NIMBUS MANTICORE](https://attack.mitre.org/groups/G1059) has stolen and leveraged vulnerable Active Directory Certificate Services templates to impersonate higher-privileged user accounts.(Citation: Mandiant_UNC1549TTPsTools_Nov2025) [Mandiant_UNC1549TTPsTools_Nov2025](https://cloud.google.com/blog/topics/threat-intelligence/analysis-of-unc1549-ttps-targeting-aerospace-defense)
+
+## Mitigations
+
+- [M1015 - Active Directory Configuration](../../../Defenses/Mitigations/M1015%20-%20Active%20Directory%20Configuration.md) — Ensure certificate authorities (CA) are properly secured, including treating CA servers (and other resources hosting CA certificates) as tier 0 assets. Harden abusable CA settings and attributes. For example, consider disabling the usage of AD CS certificate SANs within relevant authentication protocol settings to enforce strict user mappings and prevent certificates from authenticating as other identifies.(Citation: SpecterOps Certified Pre Owned) Also consider enforcing CA Certificate Manager approval for the templates that include SAN as an issuance requirement. [SpecterOps Certified Pre Owned](https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf)
+- [M1047 - Audit](../../../Defenses/Mitigations/M1047%20-%20Audit.md) — Check and remediate unneeded existing authentication certificates as well as common abusable misconfigurations of CA settings and permissions, such as AD CS certificate enrollment permissions and published overly permissive certificate templates (which define available settings for created certificates). For example, available AD CS certificate templates can be checked via the Certificate Authority MMC snap-in (`certsrv.msc`). `certutil.exe` can also be used to examine various information within an AD CS CA database.(Citation: SpecterOps Certified Pre Owned)(Citation: GitHub PSPKIAudit)(Citation: GitHub Certify) [GitHub PSPKIAudit](https://github.com/GhostPack/PSPKIAudit) · [GitHub Certify](https://github.com/GhostPack/Certify/) · [SpecterOps Certified Pre Owned](https://web.archive.org/web/20220818094600/https://specterops.io/assets/resources/Certified_Pre-Owned.pdf)
+- [M1042 - Disable or Remove Feature or Program](../../../Defenses/Mitigations/M1042%20-%20Disable%20or%20Remove%20Feature%20or%20Program.md) — Consider disabling old/dangerous authentication protocols (e.g. NTLM), as well as unnecessary certificate features, such as potentially vulnerable AD CS web and other enrollment server roles.(Citation: SpecterOps Certified Pre Owned) [SpecterOps Certified Pre Owned](https://web.archive.org/web/20220818094600/https://specterops.io/assets/resources/Certified_Pre-Owned.pdf)
+- [M1041 - Encrypt Sensitive Information](../../../Defenses/Mitigations/M1041%20-%20Encrypt%20Sensitive%20Information.md) — Ensure certificates as well as associated private keys are appropriately secured. Consider utilizing additional hardware credential protections such as trusted platform modules (TPM) or hardware security modules (HSM). Enforce HTTPS and enable Extended Protection for Authentication.(Citation: SpecterOps Certified Pre Owned) [SpecterOps Certified Pre Owned](https://web.archive.org/web/20220818094600/https://specterops.io/assets/resources/Certified_Pre-Owned.pdf)
+
+## Sources
+
+- [GitHub GhostPack Certificates](https://github.com/GhostPack/SharpDPAPI#certificates)
+- [Microsoft AD CS Overview](https://docs.microsoft.com/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831740%28v=ws.11%29)
+- [Medium Certified Pre Owned](https://posts.specterops.io/certified-pre-owned-d95910965cd2)
+- [SpecterOps Certified Pre Owned](https://web.archive.org/web/20220818094600/https://specterops.io/assets/resources/Certified_Pre-Owned.pdf)
+- [O365 Blog Azure AD Device IDs](https://o365blog.com/post/deviceidentity/)
+- [GitHub CertStealer](https://github.com/TheWover/CertStealer)
+- [APT29 Deep Look at Credential Roaming](https://www.mandiant.com/resources/blog/apt29-windows-credential-roaming)

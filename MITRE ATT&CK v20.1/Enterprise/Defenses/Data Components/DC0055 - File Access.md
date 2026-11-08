@@ -1,0 +1,312 @@
+# DC0055 - File Access
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+To events where a file is opened or accessed, making its contents available to the requester. This includes reading, executing, or interacting with files by authorized or unauthorized entities. Examples include logging file access events (e.g., Windows Event ID 4663), monitoring file reads, and detecting unusual file access patterns. Examples: 
+
+- File Read Operations: A user opens a sensitive document (e.g., financial_report.xlsx) on a shared drive.
+- File Execution: A script or executable file is accessed and executed (e.g., malware.exe is run from a temporary directory).
+- Unauthorized File Access: An unauthorized user attempts to access a protected configuration file (e.g., `/etc/passwd` on Linux or `System32` files on Windows).
+- File Access Patterns: Bulk access to multiple files in a short time (e.g., mass access to documents on a file server).
+- File Access via Network: Files on a network share are accessed remotely (e.g., logs of SMB file access).
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0055)
+
+## Log sources and channels
+
+- **android:logcat** — READ or COPY operations where path matches external/shared locations of other apps (e.g., /storage/emulated/0/Android/data/<otherpkg>/files/, /storage/emulated/0/Download/<app>/*)
+- **android:logcat** — KeyChain/AndroidKeyStore read of token alias
+- **android:logcat** — READ/LIST/STAT of /sdcard|/storage/emulated/0|/Android/media|/Documents with >N distinct paths in TimeWindow
+- **auditd:FILE** — /home/*/.mozilla/firefox/*/logins.json OR /home/*/.config/google-chrome/*/Login Data
+- **auditd:FILE** — /proc/*/mem read attempt
+- **auditd:FS** — read: File access to /proc/modules or /sys/module/
+- **auditd:PATH** — Read access to known backup software configuration files (e.g., /etc/rsnapshot.conf, /opt/veeam/config.ini)
+- **auditd:PATH** — open: Access to sensitive log files (/var/log/auth.log, /var/log/secure, /var/log/syslog)
+- **auditd:PATH** — PATH
+- **auditd:PATH** — file read
+- **auditd:SYSCALL** — open, read, or stat of browser config files
+- **auditd:SYSCALL** — open: File access attempt on /tmp/krb5cc_* or /tmp/krb5.ccache
+- **auditd:SYSCALL** — openat
+- **auditd:SYSCALL** — open
+- **auditd:SYSCALL** — open, read
+- **auditd:SYSCALL** — open, flock, fcntl, unlink
+- **auditd:SYSCALL** — read/open of sensitive files
+- **auditd:SYSCALL** — Unusual processes accessing or modifying cookie databases
+- **auditd:SYSCALL** — PATH records referencing /dev/video*
+- **auditd:SYSCALL** — open, read: /etc/ssl/, /etc/pki/, ~/.pki/nssdb/
+- **auditd:SYSCALL** — Processes reading credential or token cache files
+- **auditd:SYSCALL** — read/open of sensitive file directories
+- **auditd:SYSCALL** — open/read of sensitive config or secret files
+- **auditd:SYSCALL** — open/read of sensitive directories
+- **auditd:SYSCALL** — open/read: Access to /proc/self/status with focus on TracerPID field
+- **auditd:SYSCALL** — open/read access to ~/.bash_history
+- **auditd:SYSCALL** — open,read
+- **auditd:SYSCALL** — open/read system calls to ~/.bash_history or /etc/shadow
+- **auditd:SYSCALL** — read of /run/secrets or docker volumes by non-entrypoint process
+- **auditd:SYSCALL** — Reads of ~/.bash_history, ~/.mozilla, or access to /dev/input
+- **auditd:SYSCALL** — open/read
+- **auditd:SYSCALL** — open: Access to named pipes or FIFO in /tmp or /dev/shm by unexpected processes
+- **auditd:SYSCALL** — open or read to browser cookie storage
+- **auditd:SYSCALL** — open, read, mount
+- **auditd:SYSCALL** — file
+- **auditd:SYSCALL** — Access to /var/lib/sss/secrets/secrets.ldb or .secrets.mkey
+- **auditd:SYSCALL** — open/read of sensitive directories (/etc, /home/*)
+- **auditd:SYSCALL** — PATH
+- **auditd:SYSCALL** — open/read on ~/.local/share/keepassxc/* OR ~/.password-store/*
+- **auditd:SYSCALL** — attempts to read /proc/* entries at scale (openat/getdents64/readlink) or access denied for /proc traversal; correlate to app UID
+- **azure:activity** — CollectGuestLogs: Unexpected collection of guest logs by Azure VM Agent outside normal maintenance windows
+- **CloudTrail:GetObject** — sensitive credential files in buckets or local image storage
+- **desktop:file_manager** — nautilus, dolphin, or gvfs logs
+- **ebpf:syscalls** — container_file_activity
+- **ebpf:syscalls** — open/read on secret mount paths
+- **esxi:hostd** — datastore file access
+- **esxi:hostd** — read: Access to sensitive log files by non-admin users
+- **esxi:hostd** — datastore/log file access
+- **esxi:hostd** — vSphere File API Access
+- **esxi:hostd** — file copy or datastore upload via HTTPS
+- **esxi:syslog** — guest OS outbound transfer logs
+- **esxi:vmkernel** — VMFS access logs
+- **esxis:vmkernel** — Datastore Access
+- **File** — None
+- **fs:fileevents** — File system access events with kFSEventStreamEventFlagItemRemoved, kFSEventStreamEventFlagItemRenamed flags for environmental artifact collection (/System/Library, /usr/sbin, plist files)
+- **fs:fsevents** — file system events indicating access to system configuration files and environmental information sources
+- **fs:fsusage** — file
+- **fs:fsusage** — File Access Monitor
+- **fs:fsusage** — Disk Activity Tracing
+- **fs:fsusage** — filesystem activity
+- **fs:fsusage** — Filesystem Call Monitoring
+- **fs:fsusage** — read/write
+- **fs:fsusage** — file open for known browser cookie paths
+- **fs:fsusage** — file reads/writes from /Volumes/
+- **fs:quarantine** — /var/log/quarantine.log
+- **gcp:audit** — Write operations to storage
+- **iOS:unifiedlog** — READ operations from App Group containers (/var/mobile/Containers/Shared/AppGroup/...) or Files/Photos provider mountpoints, especially when group not owned by bundle
+- **iOS:unifiedlog** — readdir/stat/read of /private/var/mobile/Containers/Shared/AppGroup|/Library/Mobile Documents|/On\\ My\\ iPhone with >N distinct paths in TimeWindow
+- **kubernetes:audit** — GET or LIST requests to /var/run/secrets/kubernetes.io/serviceaccount/ followed by access to the Kubernetes API server
+- **linux:osquery** — /proc/*/maps access
+- **linux:osquery** — None
+- **linux:syslog** — auth.log or custom tool logs
+- **linux:syslog** — /var/log/syslog
+- **linux:syslog** — kernel messages related to cryptographic operations, module loading, and filesystem access patterns
+- **m365:unified** — FileAccessed, MailboxAccessed
+- **m365:unified** — Bulk downloads or API extractions from Microsoft-hosted data repositories (e.g., Dynamics 365)
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_OPEN: Open of .dylib/.so in user-writable locations
+- **macos:endpointsecurity** — open: Process opens AppleCamera/IOUSB device nodes or AVFoundation frameworks
+- **macos:endpointsecurity** — open or read syscall to ~/.bash_history
+- **macos:endpointsecurity** — es_event_open, es_event_exec
+- **macos:keychain** — Access to Keychain DB or system.keychain
+- **macos:keychain** — ~/Library/Keychains, /Library/Keychains
+- **macos:osquery** — file_events
+- **macos:osquery** — None
+- **macOS:unifiedlog** — looking for file access to scripts with abnormal encoding patterns
+- **macos:unifiedlog** — Access to ~/Library/*/Safari or Chrome directories by non-browser processes
+- **macos:unifiedlog** — file events
+- **macos:unifiedlog** — Kerberos framework calls to API:{uuid} cache outside normal process lineage
+- **macos:unifiedlog** — ~/Library/Application Support/Google/Chrome/*/Login Data OR ~/Library/Application Support/Firefox/*/logins.json
+- **macos:unifiedlog** — Read access to Time Machine plist files or CCC configurations in ~/Library/Preferences/
+- **macos:unifiedlog** — log stream - file subsystem
+- **macos:unifiedlog** — file read of sensitive directories
+- **macos:unifiedlog** — Abnormal process access to Safari or Chrome cookie storage
+- **macos:unifiedlog** — open: Access to /var/log/system.log or related security event logs
+- **macos:unifiedlog** — open/read of *.plist or .env files
+- **macos:unifiedlog** — read of user document directories
+- **macos:unifiedlog** — read access to ~/Library/Keychains/login.keychain-db
+- **macos:unifiedlog** — filesystem and process events
+- **macos:unifiedlog** — read access to ~/Library/Keychains or history files by terminal processes
+- **macos:unifiedlog** — access to /Volumes/SharePoint or network mount
+- **macos:unifiedlog** — Access to ~/Library/Safari/Bookmarks.plist or recent files
+- **macos:unifiedlog** — access to keychain database
+- **macos:unifiedlog** — log stream - file provider subsystem
+- **macos:unifiedlog** — read/write of user documents prior to upload
+- **macos:unifiedlog** — open/read access to private key files (id_rsa, *.pem, *.p12)
+- **macos:unifiedlog** — read: File access to /System/Library/Extensions/ or related kernel extension paths
+- **macos:unifiedlog** — *.opvault OR *.ldb OR *.kdbx
+- **macos:unifiedlog** — Recent download opened or executed
+- **MobileEDR:telemetry** — Application reads multiple local container files, browser-history artifacts, messaging artifacts, or local records in rapid sequence during the collection phase
+- **MobileEDR:telemetry** — Application performs burst reads across local system paths, external storage, media directories, cache locations, or local database files within a short interval as the primary collection phase
+- **MobileEDR:telemetry** — application loads executable or library from external or writable directory (e.g., /sdcard/, app cache) prior to execution
+- **WinEventLog:Microsoft-Windows-Windows Defender/Operational** — Suspicious file execution on removable media path
+- **WinEventLog:Security** — EventCode=4663, 4670, 4656
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() for read on path IN /sdcard/ OR on path with file_permissions=777
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: opendir() or File.listFiles() on path IN $ExternalStoragePaths$ called > $FileEnumThreshold$ times within $EnumWindow$ by app NOT IN $FileEnumAllowList$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: opendir('/proc/') with recursive listdir by app NOT IN $ProcessDiscoveryAllowList$ on device with android_version < $HidepidVersion$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() for read on /proc/cpuinfo
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App reads files across $MinDirectoryCount$+ distinct parent directories with file_read_count > $FileReadRateThreshold$ within $DataCollectionWindow$ in background or low-interaction state — bulk cross-directory read is the collection signal
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App reads multiple files from Photos library, Files provider, or iCloud Drive in background or lock-adjacent state exceeding $FileReadRateThreshold$ within $DataCollectionWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App loads executable or library from writable external directory (/sdcard/, app cache, /data/local/tmp/) — writable-path library load is exploitable hijack vector
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: PATH records show sequential reads of ICS documentation/configuration files by a UID not in the authorized engineering or backup account set
+- **WinEventLog:Security** — Windows Security Event ID 4663 (requires Object Access auditing and SACL on monitored paths): repeated ReadData/ListDirectory access across ICS data paths by an unapproved process/account
+- **WinEventLog:Sysmon** — Sequential file reads across multiple Industrial Control Systems (ICS) data paths by image not in authorized ICS applications, exceeding bulk access threshold within a short window
+- **WinEventLog:Security** — Windows Security Event ID 4663 (requires Object Access auditing/SACL): engineering process reads/opens project file from unapproved repository/removable-media/network-share path
+- **WinEventLog:Security** — Windows Security Event ID 4663 (requires Object Access auditing/SACL): Siemens engineering process reads/opens project file from unapproved repository/removable-media/network-share path
+
+## Analytics using this component
+
+- [AN0019 - Analytic 0019](../Analytics/AN0019.md)
+- [AN0038 - Analytic 0038](../Analytics/AN0038.md)
+- [AN0039 - Analytic 0039](../Analytics/AN0039.md)
+- [AN0040 - Analytic 0040](../Analytics/AN0040.md)
+- [AN0042 - Analytic 0042](../Analytics/AN0042.md)
+- [AN0043 - Analytic 0043](../Analytics/AN0043.md)
+- [AN0044 - Analytic 0044](../Analytics/AN0044.md)
+- [AN0054 - Analytic 0054](../Analytics/AN0054.md)
+- [AN0069 - Analytic 0069](../Analytics/AN0069.md)
+- [AN0070 - Analytic 0070](../Analytics/AN0070.md)
+- [AN0096 - Analytic 0096](../Analytics/AN0096.md)
+- [AN0105 - Analytic 0105](../Analytics/AN0105.md)
+- [AN0106 - Analytic 0106](../Analytics/AN0106.md)
+- [AN0107 - Analytic 0107](../Analytics/AN0107.md)
+- [AN0125 - Analytic 0125](../Analytics/AN0125.md)
+- [AN0130 - Analytic 0130](../Analytics/AN0130.md)
+- [AN0139 - Analytic 0139](../Analytics/AN0139.md)
+- [AN0157 - Analytic 0157](../Analytics/AN0157.md)
+- [AN0162 - Analytic 0162](../Analytics/AN0162.md)
+- [AN0195 - Analytic 0195](../Analytics/AN0195.md)
+- [AN0199 - Analytic 0199](../Analytics/AN0199.md)
+- [AN0229 - Analytic 0229](../Analytics/AN0229.md)
+- [AN0241 - Analytic 0241](../Analytics/AN0241.md)
+- [AN0242 - Analytic 0242](../Analytics/AN0242.md)
+- [AN0243 - Analytic 0243](../Analytics/AN0243.md)
+- [AN0244 - Analytic 0244](../Analytics/AN0244.md)
+- [AN0282 - Analytic 0282](../Analytics/AN0282.md)
+- [AN0283 - Analytic 0283](../Analytics/AN0283.md)
+- [AN0292 - Analytic 0292](../Analytics/AN0292.md)
+- [AN0293 - Analytic 0293](../Analytics/AN0293.md)
+- [AN0313 - Analytic 0313](../Analytics/AN0313.md)
+- [AN0331 - Analytic 0331](../Analytics/AN0331.md)
+- [AN0332 - Analytic 0332](../Analytics/AN0332.md)
+- [AN0333 - Analytic 0333](../Analytics/AN0333.md)
+- [AN0342 - Analytic 0342](../Analytics/AN0342.md)
+- [AN0343 - Analytic 0343](../Analytics/AN0343.md)
+- [AN0344 - Analytic 0344](../Analytics/AN0344.md)
+- [AN0368 - Analytic 0368](../Analytics/AN0368.md)
+- [AN0373 - Analytic 0373](../Analytics/AN0373.md)
+- [AN0391 - Analytic 0391](../Analytics/AN0391.md)
+- [AN0392 - Analytic 0392](../Analytics/AN0392.md)
+- [AN0423 - Analytic 0423](../Analytics/AN0423.md)
+- [AN0425 - Analytic 0425](../Analytics/AN0425.md)
+- [AN0436 - Analytic 0436](../Analytics/AN0436.md)
+- [AN0437 - Analytic 0437](../Analytics/AN0437.md)
+- [AN0438 - Analytic 0438](../Analytics/AN0438.md)
+- [AN0439 - Analytic 0439](../Analytics/AN0439.md)
+- [AN0485 - Analytic 0485](../Analytics/AN0485.md)
+- [AN0486 - Analytic 0486](../Analytics/AN0486.md)
+- [AN0532 - Analytic 0532](../Analytics/AN0532.md)
+- [AN0569 - Analytic 0569](../Analytics/AN0569.md)
+- [AN0570 - Analytic 0570](../Analytics/AN0570.md)
+- [AN0600 - Analytic 0600](../Analytics/AN0600.md)
+- [AN0616 - Analytic 0616](../Analytics/AN0616.md)
+- [AN0617 - Analytic 0617](../Analytics/AN0617.md)
+- [AN0618 - Analytic 0618](../Analytics/AN0618.md)
+- [AN0620 - Analytic 0620](../Analytics/AN0620.md)
+- [AN0648 - Analytic 0648](../Analytics/AN0648.md)
+- [AN0649 - Analytic 0649](../Analytics/AN0649.md)
+- [AN0650 - Analytic 0650](../Analytics/AN0650.md)
+- [AN0672 - Analytic 0672](../Analytics/AN0672.md)
+- [AN0673 - Analytic 0673](../Analytics/AN0673.md)
+- [AN0680 - Analytic 0680](../Analytics/AN0680.md)
+- [AN0705 - Analytic 0705](../Analytics/AN0705.md)
+- [AN0706 - Analytic 0706](../Analytics/AN0706.md)
+- [AN0707 - Analytic 0707](../Analytics/AN0707.md)
+- [AN0708 - Analytic 0708](../Analytics/AN0708.md)
+- [AN0709 - Analytic 0709](../Analytics/AN0709.md)
+- [AN0712 - Analytic 0712](../Analytics/AN0712.md)
+- [AN0720 - Analytic 0720](../Analytics/AN0720.md)
+- [AN0724 - Analytic 0724](../Analytics/AN0724.md)
+- [AN0725 - Analytic 0725](../Analytics/AN0725.md)
+- [AN0726 - Analytic 0726](../Analytics/AN0726.md)
+- [AN0783 - Analytic 0783](../Analytics/AN0783.md)
+- [AN0787 - Analytic 0787](../Analytics/AN0787.md)
+- [AN0788 - Analytic 0788](../Analytics/AN0788.md)
+- [AN0789 - Analytic 0789](../Analytics/AN0789.md)
+- [AN0790 - Analytic 0790](../Analytics/AN0790.md)
+- [AN0798 - Analytic 0798](../Analytics/AN0798.md)
+- [AN0813 - Analytic 0813](../Analytics/AN0813.md)
+- [AN0841 - Analytic 0841](../Analytics/AN0841.md)
+- [AN0847 - Analytic 0847](../Analytics/AN0847.md)
+- [AN0857 - Analytic 0857](../Analytics/AN0857.md)
+- [AN0858 - Analytic 0858](../Analytics/AN0858.md)
+- [AN0859 - Analytic 0859](../Analytics/AN0859.md)
+- [AN0860 - Analytic 0860](../Analytics/AN0860.md)
+- [AN0895 - Analytic 0895](../Analytics/AN0895.md)
+- [AN0896 - Analytic 0896](../Analytics/AN0896.md)
+- [AN0897 - Analytic 0897](../Analytics/AN0897.md)
+- [AN0898 - Analytic 0898](../Analytics/AN0898.md)
+- [AN0984 - Analytic 0984](../Analytics/AN0984.md)
+- [AN0988 - Analytic 0988](../Analytics/AN0988.md)
+- [AN0991 - Analytic 0991](../Analytics/AN0991.md)
+- [AN1038 - Analytic 1038](../Analytics/AN1038.md)
+- [AN1041 - Analytic 1041](../Analytics/AN1041.md)
+- [AN1042 - Analytic 1042](../Analytics/AN1042.md)
+- [AN1043 - Analytic 1043](../Analytics/AN1043.md)
+- [AN1046 - Analytic 1046](../Analytics/AN1046.md)
+- [AN1071 - Analytic 1071](../Analytics/AN1071.md)
+- [AN1072 - Analytic 1072](../Analytics/AN1072.md)
+- [AN1074 - Analytic 1074](../Analytics/AN1074.md)
+- [AN1085 - Analytic 1085](../Analytics/AN1085.md)
+- [AN1086 - Analytic 1086](../Analytics/AN1086.md)
+- [AN1096 - Analytic 1096](../Analytics/AN1096.md)
+- [AN1112 - Analytic 1112](../Analytics/AN1112.md)
+- [AN1146 - Analytic 1146](../Analytics/AN1146.md)
+- [AN1147 - Analytic 1147](../Analytics/AN1147.md)
+- [AN1154 - Analytic 1154](../Analytics/AN1154.md)
+- [AN1155 - Analytic 1155](../Analytics/AN1155.md)
+- [AN1158 - Analytic 1158](../Analytics/AN1158.md)
+- [AN1163 - Analytic 1163](../Analytics/AN1163.md)
+- [AN1183 - Analytic 1183](../Analytics/AN1183.md)
+- [AN1184 - Analytic 1184](../Analytics/AN1184.md)
+- [AN1198 - Analytic 1198](../Analytics/AN1198.md)
+- [AN1199 - Analytic 1199](../Analytics/AN1199.md)
+- [AN1200 - Analytic 1200](../Analytics/AN1200.md)
+- [AN1234 - Analytic 1234](../Analytics/AN1234.md)
+- [AN1281 - Analytic 1281](../Analytics/AN1281.md)
+- [AN1306 - Analytic 1306](../Analytics/AN1306.md)
+- [AN1307 - Analytic 1307](../Analytics/AN1307.md)
+- [AN1310 - Analytic 1310](../Analytics/AN1310.md)
+- [AN1311 - Analytic 1311](../Analytics/AN1311.md)
+- [AN1315 - Analytic 1315](../Analytics/AN1315.md)
+- [AN1354 - Analytic 1354](../Analytics/AN1354.md)
+- [AN1358 - Analytic 1358](../Analytics/AN1358.md)
+- [AN1400 - Analytic 1400](../Analytics/AN1400.md)
+- [AN1403 - Analytic 1403](../Analytics/AN1403.md)
+- [AN1404 - Analytic 1404](../Analytics/AN1404.md)
+- [AN1410 - Analytic 1410](../Analytics/AN1410.md)
+- [AN1411 - Analytic 1411](../Analytics/AN1411.md)
+- [AN1412 - Analytic 1412](../Analytics/AN1412.md)
+- [AN1413 - Analytic 1413](../Analytics/AN1413.md)
+- [AN1414 - Analytic 1414](../Analytics/AN1414.md)
+- [AN1415 - Analytic 1415](../Analytics/AN1415.md)
+- [AN1417 - Analytic 1417](../Analytics/AN1417.md)
+- [AN1418 - Analytic 1418](../Analytics/AN1418.md)
+- [AN1423 - Analytic 1423](../Analytics/AN1423.md)
+- [AN1444 - Analytic 1444](../Analytics/AN1444.md)
+- [AN1462 - Analytic 1462](../Analytics/AN1462.md)
+- [AN1463 - Analytic 1463](../Analytics/AN1463.md)
+- [AN1494 - Analytic 1494](../Analytics/AN1494.md)
+- [AN1512 - Analytic 1512](../Analytics/AN1512.md)
+- [AN1513 - Analytic 1513](../Analytics/AN1513.md)
+- [AN1515 - Analytic 1515](../Analytics/AN1515.md)
+- [AN1517 - Analytic 1517](../Analytics/AN1517.md)
+- [AN1518 - Analytic 1518](../Analytics/AN1518.md)
+- [AN1528 - Analytic 1528](../Analytics/AN1528.md)
+- [AN1529 - Analytic 1529](../Analytics/AN1529.md)
+- [AN1532 - Analytic 1532](../Analytics/AN1532.md)
+- [AN1533 - Analytic 1533](../Analytics/AN1533.md)
+- [AN1552 - Analytic 1552](../Analytics/AN1552.md)
+- [AN1553 - Analytic 1553](../Analytics/AN1553.md)
+- [AN1571 - Analytic 1571](../Analytics/AN1571.md)
+- [AN1572 - Analytic 1572](../Analytics/AN1572.md)
+- [AN1573 - Analytic 1573](../Analytics/AN1573.md)
+- [AN1574 - Analytic 1574](../Analytics/AN1574.md)
+- [AN1585 - Analytic 1585](../Analytics/AN1585.md)
+- [AN1596 - Analytic 1596](../Analytics/AN1596.md)
+- [AN1597 - Analytic 1597](../Analytics/AN1597.md)
+- [AN1613 - Analytic 1613](../Analytics/AN1613.md)
+- [AN1626 - Analytic 1626](../Analytics/AN1626.md)
+- [AN1631 - Analytic 1631](../Analytics/AN1631.md)
+- [AN1642 - Analytic 1642](../Analytics/AN1642.md)
+- [AN1643 - Analytic 1643](../Analytics/AN1643.md)
+- [AN2036 - Analytic 2036](../Analytics/AN2036.md)
+- [AN2065 - Analytic 2065](../Analytics/AN2065.md)
+- [AN2079 - Analytic 2079](../Analytics/AN2079.md)
+- [AN2080 - Analytic 2080](../Analytics/AN2080.md)

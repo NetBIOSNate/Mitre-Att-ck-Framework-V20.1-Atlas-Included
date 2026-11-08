@@ -1,0 +1,127 @@
+# M1056 - Pre-compromise
+
+[Enterprise](../../README.md) / [Mitigations](README.md)
+
+Pre-compromise mitigations involve proactive measures and defenses implemented to prevent adversaries from successfully identifying and exploiting weaknesses during the Reconnaissance and Resource Development phases of an attack. These activities focus on reducing an organization's attack surface, identify adversarial preparation efforts, and increase the difficulty for attackers to conduct successful operations. This mitigation can be implemented through the following measures:
+
+Limit Information Exposure:
+
+- Regularly audit and sanitize publicly available data, including job posts, websites, and social media.
+- Use tools like OSINT monitoring platforms (e.g., SpiderFoot, Recon-ng) to identify leaked information.
+
+Protect Domain and DNS Infrastructure:
+
+- Enable DNSSEC and use WHOIS privacy protection.
+- Monitor for domain hijacking or lookalike domains using services like RiskIQ or DomainTools.
+
+External Monitoring:
+
+- Use tools like Shodan, Censys to monitor your external attack surface.
+- Deploy external vulnerability scanners to proactively address weaknesses.
+
+Threat Intelligence:
+
+- Leverage platforms like MISP, Recorded Future, or Anomali to track adversarial infrastructure, tools, and activity.
+
+Content and Email Protections:
+
+- Use email security solutions like Proofpoint, Microsoft Defender for Office 365, or Mimecast.
+- Enforce SPF/DKIM/DMARC policies to protect against email spoofing.
+
+Training and Awareness:
+
+- Educate employees on identifying phishing attempts, securing their social media, and avoiding information leaks.
+
+[MITRE ATT&CK record](https://attack.mitre.org/mitigations/M1056)
+
+## Mitigated techniques
+
+- [T1650 - Acquire Access](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1650%20-%20Acquire%20Access/README.md)
+- [T1583 - Acquire Infrastructure](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/README.md)
+- [T1595 - Active Scanning](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1595%20-%20Active%20Scanning/README.md)
+- [T1608.007 - AI Result Poisoning](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.007%20-%20AI%20Result%20Poisoning/README.md)
+- [T1588.007 - Artificial Intelligence](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.007%20-%20Artificial%20Intelligence/README.md)
+- [T1683.002 - Audio-Visual Content](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1683%20-%20Generate%20Content/T1683.002%20-%20Audio-Visual%20Content/README.md)
+- [T1583.005 - Botnet](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.005%20-%20Botnet/README.md)
+- [T1584.005 - Botnet](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.005%20-%20Botnet/README.md)
+- [T1591.002 - Business Relationships](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1591%20-%20Gather%20Victim%20Org%20Information/T1591.002%20-%20Business%20Relationships/README.md)
+- [T1596.004 - CDNs](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1596%20-%20Search%20Open%20Technical%20Databases/T1596.004%20-%20CDNs/README.md)
+- [T1592.004 - Client Configurations](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1592%20-%20Gather%20Victim%20Host%20Information/T1592.004%20-%20Client%20Configurations/README.md)
+- [T1585.003 - Cloud Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1585%20-%20Establish%20Accounts/T1585.003%20-%20Cloud%20Accounts/README.md)
+- [T1586.003 - Cloud Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1586%20-%20Compromise%20Accounts/T1586.003%20-%20Cloud%20Accounts/README.md)
+- [T1587.002 - Code Signing Certificates](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1587%20-%20Develop%20Capabilities/T1587.002%20-%20Code%20Signing%20Certificates/README.md)
+- [T1588.003 - Code Signing Certificates](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.003%20-%20Code%20Signing%20Certificates/README.md)
+- [T1586 - Compromise Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1586%20-%20Compromise%20Accounts/README.md)
+- [T1584 - Compromise Infrastructure](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/README.md)
+- [T1589.001 - Credentials](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1589%20-%20Gather%20Victim%20Identity%20Information/T1589.001%20-%20Credentials/README.md)
+- [T1591.001 - Determine Physical Locations](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1591%20-%20Gather%20Victim%20Org%20Information/T1591.001%20-%20Determine%20Physical%20Locations/README.md)
+- [T1587 - Develop Capabilities](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1587%20-%20Develop%20Capabilities/README.md)
+- [T1587.003 - Digital Certificates](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1587%20-%20Develop%20Capabilities/T1587.003%20-%20Digital%20Certificates/README.md)
+- [T1588.004 - Digital Certificates](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.004%20-%20Digital%20Certificates/README.md)
+- [T1596.003 - Digital Certificates](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1596%20-%20Search%20Open%20Technical%20Databases/T1596.003%20-%20Digital%20Certificates/README.md)
+- [T1583.002 - DNS Server](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.002%20-%20DNS%20Server/README.md)
+- [T1584.002 - DNS Server](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.002%20-%20DNS%20Server/README.md)
+- [T1596.001 - DNS/Passive DNS](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1596%20-%20Search%20Open%20Technical%20Databases/T1596.001%20-%20DNS%20-%20Passive%20DNS/README.md)
+- [T1590.001 - Domain Properties](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1590%20-%20Gather%20Victim%20Network%20Information/T1590.001%20-%20Domain%20Properties/README.md)
+- [T1583.001 - Domains](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.001%20-%20Domains/README.md)
+- [T1584.001 - Domains](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.001%20-%20Domains/README.md)
+- [T1608.004 - Drive-by Target](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.004%20-%20Drive-by%20Target/README.md)
+- [T1585.002 - Email Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1585%20-%20Establish%20Accounts/T1585.002%20-%20Email%20Accounts/README.md)
+- [T1586.002 - Email Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1586%20-%20Compromise%20Accounts/T1586.002%20-%20Email%20Accounts/README.md)
+- [T1589.002 - Email Addresses](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1589%20-%20Gather%20Victim%20Identity%20Information/T1589.002%20-%20Email%20Addresses/README.md)
+- [T1589.003 - Employee Names](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1589%20-%20Gather%20Victim%20Identity%20Information/T1589.003%20-%20Employee%20Names/README.md)
+- [T1585 - Establish Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1585%20-%20Establish%20Accounts/README.md)
+- [T1587.004 - Exploits](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1587%20-%20Develop%20Capabilities/T1587.004%20-%20Exploits/README.md)
+- [T1588.005 - Exploits](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.005%20-%20Exploits/README.md)
+- [T1592.003 - Firmware](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1592%20-%20Gather%20Victim%20Host%20Information/T1592.003%20-%20Firmware/README.md)
+- [T1592 - Gather Victim Host Information](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1592%20-%20Gather%20Victim%20Host%20Information/README.md)
+- [T1589 - Gather Victim Identity Information](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1589%20-%20Gather%20Victim%20Identity%20Information/README.md)
+- [T1590 - Gather Victim Network Information](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1590%20-%20Gather%20Victim%20Network%20Information/README.md)
+- [T1591 - Gather Victim Org Information](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1591%20-%20Gather%20Victim%20Org%20Information/README.md)
+- [T1683 - Generate Content](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1683%20-%20Generate%20Content/README.md)
+- [T1592.001 - Hardware](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1592%20-%20Gather%20Victim%20Host%20Information/T1592.001%20-%20Hardware/README.md)
+- [T1591.003 - Identify Business Tempo](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1591%20-%20Gather%20Victim%20Org%20Information/T1591.003%20-%20Identify%20Business%20Tempo/README.md)
+- [T1591.004 - Identify Roles](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1591%20-%20Gather%20Victim%20Org%20Information/T1591.004%20-%20Identify%20Roles/README.md)
+- [T1608.003 - Install Digital Certificate](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.003%20-%20Install%20Digital%20Certificate/README.md)
+- [T1590.005 - IP Addresses](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1590%20-%20Gather%20Victim%20Network%20Information/T1590.005%20-%20IP%20Addresses/README.md)
+- [T1608.005 - Link Target](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.005%20-%20Link%20Target/README.md)
+- [T1583.008 - Malvertising](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.008%20-%20Malvertising/README.md)
+- [T1587.001 - Malware](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1587%20-%20Develop%20Capabilities/T1587.001%20-%20Malware/README.md)
+- [T1588.001 - Malware](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.001%20-%20Malware/README.md)
+- [T1584.008 - Network Devices](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.008%20-%20Network%20Devices/README.md)
+- [T1590.006 - Network Security Appliances](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1590%20-%20Gather%20Victim%20Network%20Information/T1590.006%20-%20Network%20Security%20Appliances/README.md)
+- [T1590.004 - Network Topology](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1590%20-%20Gather%20Victim%20Network%20Information/T1590.004%20-%20Network%20Topology/README.md)
+- [T1590.003 - Network Trust Dependencies](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1590%20-%20Gather%20Victim%20Network%20Information/T1590.003%20-%20Network%20Trust%20Dependencies/README.md)
+- [T1588 - Obtain Capabilities](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/README.md)
+- [T1597.002 - Purchase Technical Data](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1597%20-%20Search%20Closed%20Sources/T1597.002%20-%20Purchase%20Technical%20Data/README.md)
+- [T1682 - Query Public AI Services](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1682%20-%20Query%20Public%20AI%20Services/README.md)
+- [T1596.005 - Scan Databases](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1596%20-%20Search%20Open%20Technical%20Databases/T1596.005%20-%20Scan%20Databases/README.md)
+- [T1595.001 - Scanning IP Blocks](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1595%20-%20Active%20Scanning/T1595.001%20-%20Scanning%20IP%20Blocks/README.md)
+- [T1597 - Search Closed Sources](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1597%20-%20Search%20Closed%20Sources/README.md)
+- [T1593.002 - Search Engines](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1593%20-%20Search%20Open%20Websites%20-%20Domains/T1593.002%20-%20Search%20Engines/README.md)
+- [T1596 - Search Open Technical Databases](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1596%20-%20Search%20Open%20Technical%20Databases/README.md)
+- [T1681 - Search Threat Vendor Data](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1681%20-%20Search%20Threat%20Vendor%20Data/README.md)
+- [T1594 - Search Victim-Owned Websites](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1594%20-%20Search%20Victim-Owned%20Websites/README.md)
+- [T1608.006 - SEO Poisoning](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.006%20-%20SEO%20Poisoning/README.md)
+- [T1583.004 - Server](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.004%20-%20Server/README.md)
+- [T1584.004 - Server](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.004%20-%20Server/README.md)
+- [T1583.007 - Serverless](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.007%20-%20Serverless/README.md)
+- [T1584.007 - Serverless](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.007%20-%20Serverless/README.md)
+- [T1593.001 - Social Media](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1593%20-%20Search%20Open%20Websites%20-%20Domains/T1593.001%20-%20Social%20Media/README.md)
+- [T1585.001 - Social Media Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1585%20-%20Establish%20Accounts/T1585.001%20-%20Social%20Media%20Accounts/README.md)
+- [T1586.001 - Social Media Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1586%20-%20Compromise%20Accounts/T1586.001%20-%20Social%20Media%20Accounts/README.md)
+- [T1592.002 - Software](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1592%20-%20Gather%20Victim%20Host%20Information/T1592.002%20-%20Software/README.md)
+- [T1608 - Stage Capabilities](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/README.md)
+- [T1597.001 - Threat Intel Vendors](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1597%20-%20Search%20Closed%20Sources/T1597.001%20-%20Threat%20Intel%20Vendors/README.md)
+- [T1588.002 - Tool](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.002%20-%20Tool/README.md)
+- [T1608.001 - Upload Malware](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.001%20-%20Upload%20Malware/README.md)
+- [T1608.002 - Upload Tool](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.002%20-%20Upload%20Tool/README.md)
+- [T1583.003 - Virtual Private Server](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.003%20-%20Virtual%20Private%20Server/README.md)
+- [T1584.003 - Virtual Private Server](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.003%20-%20Virtual%20Private%20Server/README.md)
+- [T1588.006 - Vulnerabilities](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.006%20-%20Vulnerabilities/README.md)
+- [T1595.002 - Vulnerability Scanning](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1595%20-%20Active%20Scanning/T1595.002%20-%20Vulnerability%20Scanning/README.md)
+- [T1583.006 - Web Services](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.006%20-%20Web%20Services/README.md)
+- [T1584.006 - Web Services](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1584%20-%20Compromise%20Infrastructure/T1584.006%20-%20Web%20Services/README.md)
+- [T1596.002 - WHOIS](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1596%20-%20Search%20Open%20Technical%20Databases/T1596.002%20-%20WHOIS/README.md)
+- [T1595.003 - Wordlist Scanning](../../Tactics/01%20TA0043%20-%20Reconnaissance/T1595%20-%20Active%20Scanning/T1595.003%20-%20Wordlist%20Scanning/README.md)
+- [T1683.001 - Written Content](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1683%20-%20Generate%20Content/T1683.001%20-%20Written%20Content/README.md)

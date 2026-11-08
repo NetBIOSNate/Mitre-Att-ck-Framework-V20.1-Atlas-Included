@@ -1,0 +1,678 @@
+# DC0064 - Command Execution
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+Command Execution involves monitoring and capturing the execution of textual commands (including shell commands, cmdlets, and scripts) within an operating system or application. These commands may include arguments or parameters and are typically executed through interpreters such as `cmd.exe`, `bash`, `zsh`, `PowerShell`, or programmatic execution. Examples: 
+
+- Windows Command Prompt
+    - dir – Lists directory contents.
+    - net user – Queries or manipulates user accounts.
+    - tasklist – Lists running processes.
+- PowerShell
+    - Get-Process – Retrieves processes running on a system.
+    - Set-ExecutionPolicy – Changes PowerShell script execution policies.
+    - Invoke-WebRequest – Downloads remote resources.
+- Linux Shell
+    - ls – Lists files in a directory.
+    - cat /etc/passwd – Reads the user accounts file.
+    - curl http://malicious-site.com – Retrieves content from a malicious URL.
+- Container Environments
+    - docker exec – Executes a command inside a running container.
+    - kubectl exec – Runs commands in Kubernetes pods.
+- macOS Terminal
+    - open – Opens files or URLs.
+    - dscl . -list /Users – Lists all users on the system.
+    - osascript -e – Executes AppleScript commands.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0064)
+
+## Log sources and channels
+
+- **android:logcat** — Command 'pm list packages' executed by app sandbox or child proc
+- **auditd:CONFIG_CHANGE** — udev rule reload or trigger command executed
+- **auditd:EXECVE** — execve of script/interpreter (bash, python, node) with suspicious encoded or non-printable content
+- **auditd:EXECVE** — Use of mv or cp to rename files with '.' prefix
+- **auditd:EXECVE** — execve: Execution of update-ca-certificates or trust anchor modification commands
+- **auditd:EXECVE** — gcore, gdb, strings, hexdump execution
+- **auditd:EXECVE** — Execution of auditctl, systemctl stop auditd, or kill -9 auditd
+- **auditd:EXECVE** — execution of systemctl with subcommands start, stop, enable, disable
+- **auditd:EXECVE** — Execution of GUI-related binaries with suppressed window/display flags
+- **auditd:EXECVE** — curl -X POST, wget --post-data
+- **auditd:EXECVE** — command line arguments containing lsblk, fdisk, parted
+- **auditd:EXECVE** — exec: Execution of dd, efibootmgr, or flashrom modifying firmware/boot partitions
+- **auditd:EXECVE** — curl -d, wget --post-data
+- **auditd:EXECVE** — grep/cat/awk on files with password fields
+- **auditd:EXECVE** — git push, curl -X POST
+- **auditd:EXECVE** — Execution of gsettings set org.gnome.login-screen disable-user-list true
+- **auditd:EXECVE** — execution of setfattr or getfattr commands
+- **auditd:EXECVE** — Process execution of update-ca-certificates or openssl with suspicious arguments
+- **auditd:EXECVE** — Execution of chattr to set +i or +a attributes
+- **auditd:EXECVE** — curl or wget with POST/PUT options
+- **auditd:EXECVE** — curl -T, rclone copy
+- **auditd:EXECVE** — execve of curl,wget,bash,sh,python with piped or remote content
+- **auditd:EXECVE** — execve, kill, ptrace, insmod, rmmod targeting security processes
+- **auditd:PROCTITLE** — proctitle contains chmod, chown, setfacl, or attr commands with suspicious parameters
+- **auditd:PROCTITLE** — proctitle contains chmod, chown, chgrp, setfacl, or attr with suspicious parameters (777, 755, +x, -R)
+- **auditd:PROCTITLE** — process title records containing discovery command sequences and environmental assessment patterns
+- **auditd:PROCTITLE** — command-line execution patterns for system discovery utilities (uname, hostname, ifconfig, netstat, lsof, ps, mount)
+- **auditd:SYSCALL** — execution of realmd, samba-tool, or ldapmodify with user-related arguments
+- **auditd:SYSCALL** — Execution of script interpreters by systemd timer (ExecStart)
+- **auditd:SYSCALL** — execve: Commands like systemctl stop <service>, service <service> stop, or kill -9 <pid>
+- **auditd:SYSCALL** — execve calls to locale, timedatectl, or cat /etc/timezone
+- **auditd:SYSCALL** — sleep function usage or loops (nanosleep, usleep) in scripts
+- **auditd:SYSCALL** — connect, execve, write
+- **auditd:SYSCALL** — execve call including 'nohup' or trailing '&'
+- **auditd:SYSCALL** — None
+- **auditd:SYSCALL** — execve: Commands executed within an SSH session where no matching logon/authentication event exists
+- **auditd:SYSCALL** — chmod, execve
+- **auditd:SYSCALL** — execve: iptables, nft, firewall-cmd modifications
+- **auditd:SYSCALL** — execve: Invocation of scp, rsync, curl, or sftp
+- **auditd:SYSCALL** — execve calls modifying local mail filter configuration files
+- **auditd:SYSCALL** — execve: process_name IN ("virsh", "VBoxManage", "qemu-img") AND command IN ("list", "info")
+- **auditd:SYSCALL** — execve: service stop syslog, systemctl stop rsyslog, kill -9 syslog
+- **auditd:SYSCALL** — execve: openssl pkcs12, certutil, keytool
+- **auditd:SYSCALL** — execve: Process in container namespace executes curl|wget|bash|sh|python|nc with outbound args
+- **auditd:SYSCALL** — execution of systemctl or service with enable/start parameters
+- **auditd:SYSCALL** — execve: Execution of cat, less, grep, journalctl targeting log directories (/var/log/)
+- **auditd:SYSCALL** — execve: Execution of python, perl, or custom binaries invoking compression libraries
+- **auditd:SYSCALL** — execve, USER_CMD
+- **auditd:SYSCALL** — bash/zsh of base64, tar, gzip, or openssl immediately after file write
+- **auditd:SYSCALL** — execve: Processes executing sendmail/postfix with forged headers
+- **auditd:SYSCALL** — execve: Execution of tar, gzip, bzip2, xz, zip, or openssl with compression/encryption arguments
+- **auditd:SYSCALL** — promiscuous mode transitions (ioctl or ifconfig)
+- **auditd:SYSCALL** — chattr, rm, shred, dd run on recovery directories or partitions
+- **auditd:SYSCALL** — execve: Execution of curl or wget writing files to /tmp/* followed by chmod or execution
+- **auditd:SYSCALL** — execve: Execution of downgraded interpreters such as python2 or forced fallback commands
+- **auditd:SYSCALL** — Command line arguments including SPApplicationsDataType
+- **auditd:SYSCALL** — Execution of spoofing tools (e.g., hping3, nping, scapy) sending UDP packets to known amplifier ports
+- **auditd:SYSCALL** — execution of tools like cat, grep, or awk on credential files
+- **auditd:SYSCALL** — execve of curl, rsync, wget with internal knowledge base or IPs
+- **auditd:SYSCALL** — execve: Execution of systemctl, loginctl, or systemd-inhibit commands related to sleep/hibernate
+- **auditd:SYSCALL** — Execution of xev, xdotool, or input activity emulators
+- **auditd:SYSCALL** — execve: Execution of interpreters creating archive-like outputs without calling tar/gzip
+- **auditd:SYSCALL** — Execution of insmod, modprobe, or rmmod commands by non-standard users or outside expected timeframes
+- **auditd:SYSCALL** — execve syscalls for discovery commands (uname, hostname, id, whoami, ps, netstat, mount) with command-line parameter analysis
+- **auditd:SYSCALL** — execve: Execution of curl, wget, or custom scripts accessing financial endpoints
+- **auditd:SYSCALL** — execve: Execution of tar, gzip, bzip2, or openssl with output redirection
+- **auditd:SYSCALL** — execve=/sbin/shutdown or /sbin/reboot
+- **auditd:SYSCALL** — execve calls modifying HISTFILE or HISTCONTROL via unset/export
+- **auditd:SYSCALL** — execve calls to /usr/bin/locale or shell execution of $LANG
+- **auditd:SYSCALL** — execution of systemctl or service with enable/start/modify
+- **auditd:SYSCALL** — execve: Execution of lsmod, modinfo, or cat /proc/modules
+- **auditd:USER_CMD** — USER_CMD
+- **AWS:CloudTrail** — InvokeFunction
+- **AWS:CloudTrail** — eventName: RunInstances, CreateUser, PutRolePolicy, InvokeCommand
+- **AWS:CloudTrail** — SSM RunCommand
+- **AWS:CloudTrail** — GetLogEvents: High frequency log exports from CloudWatch or equivalent services
+- **AWS:CloudTrail** — command-line execution invoking credential enumeration
+- **AWS:CloudTrail** — ssm:GetCommandInvocation
+- **AWS:CloudTrail** — SendCommand, StartSession, ExecuteCommand: Unexpected AWS Systems Manager command execution targeting EC2 instances
+- **azure:activity** — Intune PowerShell Scripts
+- **azure:signinlogs** — OperationName=SetDomainAuthentication OR Update-MsolFederatedDomain
+- **Command** — None
+- **docker:api** — docker logs access or container inspect commands from non-administrative users
+- **docker:daemon** — docker exec or docker run with unexpected command/entrypoint
+- **docker:events** — container exec rm|container stop --force
+- **ebpf:syscalls** — useradd or /etc/passwd modified inside container
+- **EDR:AMSI** — None
+- **EDR:cli** — Command Line Telemetry
+- **esxi:hostd** — command execution
+- **esxi:hostd** — /var/log/hostd.log
+- **esxi:hostd** — modification of config files or shell command execution
+- **esxi:hostd** — shell access or job registration
+- **esxi:hostd** — logline inspection
+- **esxi:hostd** — esxcli network firewall set commands
+- **esxi:hostd** — event stream
+- **esxi:hostd** — scp/ssh used to move file across hosts
+- **esxi:hostd** — None
+- **esxi:hostd** — esxcli system syslog config set or reload
+- **esxi:hostd** — command log
+- **esxi:hostd** — Execution of '/bin/vmx' or modifications to '/etc/rc.local.d/local.sh'
+- **esxi:hostd** — Command Execution
+- **esxi:hostd** — remote CLI + vim-cmd logging
+- **esxi:hostd** — execution + payload hints
+- **esxi:shell** — esxcli system syslog config set/reload, services.sh restart/stop
+- **esxi:shell** — snapshot create/copy, esxcli
+- **esxi:shell** — interactive shell
+- **esxi:shell** — /var/log/shell.log
+- **esxi:shell** — invoked remote scripts (esxcli)
+- **esxi:shell** — base64 or gzip use within shell session
+- **esxi:shell** — scripts or binaries with misleading names
+- **esxi:shell** — /var/log/shell.log entries containing "esxcli system clock get"
+- **esxi:shell** — None
+- **esxi:shell** — command IN ("esxcli vm process list", "vim-cmd vmsvc/getallvms")
+- **esxi:shell** — openssl|tar|dd
+- **esxi:shell** — Execution of cat, tail, grep targeting /var/log/vmkernel.log or /var/log/hostd.log
+- **esxi:shell** — CLI usage logs
+- **esxi:shell** — Command execution trace
+- **esxi:shell** — shell command execution for chmod, chown, or file permission modification on VMFS or system files
+- **esxi:shell** — esxcli system syslog config set --loghost='' or stopping hostd service
+- **esxi:shell** — Shell Access/Command Execution
+- **esxi:shell** — esxcli software vib list
+- **esxi:shell** — /root/.ash_history
+- **esxi:shell** — mv, rename, or chmod commands moving VM files into hidden directories
+- **esxi:shell** — `esxcli software vib install` with `--force` or `--no-sig-check` from shell history or `shell.log`
+- **esxi:shell** — CLI session activity
+- **esxi:shell** — esxcli system shutdown or reboot invoked
+- **esxi:shell** — shell command execution for system discovery (vim-cmd, esxcli, vmware-cmd) targeting VM inventory and host configuration
+- **esxi:shell** — unset HISTFILE or HISTFILESIZE modifications
+- **esxi:syslog** — boot logs
+- **esxi:vmkernel** — /var/log/vmkernel.log
+- **esxi:vmkernel** — DCUI shell start, BusyBox activity
+- **esxi:vmkernel** — esxcli system account add
+- **esxi:vmkernel** — Unexpected restarts of management agents or shell access
+- **esxi:vmkernel** — esxcli, vim-cmd invocation
+- **esxi:vobd** — shell session start
+- **esxi:vpxd** — vCenter Management
+- **fs:fsusage** — file system activity monitor
+- **fs:fsusage** — access to BPF devices or interface IOCTLs
+- **gcp:audit** — None
+- **gcp:audit** — methodName: setIamPolicy, startInstance, createServiceAccount
+- **kubernetes:audit** — Shell process (e.g., /bin/sh, /bin/bash) spawned in a container without an interactive session attached (i.e., automation anomaly)
+- **kubernetes:audit** — process execution involving curl, grep, or awk on secrets
+- **linux:cli** — command logging
+- **linux:cli** — Shell history logs
+- **linux:cli** — Terminal Command History
+- **linux:cli** — /home/*/.bash_history
+- **linux:osquery** — Command-line includes base64 -d or openssl enc -d
+- **linux:osquery** — process_events.command_line
+- **linux:shell** — Manual invocation of software enumeration commands via interactive shell
+- **linux:syslog** — None
+- **linux:syslog** — cron activity
+- **linux:syslog** — Suspicious script or command execution targeting browser folders
+- **linux:syslog** — Unusual outbound transfers from CLI tools like base64, gzip, or netcat
+- **linux:syslog** — sudo chage|grep pam_pwquality|cat /etc/login.defs
+- **linux:syslog** — sudo execution of ffmpeg/gst-launch/v4l2-ctl by non-standard user
+- **linux:syslog** — sshd logs
+- **linux:syslog** — CLI access to 'show running-config', 'show password', or 'cat config.txt'
+- **linux:syslog** — Sudo or root escalation followed by filesystem mount commands
+- **linuxsyslog** — nslcd or winbind logs
+- **m365:defender** — Activity Log: Command Invocation
+- **m365:exchange** — Cmdlet: Get-GlobalAddressList, Get-Recipient
+- **m365:exchange** — Get-RoleGroup, Get-DistributionGroup
+- **m365:messagetrace** — Inbound email triggers execution of mailbox-stored custom form
+- **m365:messagetrace** — Inbound email matches crafted rule trigger pattern tied to persistence logic
+- **m365:messagetrace** — Inbound email triggering Outlook to auto-access folder tied to malicious Home Page
+- **m365:office** — Startup execution includes non-default component
+- **m365:office** — Execution of unsigned macro from template
+- **m365:unified** — Automated forwarding or file sync initiated by a logic app
+- **m365:unified** — Search-Mailbox, Get-MessageTrace, eDiscovery requests
+- **m365:unified** — Set-Mailbox, New-InboxRule
+- **m365:unified** — Set-Mailbox, Set-MailboxPolicy, Set-TrustedLocation
+- **macos:osquery** — Interpreter exec with suspicious arguments as above
+- **macos:osquery** — launchd + process_events
+- **macos:syslog** — system.log
+- **macos:syslog** — /var/log/system.log
+- **macos:unifiedlog** — dsconfigad or dscl with create or append options for AD-bound users
+- **macos:unifiedlog** — launchctl unload, kill, or pkill commands affecting daemons or background services
+- **macos:unifiedlog** — execution of security-agent detection or enumeration commands
+- **macos:unifiedlog** — log stream --predicate
+- **macos:unifiedlog** — Execution of chflags hidden or SetFile -a V
+- **macos:unifiedlog** — log stream
+- **macos:unifiedlog** — defaults read -g AppleLocale, systemsetup -gettimezone
+- **macos:unifiedlog** — profiles install -type=configuration
+- **macos:unifiedlog** — log stream --predicate 'eventMessage contains "loginwindow" or "pfctl"'
+- **macos:unifiedlog** — exec or sudo usage with NOPASSWD context or echo modifying sudoers
+- **macos:unifiedlog** — Execution of /usr/bin/security add-trusted-cert or keychain modifications to System.keychain
+- **macos:unifiedlog** — nohup, disown, or osascript execution patterns
+- **macos:unifiedlog** — Execution of 'profiles install -type=configuration'
+- **macos:unifiedlog** — subsystem:com.apple.Terminal
+- **macos:unifiedlog** — base64 or curl processes chained within short execution window
+- **macos:unifiedlog** — exec: Invocation of /usr/bin/defaults write or /usr/bin/plutil modifying plist keys
+- **macos:unifiedlog** — chmod command with arguments including '+s', 'u+s', or numeric values 4000–6777
+- **macos:unifiedlog** — command includes dscl . delete or sysadminctl --deleteUser
+- **macos:unifiedlog** — DS daemon log entries
+- **macos:unifiedlog** — diskutil eraseDisk / asr restore with destructive flags
+- **macos:unifiedlog** — pfctl -d, socketfilterfw --setglobalstate off, or modifications to com.apple.alf
+- **macos:unifiedlog** — pwpolicy|PasswordPolicy
+- **macos:unifiedlog** — Command line contains smbutil view //, mount_smbfs //
+- **macos:unifiedlog** — log messages related to disk enumeration context or Terminal session
+- **macos:unifiedlog** — defaults write com.apple.system.logging or logd manipulation
+- **macos:unifiedlog** — process calling security find-certificate, export, or import
+- **macos:unifiedlog** — Execution of log show, fs_usage, or cat targeting system.log
+- **macos:unifiedlog** — execution of launchctl load/unload/start commands
+- **macos:unifiedlog** — base64 -d or osascript invoked on staged file
+- **macos:unifiedlog** — diskutil partitionDisk or eraseVolume with partition scheme modifications
+- **macos:unifiedlog** — grep/cat on files matching credential patterns
+- **macos:unifiedlog** — diskutil eraseDisk/zeroDisk or asr restore with destructive flags
+- **macos:unifiedlog** — spctl --master-disable, csrutil disable, or defaults write to disable Gatekeeper
+- **macos:unifiedlog** — process: at, job runner
+- **macos:unifiedlog** — Execution of dscl . create with IsHidden=1
+- **macos:unifiedlog** — log stream --predicate 'processImagePath contains "zip" OR "base64"'
+- **macos:unifiedlog** — xattr utility execution with -w or -p flags
+- **macos:unifiedlog** — execution of 'security', 'cat', or 'grep' commands accessing credential storage
+- **macos:unifiedlog** — launchctl load or boot-time plist registration
+- **macos:unifiedlog** — dscl -create
+- **macos:unifiedlog** — kextload execution from Terminal or suspicious paths
+- **macos:unifiedlog** — xattr -d com.apple.quarantine or similar removal commands
+- **macos:unifiedlog** — Security framework operations including keychain access, cryptographic operations, and certificate validation
+- **macos:unifiedlog** — None
+- **macos:unifiedlog** — Execution of chflags hidden or setfile -a V
+- **macos:unifiedlog** — process:spawn, process:exec
+- **macos:unifiedlog** — csrutil disable
+- **macos:unifiedlog** — log show --predicate 'process == <utility>'
+- **macos:unifiedlog** — Execution of launchctl with setenv or bootout targeting TCC.db or AppleScript under Finder context
+- **macos:unifiedlog** — command execution triggered by emond (e.g., shell, curl, python)
+- **macos:unifiedlog** — Set or unset HIST* variables in shell environment
+- **macos:unifiedlog** — defaults read -g AppleLocale or systemsetup -gettimezone
+- **macos:unifiedlog** — launchctl load/unload or plist file modification
+- **macos:unifiedlog** — dscl . -create
+- **macos:unifiedlog** — Execution of commands like `ls -l@`, `xattr -l`, or custom tools interacting with resource forks
+- **macos:unifiedlog** — Execution of osascript, sh, bash, zsh, installer, open
+- **MobileEDR:telemetry** — Application spawns shell, command interpreter, or command-executing child process with arguments during command-execution phase
+- **MobileEDR:telemetry** — Application spawns Unix shell process or superuser binary such as sh, su, toybox, toolbox, or shell-like child process with parameters during execution phase
+- **networkdevice:cli** — CLI command
+- **networkdevice:cli** — Policy Update
+- **networkdevice:cli** — ip ssh pubkey-chain
+- **networkdevice:cli** — erase flash:, erase startup-config, format disk
+- **networkdevice:cli** — CLI command logs
+- **networkdevice:cli** — cmd: cmd=show clock detail
+- **networkdevice:cli** — Execution of commands to load, copy, or replace system images (e.g., 'copy tftp flash', 'boot system')
+- **networkdevice:cli** — None
+- **networkdevice:cli** — Execution of commands like 'show running-config', 'copy running-config', or 'export config'
+- **networkdevice:cli** — Execution of CLI commands altering crypto parameters (e.g., 'crypto key generate rsa modulus 512')
+- **networkdevice:cli** — format flash:, format disk, reformat commands
+- **networkdevice:cli** — erase flash:, erase nvram:, format disk
+- **networkdevice:cli** — command logs
+- **networkdevice:cli** — command logging
+- **networkdevice:cli** — Interface commands
+- **networkdevice:cli** — Execution of privileged commands such as 'copy tftp flash', 'boot system', or 'debug memory'
+- **networkdevice:cli** — Execution of commands disabling crypto hardware acceleration (e.g., 'no crypto engine enable')
+- **networkdevice:cli** — shell command
+- **networkdevice:cli** — Commands like 'no logging' or equivalents that disable session history
+- **networkdevice:cli** — Execution of commands such as 'copy tftp flash', 'boot system <image>', 'reload'
+- **networkdevice:config** — PKI export or certificate manipulation commands
+- **networkdevice:config** — Configuration changes referencing 'boot system tftp' or modification of startup-config pointing to external TFTP servers
+- **networkdevice:Firewall** — Audit trail or CLI/API access indicating commands like no access-list, delete rule-set, clear config
+- **networkdevice:syslog** — CLI command audit / configuration command history
+- **networkdevice:syslog** — Command Audit / Configuration Change
+- **networkdevice:syslog** — eventlog
+- **networkdevice:syslog** — command_exec
+- **networkdevice:syslog** — command-exec: CLI commands containing "show clock", "show clock detail", "show timezone" executed by suspicious user/source
+- **networkdevice:syslog** — cmd='show aaa*' OR 'show running-config | include password|aaa' OR 'show aaa common-criteria policy all'
+- **networkdevice:syslog** — CLI command audit
+- **networkdevice:syslog** — system boot logs
+- **networkdevice:syslog** — exec command='monitor capture'
+- **networkdevice:syslog** — no logging buffered, no aaa new-model, disable firewall
+- **networkdevice:syslog** — interactive shell logging
+- **networkdevice:syslog** — command sequence: erase → format → reload
+- **networkdevice:syslog** — CLI Command Logging
+- **networkdevice:syslog** — CLI Command Audit
+- **networkdevice:syslog** — command audit
+- **networkdevice:syslog** — Privilege-level command execution
+- **networkdevice:syslog** — Detected CLI command to export key material
+- **networkdevice:syslog** — reload command issued
+- **networkdevice:syslog** — syslog facility LOCAL7 or trap messages
+- **saas:PRMetadata** — Commit message or branch name contains encoded strings or payload indicators
+- **vpxd.log** — VM inventory queries and configuration enumeration through vCenter API calls
+- **WinEventLog:Microsoft-Office-Alerts** — Unexpected DLL or component loaded at Office startup
+- **WinEventLog:Microsoft-Office-Alerts** — Office application warning or alert on macro execution from template
+- **WinEventLog:Microsoft-Office/OutlookAddinMonitor** — Outlook loading add-in via unexpected load path or non-default profile context
+- **WinEventLog:PowerShell** — EventCode=4103/4104/4105/4106; command/script-block content 
+- **WinEventLog:PowerShell** — Get-ADTrust|GetAllTrustRelationships
+- **WinEventLog:PowerShell** — EventCode=4103, 4104, 4105, 4106
+- **WinEventLog:PowerShell** — Execution of Microsoft script to enumerate custom forms in Outlook mailbox
+- **WinEventLog:PowerShell** — CommandLine=copy-item or robocopy from UNC path
+- **WinEventLog:PowerShell** — PowerShell launched from outlook.exe or triggered without user invocation
+- **WinEventLog:PowerShell** — Execution of PowerShell script to enumerate or remove malicious Home Page folder config
+- **WinEventLog:PowerShell** — Exchange Cmdlets
+- **WinEventLog:PowerShell** — CmdletName: Get-Recipient, Get-User
+- **WinEventLog:PowerShell** — Execution of 'Get-WmiObject Win32_Product' or similar PowerShell cmdlets
+- **WinEventLog:PowerShell** — Execution of PowerShell without -NoProfile flag
+- **WinEventLog:PowerShell** — EventCode=4101
+- **WinEventLog:Security** — EventCode=4103, 4104, 4105, 4106
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Unix shell process (sh, bash, busybox sh, toybox) spawns as child of app process with command-line arguments indicating scripted operation — shell with arguments confirms script execution not interactive terminal
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Shell or command-executing child process with arguments spawned under managed app context on supervised iOS device
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: pm uninstall OR rm -f called by process NOT IN $MDMAgentPackageList$ for package_count > $BulkUninstallThreshold$ within $DestructionWindow$ — command-line destruction activity
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App spawns sh, bash, toybox, toolbox, or su child process with command arguments within $ShellActivityWindow$ of shell launch — child shell process with arguments is the script execution signal
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Shell process (sh, bash) or command-executing child process spawned under app context on supervised iOS device — any shell spawn on stock iOS indicates jailbreak or kernel exploit
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): sequential reads across ICS data paths by uid not in authorized data access UIDs, followed by tar/zip invocation within a short window
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): execve of screenshot utility (scrot, import, xwd) on Industrial Control Systems (ICS) Human-Machine Interface (HMI) by User Identifier (UID) not in approved operator UIDs
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): system binary executing with command line piping or decoding external content, from Industrial Control Systems (ICS) service account User Identifier (UID)
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): raw socket creation (SOCK_RAW) or tcpdump/tshark execution by uid not in authorized capture User Identifiers (UIDs)
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): Industrial Control Systems (ICS) tool execution following Secure Shell (SSH) lateral movement session
+- **gpo:deployment** — destructive payload deployed via Group Policy Object (GPO) to multiple hosts simultaneously
+- **historian:applog** — bulk export query returning above bulk query threshold records from account not in approved historian clients
+- **WinEventLog:Security** — Windows Security Event ID 4688: EventCode=1102 correlated with any other Medium+ confidence alert on the same host within log clear lookback window
+
+## Analytics using this component
+
+- [AN0007 - Analytic 0007](../Analytics/AN0007.md)
+- [AN0008 - Analytic 0008](../Analytics/AN0008.md)
+- [AN0012 - Analytic 0012](../Analytics/AN0012.md)
+- [AN0014 - Analytic 0014](../Analytics/AN0014.md)
+- [AN0016 - Analytic 0016](../Analytics/AN0016.md)
+- [AN0017 - Analytic 0017](../Analytics/AN0017.md)
+- [AN0025 - Analytic 0025](../Analytics/AN0025.md)
+- [AN0027 - Analytic 0027](../Analytics/AN0027.md)
+- [AN0028 - Analytic 0028](../Analytics/AN0028.md)
+- [AN0037 - Analytic 0037](../Analytics/AN0037.md)
+- [AN0038 - Analytic 0038](../Analytics/AN0038.md)
+- [AN0044 - Analytic 0044](../Analytics/AN0044.md)
+- [AN0046 - Analytic 0046](../Analytics/AN0046.md)
+- [AN0047 - Analytic 0047](../Analytics/AN0047.md)
+- [AN0050 - Analytic 0050](../Analytics/AN0050.md)
+- [AN0077 - Analytic 0077](../Analytics/AN0077.md)
+- [AN0085 - Analytic 0085](../Analytics/AN0085.md)
+- [AN0086 - Analytic 0086](../Analytics/AN0086.md)
+- [AN0089 - Analytic 0089](../Analytics/AN0089.md)
+- [AN0092 - Analytic 0092](../Analytics/AN0092.md)
+- [AN0093 - Analytic 0093](../Analytics/AN0093.md)
+- [AN0098 - Analytic 0098](../Analytics/AN0098.md)
+- [AN0099 - Analytic 0099](../Analytics/AN0099.md)
+- [AN0115 - Analytic 0115](../Analytics/AN0115.md)
+- [AN0116 - Analytic 0116](../Analytics/AN0116.md)
+- [AN0120 - Analytic 0120](../Analytics/AN0120.md)
+- [AN0121 - Analytic 0121](../Analytics/AN0121.md)
+- [AN0124 - Analytic 0124](../Analytics/AN0124.md)
+- [AN0128 - Analytic 0128](../Analytics/AN0128.md)
+- [AN0131 - Analytic 0131](../Analytics/AN0131.md)
+- [AN0132 - Analytic 0132](../Analytics/AN0132.md)
+- [AN0133 - Analytic 0133](../Analytics/AN0133.md)
+- [AN0135 - Analytic 0135](../Analytics/AN0135.md)
+- [AN0136 - Analytic 0136](../Analytics/AN0136.md)
+- [AN0138 - Analytic 0138](../Analytics/AN0138.md)
+- [AN0143 - Analytic 0143](../Analytics/AN0143.md)
+- [AN0151 - Analytic 0151](../Analytics/AN0151.md)
+- [AN0152 - Analytic 0152](../Analytics/AN0152.md)
+- [AN0154 - Analytic 0154](../Analytics/AN0154.md)
+- [AN0155 - Analytic 0155](../Analytics/AN0155.md)
+- [AN0157 - Analytic 0157](../Analytics/AN0157.md)
+- [AN0166 - Analytic 0166](../Analytics/AN0166.md)
+- [AN0168 - Analytic 0168](../Analytics/AN0168.md)
+- [AN0171 - Analytic 0171](../Analytics/AN0171.md)
+- [AN0173 - Analytic 0173](../Analytics/AN0173.md)
+- [AN0175 - Analytic 0175](../Analytics/AN0175.md)
+- [AN0177 - Analytic 0177](../Analytics/AN0177.md)
+- [AN0181 - Analytic 0181](../Analytics/AN0181.md)
+- [AN0182 - Analytic 0182](../Analytics/AN0182.md)
+- [AN0183 - Analytic 0183](../Analytics/AN0183.md)
+- [AN0194 - Analytic 0194](../Analytics/AN0194.md)
+- [AN0197 - Analytic 0197](../Analytics/AN0197.md)
+- [AN0200 - Analytic 0200](../Analytics/AN0200.md)
+- [AN0208 - Analytic 0208](../Analytics/AN0208.md)
+- [AN0210 - Analytic 0210](../Analytics/AN0210.md)
+- [AN0213 - Analytic 0213](../Analytics/AN0213.md)
+- [AN0215 - Analytic 0215](../Analytics/AN0215.md)
+- [AN0217 - Analytic 0217](../Analytics/AN0217.md)
+- [AN0232 - Analytic 0232](../Analytics/AN0232.md)
+- [AN0233 - Analytic 0233](../Analytics/AN0233.md)
+- [AN0239 - Analytic 0239](../Analytics/AN0239.md)
+- [AN0252 - Analytic 0252](../Analytics/AN0252.md)
+- [AN0254 - Analytic 0254](../Analytics/AN0254.md)
+- [AN0256 - Analytic 0256](../Analytics/AN0256.md)
+- [AN0257 - Analytic 0257](../Analytics/AN0257.md)
+- [AN0262 - Analytic 0262](../Analytics/AN0262.md)
+- [AN0263 - Analytic 0263](../Analytics/AN0263.md)
+- [AN0264 - Analytic 0264](../Analytics/AN0264.md)
+- [AN0271 - Analytic 0271](../Analytics/AN0271.md)
+- [AN0272 - Analytic 0272](../Analytics/AN0272.md)
+- [AN0274 - Analytic 0274](../Analytics/AN0274.md)
+- [AN0280 - Analytic 0280](../Analytics/AN0280.md)
+- [AN0286 - Analytic 0286](../Analytics/AN0286.md)
+- [AN0303 - Analytic 0303](../Analytics/AN0303.md)
+- [AN0304 - Analytic 0304](../Analytics/AN0304.md)
+- [AN0305 - Analytic 0305](../Analytics/AN0305.md)
+- [AN0306 - Analytic 0306](../Analytics/AN0306.md)
+- [AN0307 - Analytic 0307](../Analytics/AN0307.md)
+- [AN0308 - Analytic 0308](../Analytics/AN0308.md)
+- [AN0336 - Analytic 0336](../Analytics/AN0336.md)
+- [AN0344 - Analytic 0344](../Analytics/AN0344.md)
+- [AN0354 - Analytic 0354](../Analytics/AN0354.md)
+- [AN0359 - Analytic 0359](../Analytics/AN0359.md)
+- [AN0361 - Analytic 0361](../Analytics/AN0361.md)
+- [AN0363 - Analytic 0363](../Analytics/AN0363.md)
+- [AN0364 - Analytic 0364](../Analytics/AN0364.md)
+- [AN0365 - Analytic 0365](../Analytics/AN0365.md)
+- [AN0371 - Analytic 0371](../Analytics/AN0371.md)
+- [AN0386 - Analytic 0386](../Analytics/AN0386.md)
+- [AN0387 - Analytic 0387](../Analytics/AN0387.md)
+- [AN0388 - Analytic 0388](../Analytics/AN0388.md)
+- [AN0392 - Analytic 0392](../Analytics/AN0392.md)
+- [AN0399 - Analytic 0399](../Analytics/AN0399.md)
+- [AN0407 - Analytic 0407](../Analytics/AN0407.md)
+- [AN0408 - Analytic 0408](../Analytics/AN0408.md)
+- [AN0409 - Analytic 0409](../Analytics/AN0409.md)
+- [AN0416 - Analytic 0416](../Analytics/AN0416.md)
+- [AN0426 - Analytic 0426](../Analytics/AN0426.md)
+- [AN0427 - Analytic 0427](../Analytics/AN0427.md)
+- [AN0430 - Analytic 0430](../Analytics/AN0430.md)
+- [AN0433 - Analytic 0433](../Analytics/AN0433.md)
+- [AN0434 - Analytic 0434](../Analytics/AN0434.md)
+- [AN0437 - Analytic 0437](../Analytics/AN0437.md)
+- [AN0455 - Analytic 0455](../Analytics/AN0455.md)
+- [AN0456 - Analytic 0456](../Analytics/AN0456.md)
+- [AN0457 - Analytic 0457](../Analytics/AN0457.md)
+- [AN0461 - Analytic 0461](../Analytics/AN0461.md)
+- [AN0469 - Analytic 0469](../Analytics/AN0469.md)
+- [AN0471 - Analytic 0471](../Analytics/AN0471.md)
+- [AN0472 - Analytic 0472](../Analytics/AN0472.md)
+- [AN0482 - Analytic 0482](../Analytics/AN0482.md)
+- [AN0502 - Analytic 0502](../Analytics/AN0502.md)
+- [AN0503 - Analytic 0503](../Analytics/AN0503.md)
+- [AN0507 - Analytic 0507](../Analytics/AN0507.md)
+- [AN0513 - Analytic 0513](../Analytics/AN0513.md)
+- [AN0515 - Analytic 0515](../Analytics/AN0515.md)
+- [AN0517 - Analytic 0517](../Analytics/AN0517.md)
+- [AN0519 - Analytic 0519](../Analytics/AN0519.md)
+- [AN0537 - Analytic 0537](../Analytics/AN0537.md)
+- [AN0538 - Analytic 0538](../Analytics/AN0538.md)
+- [AN0551 - Analytic 0551](../Analytics/AN0551.md)
+- [AN0553 - Analytic 0553](../Analytics/AN0553.md)
+- [AN0559 - Analytic 0559](../Analytics/AN0559.md)
+- [AN0562 - Analytic 0562](../Analytics/AN0562.md)
+- [AN0563 - Analytic 0563](../Analytics/AN0563.md)
+- [AN0569 - Analytic 0569](../Analytics/AN0569.md)
+- [AN0571 - Analytic 0571](../Analytics/AN0571.md)
+- [AN0572 - Analytic 0572](../Analytics/AN0572.md)
+- [AN0573 - Analytic 0573](../Analytics/AN0573.md)
+- [AN0589 - Analytic 0589](../Analytics/AN0589.md)
+- [AN0605 - Analytic 0605](../Analytics/AN0605.md)
+- [AN0622 - Analytic 0622](../Analytics/AN0622.md)
+- [AN0626 - Analytic 0626](../Analytics/AN0626.md)
+- [AN0641 - Analytic 0641](../Analytics/AN0641.md)
+- [AN0647 - Analytic 0647](../Analytics/AN0647.md)
+- [AN0660 - Analytic 0660](../Analytics/AN0660.md)
+- [AN0661 - Analytic 0661](../Analytics/AN0661.md)
+- [AN0668 - Analytic 0668](../Analytics/AN0668.md)
+- [AN0669 - Analytic 0669](../Analytics/AN0669.md)
+- [AN0670 - Analytic 0670](../Analytics/AN0670.md)
+- [AN0672 - Analytic 0672](../Analytics/AN0672.md)
+- [AN0673 - Analytic 0673](../Analytics/AN0673.md)
+- [AN0681 - Analytic 0681](../Analytics/AN0681.md)
+- [AN0691 - Analytic 0691](../Analytics/AN0691.md)
+- [AN0696 - Analytic 0696](../Analytics/AN0696.md)
+- [AN0701 - Analytic 0701](../Analytics/AN0701.md)
+- [AN0706 - Analytic 0706](../Analytics/AN0706.md)
+- [AN0707 - Analytic 0707](../Analytics/AN0707.md)
+- [AN0708 - Analytic 0708](../Analytics/AN0708.md)
+- [AN0709 - Analytic 0709](../Analytics/AN0709.md)
+- [AN0727 - Analytic 0727](../Analytics/AN0727.md)
+- [AN0734 - Analytic 0734](../Analytics/AN0734.md)
+- [AN0736 - Analytic 0736](../Analytics/AN0736.md)
+- [AN0737 - Analytic 0737](../Analytics/AN0737.md)
+- [AN0739 - Analytic 0739](../Analytics/AN0739.md)
+- [AN0740 - Analytic 0740](../Analytics/AN0740.md)
+- [AN0748 - Analytic 0748](../Analytics/AN0748.md)
+- [AN0751 - Analytic 0751](../Analytics/AN0751.md)
+- [AN0754 - Analytic 0754](../Analytics/AN0754.md)
+- [AN0768 - Analytic 0768](../Analytics/AN0768.md)
+- [AN0769 - Analytic 0769](../Analytics/AN0769.md)
+- [AN0775 - Analytic 0775](../Analytics/AN0775.md)
+- [AN0788 - Analytic 0788](../Analytics/AN0788.md)
+- [AN0793 - Analytic 0793](../Analytics/AN0793.md)
+- [AN0829 - Analytic 0829](../Analytics/AN0829.md)
+- [AN0830 - Analytic 0830](../Analytics/AN0830.md)
+- [AN0832 - Analytic 0832](../Analytics/AN0832.md)
+- [AN0834 - Analytic 0834](../Analytics/AN0834.md)
+- [AN0835 - Analytic 0835](../Analytics/AN0835.md)
+- [AN0837 - Analytic 0837](../Analytics/AN0837.md)
+- [AN0855 - Analytic 0855](../Analytics/AN0855.md)
+- [AN0857 - Analytic 0857](../Analytics/AN0857.md)
+- [AN0858 - Analytic 0858](../Analytics/AN0858.md)
+- [AN0859 - Analytic 0859](../Analytics/AN0859.md)
+- [AN0860 - Analytic 0860](../Analytics/AN0860.md)
+- [AN0876 - Analytic 0876](../Analytics/AN0876.md)
+- [AN0877 - Analytic 0877](../Analytics/AN0877.md)
+- [AN0879 - Analytic 0879](../Analytics/AN0879.md)
+- [AN0880 - Analytic 0880](../Analytics/AN0880.md)
+- [AN0881 - Analytic 0881](../Analytics/AN0881.md)
+- [AN0884 - Analytic 0884](../Analytics/AN0884.md)
+- [AN0885 - Analytic 0885](../Analytics/AN0885.md)
+- [AN0888 - Analytic 0888](../Analytics/AN0888.md)
+- [AN0890 - Analytic 0890](../Analytics/AN0890.md)
+- [AN0893 - Analytic 0893](../Analytics/AN0893.md)
+- [AN0896 - Analytic 0896](../Analytics/AN0896.md)
+- [AN0903 - Analytic 0903](../Analytics/AN0903.md)
+- [AN0904 - Analytic 0904](../Analytics/AN0904.md)
+- [AN0906 - Analytic 0906](../Analytics/AN0906.md)
+- [AN0907 - Analytic 0907](../Analytics/AN0907.md)
+- [AN0912 - Analytic 0912](../Analytics/AN0912.md)
+- [AN0932 - Analytic 0932](../Analytics/AN0932.md)
+- [AN0934 - Analytic 0934](../Analytics/AN0934.md)
+- [AN0936 - Analytic 0936](../Analytics/AN0936.md)
+- [AN0945 - Analytic 0945](../Analytics/AN0945.md)
+- [AN0962 - Analytic 0962](../Analytics/AN0962.md)
+- [AN0964 - Analytic 0964](../Analytics/AN0964.md)
+- [AN0993 - Analytic 0993](../Analytics/AN0993.md)
+- [AN0996 - Analytic 0996](../Analytics/AN0996.md)
+- [AN0998 - Analytic 0998](../Analytics/AN0998.md)
+- [AN1002 - Analytic 1002](../Analytics/AN1002.md)
+- [AN1003 - Analytic 1003](../Analytics/AN1003.md)
+- [AN1015 - Analytic 1015](../Analytics/AN1015.md)
+- [AN1025 - Analytic 1025](../Analytics/AN1025.md)
+- [AN1026 - Analytic 1026](../Analytics/AN1026.md)
+- [AN1028 - Analytic 1028](../Analytics/AN1028.md)
+- [AN1043 - Analytic 1043](../Analytics/AN1043.md)
+- [AN1044 - Analytic 1044](../Analytics/AN1044.md)
+- [AN1056 - Analytic 1056](../Analytics/AN1056.md)
+- [AN1065 - Analytic 1065](../Analytics/AN1065.md)
+- [AN1066 - Analytic 1066](../Analytics/AN1066.md)
+- [AN1073 - Analytic 1073](../Analytics/AN1073.md)
+- [AN1074 - Analytic 1074](../Analytics/AN1074.md)
+- [AN1082 - Analytic 1082](../Analytics/AN1082.md)
+- [AN1083 - Analytic 1083](../Analytics/AN1083.md)
+- [AN1084 - Analytic 1084](../Analytics/AN1084.md)
+- [AN1087 - Analytic 1087](../Analytics/AN1087.md)
+- [AN1089 - Analytic 1089](../Analytics/AN1089.md)
+- [AN1100 - Analytic 1100](../Analytics/AN1100.md)
+- [AN1101 - Analytic 1101](../Analytics/AN1101.md)
+- [AN1102 - Analytic 1102](../Analytics/AN1102.md)
+- [AN1103 - Analytic 1103](../Analytics/AN1103.md)
+- [AN1104 - Analytic 1104](../Analytics/AN1104.md)
+- [AN1135 - Analytic 1135](../Analytics/AN1135.md)
+- [AN1136 - Analytic 1136](../Analytics/AN1136.md)
+- [AN1141 - Analytic 1141](../Analytics/AN1141.md)
+- [AN1154 - Analytic 1154](../Analytics/AN1154.md)
+- [AN1155 - Analytic 1155](../Analytics/AN1155.md)
+- [AN1159 - Analytic 1159](../Analytics/AN1159.md)
+- [AN1161 - Analytic 1161](../Analytics/AN1161.md)
+- [AN1171 - Analytic 1171](../Analytics/AN1171.md)
+- [AN1172 - Analytic 1172](../Analytics/AN1172.md)
+- [AN1175 - Analytic 1175](../Analytics/AN1175.md)
+- [AN1177 - Analytic 1177](../Analytics/AN1177.md)
+- [AN1183 - Analytic 1183](../Analytics/AN1183.md)
+- [AN1194 - Analytic 1194](../Analytics/AN1194.md)
+- [AN1207 - Analytic 1207](../Analytics/AN1207.md)
+- [AN1208 - Analytic 1208](../Analytics/AN1208.md)
+- [AN1214 - Analytic 1214](../Analytics/AN1214.md)
+- [AN1218 - Analytic 1218](../Analytics/AN1218.md)
+- [AN1219 - Analytic 1219](../Analytics/AN1219.md)
+- [AN1220 - Analytic 1220](../Analytics/AN1220.md)
+- [AN1227 - Analytic 1227](../Analytics/AN1227.md)
+- [AN1232 - Analytic 1232](../Analytics/AN1232.md)
+- [AN1233 - Analytic 1233](../Analytics/AN1233.md)
+- [AN1237 - Analytic 1237](../Analytics/AN1237.md)
+- [AN1238 - Analytic 1238](../Analytics/AN1238.md)
+- [AN1239 - Analytic 1239](../Analytics/AN1239.md)
+- [AN1243 - Analytic 1243](../Analytics/AN1243.md)
+- [AN1244 - Analytic 1244](../Analytics/AN1244.md)
+- [AN1245 - Analytic 1245](../Analytics/AN1245.md)
+- [AN1247 - Analytic 1247](../Analytics/AN1247.md)
+- [AN1248 - Analytic 1248](../Analytics/AN1248.md)
+- [AN1252 - Analytic 1252](../Analytics/AN1252.md)
+- [AN1260 - Analytic 1260](../Analytics/AN1260.md)
+- [AN1272 - Analytic 1272](../Analytics/AN1272.md)
+- [AN1280 - Analytic 1280](../Analytics/AN1280.md)
+- [AN1288 - Analytic 1288](../Analytics/AN1288.md)
+- [AN1293 - Analytic 1293](../Analytics/AN1293.md)
+- [AN1305 - Analytic 1305](../Analytics/AN1305.md)
+- [AN1306 - Analytic 1306](../Analytics/AN1306.md)
+- [AN1307 - Analytic 1307](../Analytics/AN1307.md)
+- [AN1309 - Analytic 1309](../Analytics/AN1309.md)
+- [AN1312 - Analytic 1312](../Analytics/AN1312.md)
+- [AN1325 - Analytic 1325](../Analytics/AN1325.md)
+- [AN1327 - Analytic 1327](../Analytics/AN1327.md)
+- [AN1360 - Analytic 1360](../Analytics/AN1360.md)
+- [AN1362 - Analytic 1362](../Analytics/AN1362.md)
+- [AN1385 - Analytic 1385](../Analytics/AN1385.md)
+- [AN1386 - Analytic 1386](../Analytics/AN1386.md)
+- [AN1387 - Analytic 1387](../Analytics/AN1387.md)
+- [AN1392 - Analytic 1392](../Analytics/AN1392.md)
+- [AN1395 - Analytic 1395](../Analytics/AN1395.md)
+- [AN1396 - Analytic 1396](../Analytics/AN1396.md)
+- [AN1416 - Analytic 1416](../Analytics/AN1416.md)
+- [AN1431 - Analytic 1431](../Analytics/AN1431.md)
+- [AN1432 - Analytic 1432](../Analytics/AN1432.md)
+- [AN1436 - Analytic 1436](../Analytics/AN1436.md)
+- [AN1437 - Analytic 1437](../Analytics/AN1437.md)
+- [AN1440 - Analytic 1440](../Analytics/AN1440.md)
+- [AN1441 - Analytic 1441](../Analytics/AN1441.md)
+- [AN1447 - Analytic 1447](../Analytics/AN1447.md)
+- [AN1448 - Analytic 1448](../Analytics/AN1448.md)
+- [AN1452 - Analytic 1452](../Analytics/AN1452.md)
+- [AN1454 - Analytic 1454](../Analytics/AN1454.md)
+- [AN1455 - Analytic 1455](../Analytics/AN1455.md)
+- [AN1457 - Analytic 1457](../Analytics/AN1457.md)
+- [AN1459 - Analytic 1459](../Analytics/AN1459.md)
+- [AN1461 - Analytic 1461](../Analytics/AN1461.md)
+- [AN1464 - Analytic 1464](../Analytics/AN1464.md)
+- [AN1473 - Analytic 1473](../Analytics/AN1473.md)
+- [AN1474 - Analytic 1474](../Analytics/AN1474.md)
+- [AN1475 - Analytic 1475](../Analytics/AN1475.md)
+- [AN1502 - Analytic 1502](../Analytics/AN1502.md)
+- [AN1510 - Analytic 1510](../Analytics/AN1510.md)
+- [AN1512 - Analytic 1512](../Analytics/AN1512.md)
+- [AN1519 - Analytic 1519](../Analytics/AN1519.md)
+- [AN1532 - Analytic 1532](../Analytics/AN1532.md)
+- [AN1533 - Analytic 1533](../Analytics/AN1533.md)
+- [AN1534 - Analytic 1534](../Analytics/AN1534.md)
+- [AN1537 - Analytic 1537](../Analytics/AN1537.md)
+- [AN1539 - Analytic 1539](../Analytics/AN1539.md)
+- [AN1541 - Analytic 1541](../Analytics/AN1541.md)
+- [AN1542 - Analytic 1542](../Analytics/AN1542.md)
+- [AN1551 - Analytic 1551](../Analytics/AN1551.md)
+- [AN1552 - Analytic 1552](../Analytics/AN1552.md)
+- [AN1554 - Analytic 1554](../Analytics/AN1554.md)
+- [AN1555 - Analytic 1555](../Analytics/AN1555.md)
+- [AN1556 - Analytic 1556](../Analytics/AN1556.md)
+- [AN1557 - Analytic 1557](../Analytics/AN1557.md)
+- [AN1558 - Analytic 1558](../Analytics/AN1558.md)
+- [AN1559 - Analytic 1559](../Analytics/AN1559.md)
+- [AN1562 - Analytic 1562](../Analytics/AN1562.md)
+- [AN1563 - Analytic 1563](../Analytics/AN1563.md)
+- [AN1567 - Analytic 1567](../Analytics/AN1567.md)
+- [AN1570 - Analytic 1570](../Analytics/AN1570.md)
+- [AN1572 - Analytic 1572](../Analytics/AN1572.md)
+- [AN1576 - Analytic 1576](../Analytics/AN1576.md)
+- [AN1577 - Analytic 1577](../Analytics/AN1577.md)
+- [AN1586 - Analytic 1586](../Analytics/AN1586.md)
+- [AN1587 - Analytic 1587](../Analytics/AN1587.md)
+- [AN1589 - Analytic 1589](../Analytics/AN1589.md)
+- [AN1590 - Analytic 1590](../Analytics/AN1590.md)
+- [AN1592 - Analytic 1592](../Analytics/AN1592.md)
+- [AN1596 - Analytic 1596](../Analytics/AN1596.md)
+- [AN1603 - Analytic 1603](../Analytics/AN1603.md)
+- [AN1606 - Analytic 1606](../Analytics/AN1606.md)
+- [AN1609 - Analytic 1609](../Analytics/AN1609.md)
+- [AN1617 - Analytic 1617](../Analytics/AN1617.md)
+- [AN1621 - Analytic 1621](../Analytics/AN1621.md)
+- [AN1628 - Analytic 1628](../Analytics/AN1628.md)
+- [AN1640 - Analytic 1640](../Analytics/AN1640.md)
+- [AN2030 - Analytic 2030](../Analytics/AN2030.md)
+- [AN2036 - Analytic 2036](../Analytics/AN2036.md)
+- [AN2037 - Analytic 2037](../Analytics/AN2037.md)
+- [AN2039 - Analytic 2039](../Analytics/AN2039.md)
+- [AN2044 - Analytic 2044](../Analytics/AN2044.md)
+- [AN2064 - Analytic 2064](../Analytics/AN2064.md)
+- [AN2065 - Analytic 2065](../Analytics/AN2065.md)

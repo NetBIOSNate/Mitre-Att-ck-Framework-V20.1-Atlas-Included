@@ -1,0 +1,39 @@
+# T0827 - Loss of Control
+
+[ICS](../../../README.md) / [Impact](../README.md)
+
+Adversaries may seek to achieve a sustained loss of control or a runaway condition in which operators cannot issue any commands even if the malicious interference has subsided. (Citation: Corero) (Citation: Michael J. Assante and Robert M. Lee) (Citation: Tyson Macaulay)
+
+The German Federal Office for Information Security (BSI) reported a targeted attack on a steel mill in its 2014 IT Security Report.(Citation: BSI State of IT Security 2014) These targeted attacks affected industrial operations and resulted in breakdowns of control system components and even entire installations. As a result of these breakdowns, massive impact resulted in damage and unsafe conditions from the uncontrolled shutdown of a blast furnace.
+
+[MITRE ATT&CK record](https://attack.mitre.org/techniques/T0827)
+
+**Tactics**  [Impact](../README.md)
+
+**Platforms**  [No platform specified](../../../Platforms/None.md)
+
+## Detection strategies
+
+- [DET0778 - Detection of Loss of Control](../../../Defenses/Detection%20Strategies/DET0778%20-%20Detection%20of%20Loss%20of%20Control.md)
+
+## Mitigations
+
+- [M0953 - Data Backup](../../../Defenses/Mitigations/M0953%20-%20Data%20Backup.md) — Take and store data backups from end user systems and critical servers. Ensure backup and storage systems are hardened and kept separate from the corporate network to prevent compromise. Maintain and exercise incident response plans (Citation: Department of Homeland Security October 2009), including the management of gold-copy back-up images and configurations for key systems to enable quick recovery and response from adversarial activities that impact control, view, or availability. [Department of Homeland Security October 2009](https://us-cert.cisa.gov/sites/default/files/recommended_practices/final-RP_ics_cybersecurity_incident_response_100609.pdf)
+- [M0810 - Out-of-Band Communications Channel](../../../Defenses/Mitigations/M0810%20-%20Out-of-Band%20Communications%20Channel.md) — Provide operators with redundant, out-of-band communication to support monitoring and control of the operational processes, especially when recovering from a network outage (Citation: National Institute of Standards and Technology April 2013). Out-of-band communication should utilize diverse systems and technologies to minimize common failure modes and vulnerabilities within the communications infrastructure. For example, wireless networks (e.g., 3G, 4G) can be used to provide diverse and redundant delivery of data. [National Institute of Standards and Technology April 2013](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf)
+- [M0811 - Redundancy of Service](../../../Defenses/Mitigations/M0811%20-%20Redundancy%20of%20Service.md) — Hot-standbys in diverse locations can ensure continued operations if the primarily system are compromised or unavailable. At the network layer, protocols such as the Parallel Redundancy Protocol can be used to simultaneously use redundant and diverse communication over a local network. (Citation: M. Rentschler and H. Heine) [M. Rentschler and H. Heine](https://ieeexplore.ieee.org/document/6505877)
+
+## Procedure examples
+
+- [C0028 - 2015 Ukraine Electric Power Attack](../../../Threat%20Intelligence/Campaigns/C0028%20-%202015%20Ukraine%20Electric%20Power%20Attack.md) — During the [2015 Ukraine Electric Power Attack](https://attack.mitre.org/campaigns/C0028), operators were shut out of their equipment either through the denial of peripheral use or the degradation of equipment. Operators were therefore unable to recover from the incident through their traditional means. Much of the power was restored manually. (Citation: Ukraine15 - EISAC - 201603) [Ukraine15 - EISAC - 201603](https://nsarchive.gwu.edu/sites/default/files/documents/3891751/SANS-and-Electricity-Information-Sharing-and.pdf)
+- [C0063 - 2025 Poland Wiper Attacks](../../../Threat%20Intelligence/Campaigns/C0063%20-%202025%20Poland%20Wiper%20Attacks.md) — During the [2025 Poland Wiper Attacks](https://attack.mitre.org/campaigns/C0063), the adversaries damaged the Mikronika RTUs, Hitachi Relion Protection and Control Relays (IEDs), and HMI workstations resulting in a loss of communications and control between the facility and the distribution system operators (DSO).(Citation: CERT Polska) [CERT Polska](https://cert.pl/uploads/docs/CERT_Polska_Energy_Sector_Incident_Report_2025.pdf)
+- [C0066 - 2026 U.S. Water Utilities Attacks](../../../Threat%20Intelligence/Campaigns/C0066%20-%202026%20U.S.%20Water%20Utilities%20Attacks.md) — During the [2026 U.S. Water Utilities Attacks](https://attack.mitre.org/campaigns/C0066), the adversary changed passwords on internet-facing MicroLogix controllers, locking out operators, and causing water and wastewater utilities to lose control of their equipment (e.g., controllers, water towers, lift stations).(Citation: Tenable Minnesota Water Utilities)(Citation: Forescout Water Systems Attack)(Citation: Dragos Water Under Attack)(Citation: FBI Water and Wastewater) [FBI Water and Wastewater](https://www.fbi.gov/investigate/cyber/alerts/2026/malicious-cyber-actors-targeting-water-and-wastewater-sector-internet--facing-programmable-logic-controllers-causing-operational-disruptions) · [Dragos Water Under Attack](https://www.dragos.com/blog/water-utility-attacks-decade-of-gaps) · [Tenable Minnesota Water Utilities](https://www.tenable.com/blog/coordinated-cyberattack-on-minnesota-water-utilities-what-you-need-to-know) · [Forescout Water Systems Attack](https://www.forescout.com/blog/ot-security-analysis-exposed-devices-attacked-in-us-water-systems/)
+- [G1027 - CyberAv3ngers](../../../Threat%20Intelligence/Groups/G1027%20-%20CyberAv3ngers.md) — During the [2026 Iranian Water Campaign](https://attack.mitre.org/campaigns/C0065), [CyberAv3ngers](https://attack.mitre.org/groups/G1027) manipulated process logic, HMI, and SCADA displays. In addition to this, adversaries locked victims out by changing the PLCs management passwords.(Citation: CISA-AA26-097A) [CISA-AA26-097A](https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a)
+- [S0604 - Industroyer](../../../Threat%20Intelligence/Software/Malware/S0604%20-%20Industroyer.md) — [Industroyer](https://attack.mitre.org/software/S0604)'s data wiper component removes the registry image path throughout the system and overwrites all files, rendering the system unusable. (Citation: Anton Cherepanov, ESET June 2017) [Anton Cherepanov, ESET June 2017](https://www.welivesecurity.com/wp-content/uploads/2017/06/Win32_Industroyer.pdf)
+- [S0372 - LockerGoga](../../../Threat%20Intelligence/Software/Malware/S0372%20-%20LockerGoga.md) — Some of Norsk Hydro's production systems were impacted by a [LockerGoga](https://attack.mitre.org/software/S0372) infection. This resulted in a loss of control which forced the company to switch to manual operations. (Citation: Kevin Beaumont) (Citation: Hydro) [Hydro](https://www.hydro.com/en/media/on-the-agenda/cyber-attack/) · [Kevin Beaumont](https://doublepulsar.com/how-lockergoga-took-down-hydro-ransomware-used-in-targeted-attacks-aimed-at-big-business-c666551f5880)
+
+## Sources
+
+- [BSI State of IT Security 2014](https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Securitysituation/IT-Security-Situation-in-Germany-2014.pdf?__blob=publicationFile&v=3)
+- [Corero](https://www.corero.com/resources/files/whitepapers/cns_whitepaper_ics.pdf)
+- [Michael J. Assante and Robert M. Lee](https://icscsi.org/library/Documents/White_Papers/SANS%20-%20ICS%20Cyber%20Kill%20Chain.pdf)
+- [Tyson Macaulay](https://books.google.com/books?id=oXIYBAAAQBAJ&pg=PA249&lpg=PA249&dq=loss+denial+manipulation+of+view&source=bl&ots=dV1uQ8IUff&sig=ACfU3U2NIwGjhg051D_Ytw6npyEk9xcf4w&hl=en&sa=X&ved=2ahUKEwj2wJ7y4tDlAhVmplkKHSTaDnQQ6AEwAHoECAgQAQ#v=onepage&q=loss%20denial%20manipulation%20of%20view&f=false)

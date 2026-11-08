@@ -1,0 +1,352 @@
+# DC0064 - Command Execution
+
+[ICS](../../README.md) / [Data Components](README.md)
+
+Command Execution involves monitoring and capturing the execution of textual commands (including shell commands, cmdlets, and scripts) within an operating system or application. These commands may include arguments or parameters and are typically executed through interpreters such as `cmd.exe`, `bash`, `zsh`, `PowerShell`, or programmatic execution. Examples: 
+
+- Windows Command Prompt
+    - dir – Lists directory contents.
+    - net user – Queries or manipulates user accounts.
+    - tasklist – Lists running processes.
+- PowerShell
+    - Get-Process – Retrieves processes running on a system.
+    - Set-ExecutionPolicy – Changes PowerShell script execution policies.
+    - Invoke-WebRequest – Downloads remote resources.
+- Linux Shell
+    - ls – Lists files in a directory.
+    - cat /etc/passwd – Reads the user accounts file.
+    - curl http://malicious-site.com – Retrieves content from a malicious URL.
+- Container Environments
+    - docker exec – Executes a command inside a running container.
+    - kubectl exec – Runs commands in Kubernetes pods.
+- macOS Terminal
+    - open – Opens files or URLs.
+    - dscl . -list /Users – Lists all users on the system.
+    - osascript -e – Executes AppleScript commands.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0064)
+
+## Log sources and channels
+
+- **android:logcat** — Command 'pm list packages' executed by app sandbox or child proc
+- **auditd:CONFIG_CHANGE** — udev rule reload or trigger command executed
+- **auditd:EXECVE** — execve of script/interpreter (bash, python, node) with suspicious encoded or non-printable content
+- **auditd:EXECVE** — Use of mv or cp to rename files with '.' prefix
+- **auditd:EXECVE** — execve: Execution of update-ca-certificates or trust anchor modification commands
+- **auditd:EXECVE** — gcore, gdb, strings, hexdump execution
+- **auditd:EXECVE** — Execution of auditctl, systemctl stop auditd, or kill -9 auditd
+- **auditd:EXECVE** — execution of systemctl with subcommands start, stop, enable, disable
+- **auditd:EXECVE** — Execution of GUI-related binaries with suppressed window/display flags
+- **auditd:EXECVE** — curl -X POST, wget --post-data
+- **auditd:EXECVE** — command line arguments containing lsblk, fdisk, parted
+- **auditd:EXECVE** — exec: Execution of dd, efibootmgr, or flashrom modifying firmware/boot partitions
+- **auditd:EXECVE** — curl -d, wget --post-data
+- **auditd:EXECVE** — grep/cat/awk on files with password fields
+- **auditd:EXECVE** — git push, curl -X POST
+- **auditd:EXECVE** — Execution of gsettings set org.gnome.login-screen disable-user-list true
+- **auditd:EXECVE** — execution of setfattr or getfattr commands
+- **auditd:EXECVE** — Process execution of update-ca-certificates or openssl with suspicious arguments
+- **auditd:EXECVE** — Execution of chattr to set +i or +a attributes
+- **auditd:EXECVE** — curl or wget with POST/PUT options
+- **auditd:EXECVE** — curl -T, rclone copy
+- **auditd:EXECVE** — execve of curl,wget,bash,sh,python with piped or remote content
+- **auditd:EXECVE** — execve, kill, ptrace, insmod, rmmod targeting security processes
+- **auditd:PROCTITLE** — proctitle contains chmod, chown, setfacl, or attr commands with suspicious parameters
+- **auditd:PROCTITLE** — proctitle contains chmod, chown, chgrp, setfacl, or attr with suspicious parameters (777, 755, +x, -R)
+- **auditd:PROCTITLE** — process title records containing discovery command sequences and environmental assessment patterns
+- **auditd:PROCTITLE** — command-line execution patterns for system discovery utilities (uname, hostname, ifconfig, netstat, lsof, ps, mount)
+- **auditd:SYSCALL** — execution of realmd, samba-tool, or ldapmodify with user-related arguments
+- **auditd:SYSCALL** — Execution of script interpreters by systemd timer (ExecStart)
+- **auditd:SYSCALL** — execve: Commands like systemctl stop <service>, service <service> stop, or kill -9 <pid>
+- **auditd:SYSCALL** — execve calls to locale, timedatectl, or cat /etc/timezone
+- **auditd:SYSCALL** — sleep function usage or loops (nanosleep, usleep) in scripts
+- **auditd:SYSCALL** — connect, execve, write
+- **auditd:SYSCALL** — execve call including 'nohup' or trailing '&'
+- **auditd:SYSCALL** — None
+- **auditd:SYSCALL** — execve: Commands executed within an SSH session where no matching logon/authentication event exists
+- **auditd:SYSCALL** — chmod, execve
+- **auditd:SYSCALL** — execve: iptables, nft, firewall-cmd modifications
+- **auditd:SYSCALL** — execve: Invocation of scp, rsync, curl, or sftp
+- **auditd:SYSCALL** — execve calls modifying local mail filter configuration files
+- **auditd:SYSCALL** — execve: process_name IN ("virsh", "VBoxManage", "qemu-img") AND command IN ("list", "info")
+- **auditd:SYSCALL** — execve: service stop syslog, systemctl stop rsyslog, kill -9 syslog
+- **auditd:SYSCALL** — execve: openssl pkcs12, certutil, keytool
+- **auditd:SYSCALL** — execve: Process in container namespace executes curl|wget|bash|sh|python|nc with outbound args
+- **auditd:SYSCALL** — execution of systemctl or service with enable/start parameters
+- **auditd:SYSCALL** — execve: Execution of cat, less, grep, journalctl targeting log directories (/var/log/)
+- **auditd:SYSCALL** — execve: Execution of python, perl, or custom binaries invoking compression libraries
+- **auditd:SYSCALL** — execve, USER_CMD
+- **auditd:SYSCALL** — bash/zsh of base64, tar, gzip, or openssl immediately after file write
+- **auditd:SYSCALL** — execve: Processes executing sendmail/postfix with forged headers
+- **auditd:SYSCALL** — execve: Execution of tar, gzip, bzip2, xz, zip, or openssl with compression/encryption arguments
+- **auditd:SYSCALL** — promiscuous mode transitions (ioctl or ifconfig)
+- **auditd:SYSCALL** — chattr, rm, shred, dd run on recovery directories or partitions
+- **auditd:SYSCALL** — execve: Execution of curl or wget writing files to /tmp/* followed by chmod or execution
+- **auditd:SYSCALL** — execve: Execution of downgraded interpreters such as python2 or forced fallback commands
+- **auditd:SYSCALL** — Command line arguments including SPApplicationsDataType
+- **auditd:SYSCALL** — Execution of spoofing tools (e.g., hping3, nping, scapy) sending UDP packets to known amplifier ports
+- **auditd:SYSCALL** — execution of tools like cat, grep, or awk on credential files
+- **auditd:SYSCALL** — execve of curl, rsync, wget with internal knowledge base or IPs
+- **auditd:SYSCALL** — execve: Execution of systemctl, loginctl, or systemd-inhibit commands related to sleep/hibernate
+- **auditd:SYSCALL** — Execution of xev, xdotool, or input activity emulators
+- **auditd:SYSCALL** — execve: Execution of interpreters creating archive-like outputs without calling tar/gzip
+- **auditd:SYSCALL** — Execution of insmod, modprobe, or rmmod commands by non-standard users or outside expected timeframes
+- **auditd:SYSCALL** — execve syscalls for discovery commands (uname, hostname, id, whoami, ps, netstat, mount) with command-line parameter analysis
+- **auditd:SYSCALL** — execve: Execution of curl, wget, or custom scripts accessing financial endpoints
+- **auditd:SYSCALL** — execve: Execution of tar, gzip, bzip2, or openssl with output redirection
+- **auditd:SYSCALL** — execve=/sbin/shutdown or /sbin/reboot
+- **auditd:SYSCALL** — execve calls modifying HISTFILE or HISTCONTROL via unset/export
+- **auditd:SYSCALL** — execve calls to /usr/bin/locale or shell execution of $LANG
+- **auditd:SYSCALL** — execution of systemctl or service with enable/start/modify
+- **auditd:SYSCALL** — execve: Execution of lsmod, modinfo, or cat /proc/modules
+- **auditd:USER_CMD** — USER_CMD
+- **AWS:CloudTrail** — InvokeFunction
+- **AWS:CloudTrail** — eventName: RunInstances, CreateUser, PutRolePolicy, InvokeCommand
+- **AWS:CloudTrail** — SSM RunCommand
+- **AWS:CloudTrail** — GetLogEvents: High frequency log exports from CloudWatch or equivalent services
+- **AWS:CloudTrail** — command-line execution invoking credential enumeration
+- **AWS:CloudTrail** — ssm:GetCommandInvocation
+- **AWS:CloudTrail** — SendCommand, StartSession, ExecuteCommand: Unexpected AWS Systems Manager command execution targeting EC2 instances
+- **azure:activity** — Intune PowerShell Scripts
+- **azure:signinlogs** — OperationName=SetDomainAuthentication OR Update-MsolFederatedDomain
+- **Command** — None
+- **docker:api** — docker logs access or container inspect commands from non-administrative users
+- **docker:daemon** — docker exec or docker run with unexpected command/entrypoint
+- **docker:events** — container exec rm|container stop --force
+- **ebpf:syscalls** — useradd or /etc/passwd modified inside container
+- **EDR:AMSI** — None
+- **EDR:cli** — Command Line Telemetry
+- **esxi:hostd** — command execution
+- **esxi:hostd** — /var/log/hostd.log
+- **esxi:hostd** — modification of config files or shell command execution
+- **esxi:hostd** — shell access or job registration
+- **esxi:hostd** — logline inspection
+- **esxi:hostd** — esxcli network firewall set commands
+- **esxi:hostd** — event stream
+- **esxi:hostd** — scp/ssh used to move file across hosts
+- **esxi:hostd** — None
+- **esxi:hostd** — esxcli system syslog config set or reload
+- **esxi:hostd** — command log
+- **esxi:hostd** — Execution of '/bin/vmx' or modifications to '/etc/rc.local.d/local.sh'
+- **esxi:hostd** — Command Execution
+- **esxi:hostd** — remote CLI + vim-cmd logging
+- **esxi:hostd** — execution + payload hints
+- **esxi:shell** — esxcli system syslog config set/reload, services.sh restart/stop
+- **esxi:shell** — snapshot create/copy, esxcli
+- **esxi:shell** — interactive shell
+- **esxi:shell** — /var/log/shell.log
+- **esxi:shell** — invoked remote scripts (esxcli)
+- **esxi:shell** — base64 or gzip use within shell session
+- **esxi:shell** — scripts or binaries with misleading names
+- **esxi:shell** — /var/log/shell.log entries containing "esxcli system clock get"
+- **esxi:shell** — None
+- **esxi:shell** — command IN ("esxcli vm process list", "vim-cmd vmsvc/getallvms")
+- **esxi:shell** — openssl|tar|dd
+- **esxi:shell** — Execution of cat, tail, grep targeting /var/log/vmkernel.log or /var/log/hostd.log
+- **esxi:shell** — CLI usage logs
+- **esxi:shell** — Command execution trace
+- **esxi:shell** — shell command execution for chmod, chown, or file permission modification on VMFS or system files
+- **esxi:shell** — esxcli system syslog config set --loghost='' or stopping hostd service
+- **esxi:shell** — Shell Access/Command Execution
+- **esxi:shell** — esxcli software vib list
+- **esxi:shell** — /root/.ash_history
+- **esxi:shell** — mv, rename, or chmod commands moving VM files into hidden directories
+- **esxi:shell** — `esxcli software vib install` with `--force` or `--no-sig-check` from shell history or `shell.log`
+- **esxi:shell** — CLI session activity
+- **esxi:shell** — esxcli system shutdown or reboot invoked
+- **esxi:shell** — shell command execution for system discovery (vim-cmd, esxcli, vmware-cmd) targeting VM inventory and host configuration
+- **esxi:shell** — unset HISTFILE or HISTFILESIZE modifications
+- **esxi:syslog** — boot logs
+- **esxi:vmkernel** — /var/log/vmkernel.log
+- **esxi:vmkernel** — DCUI shell start, BusyBox activity
+- **esxi:vmkernel** — esxcli system account add
+- **esxi:vmkernel** — Unexpected restarts of management agents or shell access
+- **esxi:vmkernel** — esxcli, vim-cmd invocation
+- **esxi:vobd** — shell session start
+- **esxi:vpxd** — vCenter Management
+- **fs:fsusage** — file system activity monitor
+- **fs:fsusage** — access to BPF devices or interface IOCTLs
+- **gcp:audit** — None
+- **gcp:audit** — methodName: setIamPolicy, startInstance, createServiceAccount
+- **kubernetes:audit** — Shell process (e.g., /bin/sh, /bin/bash) spawned in a container without an interactive session attached (i.e., automation anomaly)
+- **kubernetes:audit** — process execution involving curl, grep, or awk on secrets
+- **linux:cli** — command logging
+- **linux:cli** — Shell history logs
+- **linux:cli** — Terminal Command History
+- **linux:cli** — /home/*/.bash_history
+- **linux:osquery** — Command-line includes base64 -d or openssl enc -d
+- **linux:osquery** — process_events.command_line
+- **linux:shell** — Manual invocation of software enumeration commands via interactive shell
+- **linux:syslog** — None
+- **linux:syslog** — cron activity
+- **linux:syslog** — Suspicious script or command execution targeting browser folders
+- **linux:syslog** — Unusual outbound transfers from CLI tools like base64, gzip, or netcat
+- **linux:syslog** — sudo chage|grep pam_pwquality|cat /etc/login.defs
+- **linux:syslog** — sudo execution of ffmpeg/gst-launch/v4l2-ctl by non-standard user
+- **linux:syslog** — sshd logs
+- **linux:syslog** — CLI access to 'show running-config', 'show password', or 'cat config.txt'
+- **linux:syslog** — Sudo or root escalation followed by filesystem mount commands
+- **linuxsyslog** — nslcd or winbind logs
+- **m365:defender** — Activity Log: Command Invocation
+- **m365:exchange** — Cmdlet: Get-GlobalAddressList, Get-Recipient
+- **m365:exchange** — Get-RoleGroup, Get-DistributionGroup
+- **m365:messagetrace** — Inbound email triggers execution of mailbox-stored custom form
+- **m365:messagetrace** — Inbound email matches crafted rule trigger pattern tied to persistence logic
+- **m365:messagetrace** — Inbound email triggering Outlook to auto-access folder tied to malicious Home Page
+- **m365:office** — Startup execution includes non-default component
+- **m365:office** — Execution of unsigned macro from template
+- **m365:unified** — Automated forwarding or file sync initiated by a logic app
+- **m365:unified** — Search-Mailbox, Get-MessageTrace, eDiscovery requests
+- **m365:unified** — Set-Mailbox, New-InboxRule
+- **m365:unified** — Set-Mailbox, Set-MailboxPolicy, Set-TrustedLocation
+- **macos:osquery** — Interpreter exec with suspicious arguments as above
+- **macos:osquery** — launchd + process_events
+- **macos:syslog** — system.log
+- **macos:syslog** — /var/log/system.log
+- **macos:unifiedlog** — dsconfigad or dscl with create or append options for AD-bound users
+- **macos:unifiedlog** — launchctl unload, kill, or pkill commands affecting daemons or background services
+- **macos:unifiedlog** — execution of security-agent detection or enumeration commands
+- **macos:unifiedlog** — log stream --predicate
+- **macos:unifiedlog** — Execution of chflags hidden or SetFile -a V
+- **macos:unifiedlog** — log stream
+- **macos:unifiedlog** — defaults read -g AppleLocale, systemsetup -gettimezone
+- **macos:unifiedlog** — profiles install -type=configuration
+- **macos:unifiedlog** — log stream --predicate 'eventMessage contains "loginwindow" or "pfctl"'
+- **macos:unifiedlog** — exec or sudo usage with NOPASSWD context or echo modifying sudoers
+- **macos:unifiedlog** — Execution of /usr/bin/security add-trusted-cert or keychain modifications to System.keychain
+- **macos:unifiedlog** — nohup, disown, or osascript execution patterns
+- **macos:unifiedlog** — Execution of 'profiles install -type=configuration'
+- **macos:unifiedlog** — subsystem:com.apple.Terminal
+- **macos:unifiedlog** — base64 or curl processes chained within short execution window
+- **macos:unifiedlog** — exec: Invocation of /usr/bin/defaults write or /usr/bin/plutil modifying plist keys
+- **macos:unifiedlog** — chmod command with arguments including '+s', 'u+s', or numeric values 4000–6777
+- **macos:unifiedlog** — command includes dscl . delete or sysadminctl --deleteUser
+- **macos:unifiedlog** — DS daemon log entries
+- **macos:unifiedlog** — diskutil eraseDisk / asr restore with destructive flags
+- **macos:unifiedlog** — pfctl -d, socketfilterfw --setglobalstate off, or modifications to com.apple.alf
+- **macos:unifiedlog** — pwpolicy|PasswordPolicy
+- **macos:unifiedlog** — Command line contains smbutil view //, mount_smbfs //
+- **macos:unifiedlog** — log messages related to disk enumeration context or Terminal session
+- **macos:unifiedlog** — defaults write com.apple.system.logging or logd manipulation
+- **macos:unifiedlog** — process calling security find-certificate, export, or import
+- **macos:unifiedlog** — Execution of log show, fs_usage, or cat targeting system.log
+- **macos:unifiedlog** — execution of launchctl load/unload/start commands
+- **macos:unifiedlog** — base64 -d or osascript invoked on staged file
+- **macos:unifiedlog** — diskutil partitionDisk or eraseVolume with partition scheme modifications
+- **macos:unifiedlog** — grep/cat on files matching credential patterns
+- **macos:unifiedlog** — diskutil eraseDisk/zeroDisk or asr restore with destructive flags
+- **macos:unifiedlog** — spctl --master-disable, csrutil disable, or defaults write to disable Gatekeeper
+- **macos:unifiedlog** — process: at, job runner
+- **macos:unifiedlog** — Execution of dscl . create with IsHidden=1
+- **macos:unifiedlog** — log stream --predicate 'processImagePath contains "zip" OR "base64"'
+- **macos:unifiedlog** — xattr utility execution with -w or -p flags
+- **macos:unifiedlog** — execution of 'security', 'cat', or 'grep' commands accessing credential storage
+- **macos:unifiedlog** — launchctl load or boot-time plist registration
+- **macos:unifiedlog** — dscl -create
+- **macos:unifiedlog** — kextload execution from Terminal or suspicious paths
+- **macos:unifiedlog** — xattr -d com.apple.quarantine or similar removal commands
+- **macos:unifiedlog** — Security framework operations including keychain access, cryptographic operations, and certificate validation
+- **macos:unifiedlog** — None
+- **macos:unifiedlog** — Execution of chflags hidden or setfile -a V
+- **macos:unifiedlog** — process:spawn, process:exec
+- **macos:unifiedlog** — csrutil disable
+- **macos:unifiedlog** — log show --predicate 'process == <utility>'
+- **macos:unifiedlog** — Execution of launchctl with setenv or bootout targeting TCC.db or AppleScript under Finder context
+- **macos:unifiedlog** — command execution triggered by emond (e.g., shell, curl, python)
+- **macos:unifiedlog** — Set or unset HIST* variables in shell environment
+- **macos:unifiedlog** — defaults read -g AppleLocale or systemsetup -gettimezone
+- **macos:unifiedlog** — launchctl load/unload or plist file modification
+- **macos:unifiedlog** — dscl . -create
+- **macos:unifiedlog** — Execution of commands like `ls -l@`, `xattr -l`, or custom tools interacting with resource forks
+- **macos:unifiedlog** — Execution of osascript, sh, bash, zsh, installer, open
+- **MobileEDR:telemetry** — Application spawns shell, command interpreter, or command-executing child process with arguments during command-execution phase
+- **MobileEDR:telemetry** — Application spawns Unix shell process or superuser binary such as sh, su, toybox, toolbox, or shell-like child process with parameters during execution phase
+- **networkdevice:cli** — CLI command
+- **networkdevice:cli** — Policy Update
+- **networkdevice:cli** — ip ssh pubkey-chain
+- **networkdevice:cli** — erase flash:, erase startup-config, format disk
+- **networkdevice:cli** — CLI command logs
+- **networkdevice:cli** — cmd: cmd=show clock detail
+- **networkdevice:cli** — Execution of commands to load, copy, or replace system images (e.g., 'copy tftp flash', 'boot system')
+- **networkdevice:cli** — None
+- **networkdevice:cli** — Execution of commands like 'show running-config', 'copy running-config', or 'export config'
+- **networkdevice:cli** — Execution of CLI commands altering crypto parameters (e.g., 'crypto key generate rsa modulus 512')
+- **networkdevice:cli** — format flash:, format disk, reformat commands
+- **networkdevice:cli** — erase flash:, erase nvram:, format disk
+- **networkdevice:cli** — command logs
+- **networkdevice:cli** — command logging
+- **networkdevice:cli** — Interface commands
+- **networkdevice:cli** — Execution of privileged commands such as 'copy tftp flash', 'boot system', or 'debug memory'
+- **networkdevice:cli** — Execution of commands disabling crypto hardware acceleration (e.g., 'no crypto engine enable')
+- **networkdevice:cli** — shell command
+- **networkdevice:cli** — Commands like 'no logging' or equivalents that disable session history
+- **networkdevice:cli** — Execution of commands such as 'copy tftp flash', 'boot system <image>', 'reload'
+- **networkdevice:config** — PKI export or certificate manipulation commands
+- **networkdevice:config** — Configuration changes referencing 'boot system tftp' or modification of startup-config pointing to external TFTP servers
+- **networkdevice:Firewall** — Audit trail or CLI/API access indicating commands like no access-list, delete rule-set, clear config
+- **networkdevice:syslog** — CLI command audit / configuration command history
+- **networkdevice:syslog** — Command Audit / Configuration Change
+- **networkdevice:syslog** — eventlog
+- **networkdevice:syslog** — command_exec
+- **networkdevice:syslog** — command-exec: CLI commands containing "show clock", "show clock detail", "show timezone" executed by suspicious user/source
+- **networkdevice:syslog** — cmd='show aaa*' OR 'show running-config | include password|aaa' OR 'show aaa common-criteria policy all'
+- **networkdevice:syslog** — CLI command audit
+- **networkdevice:syslog** — system boot logs
+- **networkdevice:syslog** — exec command='monitor capture'
+- **networkdevice:syslog** — no logging buffered, no aaa new-model, disable firewall
+- **networkdevice:syslog** — interactive shell logging
+- **networkdevice:syslog** — command sequence: erase → format → reload
+- **networkdevice:syslog** — CLI Command Logging
+- **networkdevice:syslog** — CLI Command Audit
+- **networkdevice:syslog** — command audit
+- **networkdevice:syslog** — Privilege-level command execution
+- **networkdevice:syslog** — Detected CLI command to export key material
+- **networkdevice:syslog** — reload command issued
+- **networkdevice:syslog** — syslog facility LOCAL7 or trap messages
+- **saas:PRMetadata** — Commit message or branch name contains encoded strings or payload indicators
+- **vpxd.log** — VM inventory queries and configuration enumeration through vCenter API calls
+- **WinEventLog:Microsoft-Office-Alerts** — Unexpected DLL or component loaded at Office startup
+- **WinEventLog:Microsoft-Office-Alerts** — Office application warning or alert on macro execution from template
+- **WinEventLog:Microsoft-Office/OutlookAddinMonitor** — Outlook loading add-in via unexpected load path or non-default profile context
+- **WinEventLog:PowerShell** — EventCode=4103/4104/4105/4106; command/script-block content 
+- **WinEventLog:PowerShell** — Get-ADTrust|GetAllTrustRelationships
+- **WinEventLog:PowerShell** — EventCode=4103, 4104, 4105, 4106
+- **WinEventLog:PowerShell** — Execution of Microsoft script to enumerate custom forms in Outlook mailbox
+- **WinEventLog:PowerShell** — CommandLine=copy-item or robocopy from UNC path
+- **WinEventLog:PowerShell** — PowerShell launched from outlook.exe or triggered without user invocation
+- **WinEventLog:PowerShell** — Execution of PowerShell script to enumerate or remove malicious Home Page folder config
+- **WinEventLog:PowerShell** — Exchange Cmdlets
+- **WinEventLog:PowerShell** — CmdletName: Get-Recipient, Get-User
+- **WinEventLog:PowerShell** — Execution of 'Get-WmiObject Win32_Product' or similar PowerShell cmdlets
+- **WinEventLog:PowerShell** — Execution of PowerShell without -NoProfile flag
+- **WinEventLog:PowerShell** — EventCode=4101
+- **WinEventLog:Security** — EventCode=4103, 4104, 4105, 4106
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Unix shell process (sh, bash, busybox sh, toybox) spawns as child of app process with command-line arguments indicating scripted operation — shell with arguments confirms script execution not interactive terminal
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Shell or command-executing child process with arguments spawned under managed app context on supervised iOS device
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: pm uninstall OR rm -f called by process NOT IN $MDMAgentPackageList$ for package_count > $BulkUninstallThreshold$ within $DestructionWindow$ — command-line destruction activity
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App spawns sh, bash, toybox, toolbox, or su child process with command arguments within $ShellActivityWindow$ of shell launch — child shell process with arguments is the script execution signal
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Shell process (sh, bash) or command-executing child process spawned under app context on supervised iOS device — any shell spawn on stock iOS indicates jailbreak or kernel exploit
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): sequential reads across ICS data paths by uid not in authorized data access UIDs, followed by tar/zip invocation within a short window
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): execve of screenshot utility (scrot, import, xwd) on Industrial Control Systems (ICS) Human-Machine Interface (HMI) by User Identifier (UID) not in approved operator UIDs
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): system binary executing with command line piping or decoding external content, from Industrial Control Systems (ICS) service account User Identifier (UID)
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): raw socket creation (SOCK_RAW) or tcpdump/tshark execution by uid not in authorized capture User Identifiers (UIDs)
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): Industrial Control Systems (ICS) tool execution following Secure Shell (SSH) lateral movement session
+- **gpo:deployment** — destructive payload deployed via Group Policy Object (GPO) to multiple hosts simultaneously
+- **historian:applog** — bulk export query returning above bulk query threshold records from account not in approved historian clients
+- **WinEventLog:Security** — Windows Security Event ID 4688: EventCode=1102 correlated with any other Medium+ confidence alert on the same host within log clear lookback window
+
+## Analytics using this component
+
+- [AN1867 - Analytic 1867](../Analytics/AN1867.md)
+- [AN1882 - Analytic 1882](../Analytics/AN1882.md)
+- [AN1883 - Analytic 1883](../Analytics/AN1883.md)
+- [AN1890 - Analytic 1890](../Analytics/AN1890.md)
+- [AN2084 - Analytic 2084](../Analytics/AN2084.md)
+- [AN2085 - Analytic 2085](../Analytics/AN2085.md)
+- [AN2086 - Analytic 2086](../Analytics/AN2086.md)
+- [AN2089 - Analytic 2089](../Analytics/AN2089.md)
+- [AN2090 - Analytic 2090](../Analytics/AN2090.md)
+- [AN2137 - Analytic 2137](../Analytics/AN2137.md)
+- [AN2152 - Analytic 2152](../Analytics/AN2152.md)
+- [AN2156 - Analytic 2156](../Analytics/AN2156.md)
+- [AN2159 - Analytic 2159](../Analytics/AN2159.md)

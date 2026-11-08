@@ -1,0 +1,244 @@
+# DC0002 - User Account Authentication
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+An attempt (successful and failed login attempts) by a user, service, or application to gain access to a network, system, or cloud-based resource. This typically involves credentials such as passwords, tokens, multi-factor authentication (MFA), or biometric validation.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0002)
+
+## Log sources and channels
+
+- **saas:audit ** — Successful application-specific/legacy credential authentication where exposed 
+- **auditd:AUTH** — pam_unix or pam_google_authenticator invoked repeatedly within short interval
+- **auditd:SYSCALL** — pam_authenticate, sshd
+- **auditd:SYSCALL** — execution of ssh, scp, or sftp using previously unseen credentials or keys
+- **auditd:USER_LOGIN** — USER_AUTH
+- **AWS:CloudTrail** — AssumeRole or ConsoleLogin with repeated MFA failures followed by repeated MFA requests
+- **AWS:CloudTrail** — sts:GetFederationToken
+- **AWS:CloudTrail** — AssumeRoleWithWebIdentity
+- **AWS:CloudTrail** — AWS IAM: ListUsers, ListRoles
+- **AWS:CloudTrail** — eventName=ConsoleLogin | eventType=AwsConsoleSignIn
+- **AWS:CloudTrail** — ConsoleLogin or AssumeRole
+- **AWS:CloudTrail** — ConsoleLogin, AssumeRole, ListAccessKeys, CreateUser
+- **azure:signinlogs** — Successful account authentication with authentication/client properties inconsistent with normal MFA-backed access 
+- **azure:signinlogs** — Success logs from high-risk accounts
+- **azure:signinlogs** — Multiple MFA challenge requests without successful primary login
+- **azure:signinlogs** — TokenIssued, TokenRenewed: Unexpected or anomalous token issuance events
+- **azure:signinlogs** — SignIn: Sign-ins flagged as atypical (new geographic region, unfamiliar device id) shortly after correlated endpoint/browser compromise times
+- **azure:signinlogs** — Operation=UserLogin
+- **azure:signinlogs** — Unusual Token Usage or Application Consent
+- **azure:signinlogs** — OperationName=SetDomainAuthentication OR Set-FederatedDomain
+- **azure:signinlogs** — Sign-in with unfamiliar location/device + portal navigation
+- **azure:signinlogs** — Login from newly created account
+- **azure:signinlogs** — Interactive/Non-Interactive Sign-In
+- **azure:signinlogs** — Reset password or download key from portal
+- **azure:signinlogs** — status = failure
+- **azure:signinlogs** — Sign-in logs
+- **azure:signinlogs** — SigninSuccess
+- **azure:signinlogs** — Failure Reason + UserPrincipalName
+- **azure:signinlogs** — Sign-in activity
+- **azure:signinlogs** — Sign-in logs / audit events
+- **esxi:auth** — interactive shell or SSH access preceding storage enumeration
+- **esxi:auth** — /var/log/auth.log
+- **esxi:auth** — SSH session/login
+- **esxi:vpxa** — user login from unexpected IP or non-admin user role
+- **esxi:vpxd** — /var/log/vmware/vpxd.log
+- **ESXiLogs:authlog** — Unexpected login followed by encoding commands
+- **gcp:audit** — drive.activity
+- **gcp:audit** — login.event
+- **gcp:audit** — Sign-in logs / audit events
+- **gcp:workspaceaudit** — Token Generation via Domain Delegation
+- **GCPAuditLogs:login.googleapis.com** — Failed sign-in events
+- **idp:authentication ** — Successful authentication associated with legacy/application-specific credential flow 
+- **kubernetes:apiserver** — get/list requests to /api/v1/secrets or /api/v1/namespaces/*/serviceaccounts
+- **kubernetes:apiserver** — authentication.k8s.io/v1beta1
+- **kubernetes:audit** — Failed login
+- **kubernetes:audit** — authentication.k8s.io
+- **linux:auth** — sshd login
+- **linux:syslog** — sudo/date/timedatectl execution by non-standard users
+- **linux:syslog** — SSH failed login
+- **linux:syslog** — Failed password for invalid user
+- **linux:syslog** — sshd[pid]: Failed password
+- **linux:syslog** — authentication and authorization events during environmental validation phase
+- **m365:exchange** — Logon failure
+- **m365:exchange** — FailedLogin
+- **m365:signinlogs** — Sign-in from anomalous location or impossible travel condition
+- **m365:signinlogs** — UserLoginSuccess
+- **m365:signinlogs** — Unusual sign-in from service principal to user mailbox
+- **m365:unified** — Delegated permission grants without user login event
+- **m365:unified** — login using refresh_token with no preceding authentication context
+- **m365:unified** — Sign-in logs
+- **macos:unifiedlog** — successful sudo or authentication for account not normally associated with admin actions
+- **macos:unifiedlog** — Login success without MFA step
+- **macos:unifiedlog** — log show --predicate 'eventMessage contains "Authentication"'
+- **macos:unifiedlog** — User credential prompt events without associated trusted installer package
+- **macos:unifiedlog** — Login failure / authorization denied
+- **macos:unifiedlog** — auth
+- **macos:unifiedlog** — Login Window and Authd errors
+- **macos:unifiedlog** — authd
+- **network:auth** — repeated successful authentications with previously unknown accounts or anomalous password acceptance
+- **networkdevice:syslog** — config access, authentication logs
+- **networkdevice:syslog** — User privilege escalation to level 15/root prior to destructive commands
+- **networkdevice:syslog** — authorization/accounting logs
+- **networkdevice:syslog** — Failed and successful logins to network devices outside approved admin IP ranges
+- **networkdevice:syslog** — Privileged login followed by destructive format command
+- **networkdevice:syslog** — admin login events
+- **networkdevice:syslog** — Privileged login followed by destructive command sequence
+- **networkdevice:syslog** — AAA, RADIUS, or TACACS authentication
+- **networkdevice:syslog** — authentication logs
+- **networkdevice:syslog** — AAA or TACACS authentication failures
+- **networkdevice:syslog** — authentication & authorization
+- **networkdevice:syslog** — login failed
+- **NSM:Connections** — Accepted password or publickey for user from remote IP
+- **NSM:Connections** — Repeated failed authentication attempts or replay patterns
+- **NSM:Connections** — Successful login without expected MFA challenge
+- **NSM:Connections** — sshd or PAM logins
+- **NSM:Flow** — TGS-REQ and AS-REQ seen for new user shortly after domain-modifying process
+- **Okta:authn** — authentication_failure
+- **Okta:SystemLog** — eventType: user.authentication.sso, app.oauth2.token.grant
+- **saas-app:auth** — login_failure
+- **saas:audit** — Repeated requests to SMS-generating endpoints using anomalous or new user agents, IP ranges, or geographies.
+- **saas:auth** — signin_failed
+- **saas:googleworkspace** — API access without user login
+- **saas:googleworkspace** — Accessed third-party credential management service
+- **saas:googleworkspace** — login with reused session token and mismatched user agent or IP
+- **saas:googleworkspace** — Access via OAuth credentials with unusual scopes or from anomalous IPs
+- **saas:MDM** — Authentication events to device management or enterprise mobility management consoles
+- **saas:MDM** — Authentication events to Apple iCloud or enterprise device management services
+- **saas:okta** — session.impersonation.start
+- **saas:okta** — Unusual OAuth app requesting message-read scopes for Slack/Teams/Jira
+- **saas:okta** — authentication_failure
+- **saas:okta** — Sign-in logs / audit events
+- **saas:okta** — user.account.reset_password; user.mfa.factor.activate; app.oauth2.authorize
+- **saas:salesforce** — API login using access_token without login history
+- **saas:salesforce** — Login
+- **User Account** — None
+- **WinEventLog:Security** — EventCode=4625
+- **WinEventLog:Security** — EventCode=4769, 1200, 1202
+- **WinEventLog:Security** — EventCode=4768, 4769, 4770
+- **WinEventLog:Security** — EventCode=4769
+- **WinEventLog:Security** — EventCode=4776, 4625
+- **WinEventLog:Security** — EventCode=4625, 4771, 4648
+- **WinEventLog:Security** — EventCode=4648
+- **idp:AuditLog** — App authentication flow instrumentation or IdP sign-in/audit events
+- **syslog:auth** — sshd Accepted publickey/password for Industrial Control Systems (ICS)-role account from source not in approved admin CIDR
+- **networkdevice:aaa** — TACACS+/RADIUS authentication success for Industrial Control Systems (ICS) network admin account from source not in approved Network Management System (NMS) Classless Inter-Domain Routing (CIDR) subnet
+- **networkdevice:syslog** — Device authentication/audit log: successful authentication using a vendor-default or prohibited account from a non-approved management source
+- **networkdevice:syslog** — Device authentication/audit log: successful authentication using a default/hardcoded/prohibited account from a non-approved management source
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4648 for Industrial Control Systems (ICS)-role account from process outside approved ICS vendor process list
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4723, 4724 for Industrial Control Systems (ICS) service/operator account by account not in authorized credential admins outside credential rotation schedule
+
+## Analytics using this component
+
+- [AN0007 - Analytic 0007](../Analytics/AN0007.md)
+- [AN0147 - Analytic 0147](../Analytics/AN0147.md)
+- [AN0202 - Analytic 0202](../Analytics/AN0202.md)
+- [AN0215 - Analytic 0215](../Analytics/AN0215.md)
+- [AN0295 - Analytic 0295](../Analytics/AN0295.md)
+- [AN0296 - Analytic 0296](../Analytics/AN0296.md)
+- [AN0305 - Analytic 0305](../Analytics/AN0305.md)
+- [AN0310 - Analytic 0310](../Analytics/AN0310.md)
+- [AN0335 - Analytic 0335](../Analytics/AN0335.md)
+- [AN0336 - Analytic 0336](../Analytics/AN0336.md)
+- [AN0337 - Analytic 0337](../Analytics/AN0337.md)
+- [AN0338 - Analytic 0338](../Analytics/AN0338.md)
+- [AN0387 - Analytic 0387](../Analytics/AN0387.md)
+- [AN0399 - Analytic 0399](../Analytics/AN0399.md)
+- [AN0418 - Analytic 0418](../Analytics/AN0418.md)
+- [AN0431 - Analytic 0431](../Analytics/AN0431.md)
+- [AN0443 - Analytic 0443](../Analytics/AN0443.md)
+- [AN0449 - Analytic 0449](../Analytics/AN0449.md)
+- [AN0450 - Analytic 0450](../Analytics/AN0450.md)
+- [AN0451 - Analytic 0451](../Analytics/AN0451.md)
+- [AN0452 - Analytic 0452](../Analytics/AN0452.md)
+- [AN0493 - Analytic 0493](../Analytics/AN0493.md)
+- [AN0494 - Analytic 0494](../Analytics/AN0494.md)
+- [AN0496 - Analytic 0496](../Analytics/AN0496.md)
+- [AN0501 - Analytic 0501](../Analytics/AN0501.md)
+- [AN0526 - Analytic 0526](../Analytics/AN0526.md)
+- [AN0527 - Analytic 0527](../Analytics/AN0527.md)
+- [AN0528 - Analytic 0528](../Analytics/AN0528.md)
+- [AN0530 - Analytic 0530](../Analytics/AN0530.md)
+- [AN0534 - Analytic 0534](../Analytics/AN0534.md)
+- [AN0539 - Analytic 0539](../Analytics/AN0539.md)
+- [AN0546 - Analytic 0546](../Analytics/AN0546.md)
+- [AN0547 - Analytic 0547](../Analytics/AN0547.md)
+- [AN0571 - Analytic 0571](../Analytics/AN0571.md)
+- [AN0591 - Analytic 0591](../Analytics/AN0591.md)
+- [AN0592 - Analytic 0592](../Analytics/AN0592.md)
+- [AN0593 - Analytic 0593](../Analytics/AN0593.md)
+- [AN0642 - Analytic 0642](../Analytics/AN0642.md)
+- [AN0647 - Analytic 0647](../Analytics/AN0647.md)
+- [AN0756 - Analytic 0756](../Analytics/AN0756.md)
+- [AN0758 - Analytic 0758](../Analytics/AN0758.md)
+- [AN0809 - Analytic 0809](../Analytics/AN0809.md)
+- [AN0810 - Analytic 0810](../Analytics/AN0810.md)
+- [AN0811 - Analytic 0811](../Analytics/AN0811.md)
+- [AN0830 - Analytic 0830](../Analytics/AN0830.md)
+- [AN0879 - Analytic 0879](../Analytics/AN0879.md)
+- [AN0885 - Analytic 0885](../Analytics/AN0885.md)
+- [AN0899 - Analytic 0899](../Analytics/AN0899.md)
+- [AN0955 - Analytic 0955](../Analytics/AN0955.md)
+- [AN0956 - Analytic 0956](../Analytics/AN0956.md)
+- [AN0957 - Analytic 0957](../Analytics/AN0957.md)
+- [AN1000 - Analytic 1000](../Analytics/AN1000.md)
+- [AN1004 - Analytic 1004](../Analytics/AN1004.md)
+- [AN1087 - Analytic 1087](../Analytics/AN1087.md)
+- [AN1088 - Analytic 1088](../Analytics/AN1088.md)
+- [AN1106 - Analytic 1106](../Analytics/AN1106.md)
+- [AN1107 - Analytic 1107](../Analytics/AN1107.md)
+- [AN1111 - Analytic 1111](../Analytics/AN1111.md)
+- [AN1138 - Analytic 1138](../Analytics/AN1138.md)
+- [AN1156 - Analytic 1156](../Analytics/AN1156.md)
+- [AN1157 - Analytic 1157](../Analytics/AN1157.md)
+- [AN1262 - Analytic 1262](../Analytics/AN1262.md)
+- [AN1263 - Analytic 1263](../Analytics/AN1263.md)
+- [AN1264 - Analytic 1264](../Analytics/AN1264.md)
+- [AN1265 - Analytic 1265](../Analytics/AN1265.md)
+- [AN1266 - Analytic 1266](../Analytics/AN1266.md)
+- [AN1267 - Analytic 1267](../Analytics/AN1267.md)
+- [AN1268 - Analytic 1268](../Analytics/AN1268.md)
+- [AN1269 - Analytic 1269](../Analytics/AN1269.md)
+- [AN1270 - Analytic 1270](../Analytics/AN1270.md)
+- [AN1275 - Analytic 1275](../Analytics/AN1275.md)
+- [AN1276 - Analytic 1276](../Analytics/AN1276.md)
+- [AN1277 - Analytic 1277](../Analytics/AN1277.md)
+- [AN1278 - Analytic 1278](../Analytics/AN1278.md)
+- [AN1279 - Analytic 1279](../Analytics/AN1279.md)
+- [AN1285 - Analytic 1285](../Analytics/AN1285.md)
+- [AN1286 - Analytic 1286](../Analytics/AN1286.md)
+- [AN1287 - Analytic 1287](../Analytics/AN1287.md)
+- [AN1330 - Analytic 1330](../Analytics/AN1330.md)
+- [AN1336 - Analytic 1336](../Analytics/AN1336.md)
+- [AN1337 - Analytic 1337](../Analytics/AN1337.md)
+- [AN1338 - Analytic 1338](../Analytics/AN1338.md)
+- [AN1339 - Analytic 1339](../Analytics/AN1339.md)
+- [AN1340 - Analytic 1340](../Analytics/AN1340.md)
+- [AN1341 - Analytic 1341](../Analytics/AN1341.md)
+- [AN1342 - Analytic 1342](../Analytics/AN1342.md)
+- [AN1343 - Analytic 1343](../Analytics/AN1343.md)
+- [AN1406 - Analytic 1406](../Analytics/AN1406.md)
+- [AN1427 - Analytic 1427](../Analytics/AN1427.md)
+- [AN1432 - Analytic 1432](../Analytics/AN1432.md)
+- [AN1476 - Analytic 1476](../Analytics/AN1476.md)
+- [AN1503 - Analytic 1503](../Analytics/AN1503.md)
+- [AN1504 - Analytic 1504](../Analytics/AN1504.md)
+- [AN1505 - Analytic 1505](../Analytics/AN1505.md)
+- [AN1506 - Analytic 1506](../Analytics/AN1506.md)
+- [AN1521 - Analytic 1521](../Analytics/AN1521.md)
+- [AN1522 - Analytic 1522](../Analytics/AN1522.md)
+- [AN1523 - Analytic 1523](../Analytics/AN1523.md)
+- [AN1524 - Analytic 1524](../Analytics/AN1524.md)
+- [AN1525 - Analytic 1525](../Analytics/AN1525.md)
+- [AN1526 - Analytic 1526](../Analytics/AN1526.md)
+- [AN1537 - Analytic 1537](../Analytics/AN1537.md)
+- [AN1543 - Analytic 1543](../Analytics/AN1543.md)
+- [AN1544 - Analytic 1544](../Analytics/AN1544.md)
+- [AN1546 - Analytic 1546](../Analytics/AN1546.md)
+- [AN1547 - Analytic 1547](../Analytics/AN1547.md)
+- [AN1551 - Analytic 1551](../Analytics/AN1551.md)
+- [AN1552 - Analytic 1552](../Analytics/AN1552.md)
+- [AN2034 - Analytic 2034](../Analytics/AN2034.md)
+- [AN2075 - Analytic 2075](../Analytics/AN2075.md)
+- [AN2076 - Analytic 2076](../Analytics/AN2076.md)
+- [AN2077 - Analytic 2077](../Analytics/AN2077.md)

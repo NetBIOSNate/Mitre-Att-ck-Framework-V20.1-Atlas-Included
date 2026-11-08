@@ -1,0 +1,191 @@
+# DC0061 - File Modification
+
+[Mobile](../../README.md) / [Data Components](README.md)
+
+Changes made to a file, including updates to its contents, metadata, access permissions, or attributes. These modifications may indicate legitimate activity (e.g., software updates) or unauthorized changes (e.g., tampering, ransomware, or adversarial modifications). Examples: 
+
+- Content Modifications: Changes to the content of a configuration file, such as modifying `/etc/ssh/sshd_config` on Linux or `C:\Windows\System32\drivers\etc\hosts` on Windows.
+- Permission Changes: Altering file permissions to allow broader access, such as changing a file from `644` to `777` on Linux or modifying NTFS permissions on Windows.
+- Attribute Modifications: Changing a file's attributes to hidden, read-only, or system on Windows.
+- Timestamp Manipulation: Adjusting a file's creation or modification timestamp using tools like `touch` in Linux or timestomping tools on Windows.
+- Software or System File Changes: Modifying system files such as `boot.ini`, kernel modules, or application binaries.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0061)
+
+## Log sources and channels
+
+- **android:logcat** — INSERT or UPDATE of image/*, audio/*, video/* via ContentResolver with same URI re-written within short window; abnormal MIME/container change
+- **AndroidLogs:FileSystem** — Modification to /system/etc/init/ or /vendor/etc/init/ boot-time scripts
+- **auditd:FILE** — Modification or deletion of /etc/audit/audit.rules or /etc/audit/audit.conf
+- **auditd:FILE** — Modification of Display Manager configuration files (/etc/gdm3/*, /etc/lightdm/*)
+- **auditd:PATH** — /etc/passwd or /etc/group file write
+- **auditd:PATH** — write: Modification of /boot/grub/*, /boot/efi/EFI/*, or initramfs images
+- **auditd:PATH** — write or create events on *.pth, sitecustomize.py, usercustomize.py in site-packages or dist-packages
+- **auditd:PATH** — write: File modifications to /etc/systemd/sleep.conf or related power configuration files
+- **auditd:PATH** — odification of ~/.ssh/authorized_keys or credential files
+- **auditd:SYSCALL** — open/write calls modifying ~/.bashrc, ~/.profile, or /etc/paths.d
+- **auditd:SYSCALL** — open, write
+- **auditd:SYSCALL** — AUDIT_SYSCALL (open, write, rename, unlink)
+- **auditd:SYSCALL** — PATH
+- **auditd:SYSCALL** — execve call for modification of /etc/sudoers or writing to /var/db/sudo
+- **auditd:SYSCALL** — open, write: File modifications under /etc/ssl/certs, /usr/local/share/ca-certificates, or /etc/pki/ca-trust/source/anchors
+- **auditd:SYSCALL** — open, unlink, rename: Suspicious file access, deletion, or modification of sensitive paths
+- **auditd:SYSCALL** — open/write of .service unit files
+- **auditd:SYSCALL** — open/write/unlink
+- **auditd:SYSCALL** — write, rename
+- **auditd:SYSCALL** — write
+- **auditd:SYSCALL** — write | PATH=/home/*/.ssh/authorized_keys
+- **auditd:SYSCALL** — open, write: Write operations targeting /dev/sda, /dev/nvme0n1, or EFI partition mounts
+- **auditd:SYSCALL** — open/write to /etc/pam.d/*
+- **auditd:SYSCALL** — write: Modification of structured stored data by suspicious processes
+- **auditd:SYSCALL** — openat, write, rename, unlink
+- **auditd:SYSCALL** — open/write syscalls targeting /etc/ld.so.preload or binaries in /usr/bin
+- **auditd:SYSCALL** — modification of existing .service file
+- **auditd:SYSCALL** — open, write: Modification of /boot/grub/* or /boot/efi/*
+- **auditd:SYSCALL** — chmod
+- **auditd:SYSCALL** — rename,chmod
+- **auditd:SYSCALL** — Modification of user shell profile or trap registration via echo/redirection (e.g., echo "trap 'malicious_cmd' INT" >> ~/.bashrc)
+- **auditd:SYSCALL** — chmod, write, create, open
+- **auditd:SYSCALL** — open, write: File writes to application binaries or libraries at runtime
+- **auditd:SYSCALL** — file write operations in /Library/WebServer/Documents
+- **auditd:SYSCALL** — write operation on /etc/passwd or /etc/shadow
+- **auditd:SYSCALL** — mount or losetup commands creating hidden or encrypted FS
+- **auditd:SYSCALL** — open/write to /proc/*/mem or /proc/*/maps
+- **auditd:SYSCALL** — write or rename to /etc/systemd/system or /etc/init.d
+- **auditd:SYSCALL** — modification of entrypoint scripts or init containers
+- **auditd:SYSCALL** — chmod/chown to /etc/passwd or /etc/shadow
+- **auditd:SYSCALL** — open/write syscalls targeting web directory files
+- **azure:resource** — PATCH vm/authorized_keys
+- **containerd:runtime** — file change monitoring within /etc/cron.*, /tmp, or mounted volumes
+- **ebpf:syscalls** — file_write
+- **esxi:cron** — manual edits to /etc/rc.local.d/local.sh or cron.d
+- **esxi:hostd** — boot
+- **esxi:hostd** — modification of crontab or local.sh entries
+- **esxi:hostd** — binary or module replacement event
+- **esxi:shell** — file write or edit
+- **esxi:shell** — admin command usage
+- **esxi:vmkernel** — rename .vmdk to .*.locked|datastore write spike
+- **esxi:vmkernel** — Unauthorized file modifications within datastore volumes via shell access or vCLI
+- **esxi:vmkernel** — /var/log/vmkernel.log
+- **ESXiLogs:messages** — changes to /etc/motd or /etc/vmware/welcome
+- **File** — None
+- **FileIntegrity:ImageValidation** — Hash/checksum mismatch against baseline vendor-provided OS image versions
+- **firmware:update** — Unexpected or unscheduled firmware updates, image overwrites, or failed signature validation
+- **FirmwareLogs:Update** — Unexpected firmware or image updates modifying cryptographic modules
+- **FirmwareLogs:Update** — Unexpected firmware updates that alter encryption libraries or disable hardware crypto modules
+- **fs:fileevents** — /var/log/quarantine.log
+- **fs:fileevents** — /var/log/install.log
+- **fs:filesystem** — Modification or creation of files matching 'com.apple.loginwindow.*.plist' in ~/Library/Preferences/ByHost
+- **fs:fsevents** — create/write/rename under user-writable paths
+- **fs:fsevents** — file system events indicating permission, ownership, or extended attribute changes on critical paths. File system modification events with kFSEventStreamEventFlagItemChangeOwner, kFSEventStreamEventFlagItemXattrMod flags
+- **fs:fsevents** — Extensions
+- **fs:fsusage** — unlink, write
+- **fs:fsusage** — file access to /usr/lib/cron/tabs/ and cron output files
+- **fs:fsusage** — file access to /usr/lib/cron/at and job execution path
+- **fs:fsusage** — modification of existing LaunchAgents plist
+- **fs:fsusage** — Filesystem Access Logging
+- **fs:fsusage** — truncate, unlink, write
+- **fs:fsusage** — file write to launchd plist paths
+- **fs:launchdaemons** — file_modify
+- **fs:plist** — /var/root/Library/Preferences/com.apple.loginwindow.plist
+- **fs:plist_monitoring** — /Users/*/Library/Mail/V*/MailData/RulesActiveState.plist
+- **gcp:audit** — compute.instances.setMetadata
+- **IntegrityCheck:ImageValidation** — Checksum or hash mismatch between running image and known-good vendor-provided image
+- **iOS:unifiedlog** — Creation or modification of LaunchDaemon or LaunchAgent plist in /System/Library/LaunchDaemons, /Library/LaunchDaemons, or /Library/LaunchAgents
+- **linux:fim** — Changes to /etc/rc.local.d/local.sh or creation of unexpected startup files in persistent partitions (/etc/init.d, /store, /locker)
+- **linux:osquery** — file_events
+- **linux:osquery** — New or modified kernel object files (.ko) within /lib/modules directory
+- **linux:syslog** — rename
+- **linux:syslog** — Unexpected log entries or malformed SQL operations in databases
+- **m365:defender** — OfficeTelemetry or DLP
+- **m365:office** — Anomalous editing of invoice or payment document templates
+- **macos:auth** — ~/.ssh/authorized_keys
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_WRITE, targeting .zshrc, .zlogin, .zprofile
+- **macos:endpointsecurity** — write, rename
+- **macos:osquery** — file_events
+- **macos:osquery** — query: Enumeration of root certificates showing unexpected additions
+- **macos:osquery** — File modifications in ~/Library/Preferences/
+- **macos:osquery** — Changes to LSFileQuarantineEnabled field in Info.plist
+- **macos:osquery** — CALCULATE: Mismatch in file integrity of critical macOS applications
+- **macos:osquery** — Modifications to /var/db/SystemPolicyConfiguration/KextPolicy or kext_policy table
+- **macos:osquery** — write
+- **macos:unifiedlog** — File modification in /etc/paths.d or user shell rc files
+- **macos:unifiedlog** — Modification of ~/Library/LaunchAgents or /Library/LaunchDaemons plist
+- **macos:unifiedlog** — Anomalous plist modifications or sensitive file overwrites by non-standard processes
+- **macos:unifiedlog** — loginwindow or desktopservices modified settings or files
+- **macos:unifiedlog** — SecurityAgentPlugins modification
+- **macos:unifiedlog** — write: File modifications to *.plist within LaunchAgents, LaunchDaemons, Application Support, or Preferences directories
+- **macos:unifiedlog** — Modification of backgrounditems.btm or creation of LoginItems subdirectory in .app bundle
+- **macos:unifiedlog** — Modification of plist with apple.awt.UIElement set to TRUE
+- **macos:unifiedlog** — replace existing dylibs
+- **macos:unifiedlog** — Modification of /Library/Security/SecurityAgentPlugins
+- **macos:unifiedlog** — Modifications to Mail.app plist files controlling message rules
+- **macos:unifiedlog** — Unexpected creation or modification of stored data files in protected directories
+- **macos:unifiedlog** — file encrypted|new file with .encrypted extension|disk write burst
+- **macos:unifiedlog** — Mach-O binary modified or LC_LOAD_DYLIB segment inserted
+- **macos:unifiedlog** — Modified application plist or binary replacement in /Applications
+- **macos:unifiedlog** — File creation or overwrite in common web-hosting folders
+- **macos:unifiedlog** — write of plist files in /Library/LaunchAgents or /Library/LaunchDaemons
+- **macos:unifiedlog** — write
+- **macos:unifiedlog** — Modification of /System/Library/CoreServices/boot.efi
+- **macos:unifiedlog** — Modification of LaunchAgents or LaunchDaemons plist files
+- **macos:unifiedlog** — Plist modifications containing virtualization run configurations
+- **macos:unifiedlog** — binary modified or replaced
+- **macos:unifiedlog** — Modification of /Library/Preferences/com.apple.loginwindow plist
+- **macos:unifiedlog** — File write or append to .zshrc, .bash_profile, .zprofile, etc.
+- **macos:unifiedlog** — write: File modification to com.apple.PowerManagement.plist or related system preference files
+- **macos:unifiedlog** — create/modify dylib in monitored directories
+- **macos:unifiedlog** — modification to /var/db/dslocal/nodes/Default/users/
+- **macos:unifiedlog** — Hidden volume attachment or modification events
+- **macos:unifiedlog** — Suspicious plist edits for volume mounting behavior
+- **macos:unifiedlog** — file writes
+- **macos:unifiedlog** — Modification or replacement of /Library/Application Support/com.apple.TCC/TCC.db or ~/Library/Application Support/com.apple.TCC/TCC.db
+- **macos:unifiedlog** — rule definitions written to emond rule plists
+- **macos:unifiedlog** — Terminal/Editor processes modifying web folder
+- **MobileEDR:telemetry** — Application inserts, updates, deletes, hides, or marks message records in SMS store or messaging database immediately after SMS receive or send event
+- **MobileEDR:telemetry** — Application inserts, updates, deletes, or rewrites call-log records immediately after call-control action to conceal, alter, or synthesize call history
+- **network:runtime** — checksum or runtime memory verification failures
+- **networkconfig** — unexpected OS image file upload or modification events
+- **networkdevice:audit** — SNMP configuration changes, such as enabling read/write access or modifying community strings
+- **networkdevice:config** — config-change: timezone or ntp server configuration change after a time query command
+- **networkdevice:config** — Configuration changes to boot variables, startup image paths, or checksum verification failures
+- **networkdevice:config** — Configuration changes referencing 'crypto', 'key length', 'cipher', or downgrade of encryption settings
+- **networkdevice:config** — Configuration file modified or replaced on network device
+- **networkdevice:config** — Configuration change events referencing encryption, TLS/SSL, or IPSec settings
+- **networkdevice:config** — Configuration changes to startup image paths, boot loader parameters, or debug flags
+- **networkdevice:config** — Configuration changes referencing cryptographic hardware modules or disabling hardware acceleration
+- **networkdevice:config** — Configuration changes referencing older image versions or unexpected boot parameters
+- **networkdevice:firmware** — Unexpected firmware update or image modification affecting crypto modules
+- **networkdevice:syslog** — config
+- **networkdevice:syslog** — startup-config
+- **networkdevice:syslog** — Checksum/hash mismatch between device OS image and baseline known-good version
+- **sysdig:file** — evt.type=write
+- **WinEventLog:CodeIntegrity** — EventCode=3033
+- **WinEventLog:Security** — EventCode=4663, 4670, 4656
+- **WinEventLog:Sysmon** — EventCode=2
+- **WinEventLog:System** — Unexpected modification to lsass.exe or cryptdll.dll
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: write() to /sdcard/ path
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: ContentResolver.update() or write() to path owned by target_app IN $HighValueAppList$ by writer_app != target_app — cross-app data modification
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: write() to path IN $SystemBinaryPaths$ by process NOT IN $TrustedUpdateSources$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app version change detected in MDM inventory for app_package — update is the binary modification event
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app version change in MDM inventory for bundle_id
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App inserts, updates, or deletes call log records via CallLog.Calls ContentProvider immediately after call-control action — call log tampering to conceal interception
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to Industrial Control Systems (ICS) alarm configuration file by User Identifier (UID) not in authorized alarm admin UIDs
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to /etc/ld.so.preload by User Identifier (UID) outside authorized admin list
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: PATH record shows modification of udev/autofs configuration that references an executable or script outside the authorized ICS software inventory
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: modification of bash_history file by uid not normally performing interactive shell sessions
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to alarm threshold config file by uid not in authorized alarm admin User Identifiers (UIDs)
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: PATH record shows modification of a serial-device configuration file by a UID not in the authorized serial-administration set
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to Siemens project file path by User Identifier (UID) not in authorized Siemens engineering UIDs
+- **networkdevice:syslog** — write erase or factory-reset command from source not in approved Network Management System (NMS) Classless Inter-Domain Routing (CIDR) subnet
+- **WinEventLog:Sysmon** — Siemens engineering tool opens project file from path not in approved project repository
+
+## Analytics using this component
+
+- [AN1645 - Analytic 1645](../Analytics/AN1645.md)
+- [AN1687 - Analytic 1687](../Analytics/AN1687.md)
+- [AN1735 - Analytic 1735](../Analytics/AN1735.md)
+- [AN1736 - Analytic 1736](../Analytics/AN1736.md)
+- [AN1750 - Analytic 1750](../Analytics/AN1750.md)
+- [AN1822 - Analytic 1822](../Analytics/AN1822.md)
+- [AN1838 - Analytic 1838](../Analytics/AN1838.md)

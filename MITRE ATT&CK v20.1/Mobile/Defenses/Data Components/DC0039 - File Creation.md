@@ -1,0 +1,201 @@
+# DC0039 - File Creation
+
+[Mobile](../../README.md) / [Data Components](README.md)
+
+A new file is created on a system or network storage. This action often signifies an operation such as saving a document, writing data, or deploying a file. Logging these events helps identify legitimate or potentially malicious file creation activities. Examples include logging file creation events (e.g., Sysmon Event ID 11 or Linux auditd logs).
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0039)
+
+## Log sources and channels
+
+- **MobileEDR:telemetry** — Monitored creation of an APK or application-package staging artifact following external retrieval
+- **android:logcat** — App UID writes new file with suspicious extension/location (.tmp, .dat, .enc, /data/data/<pkg>/files/, /sdcard/Download/) and high estimated entropy
+- **android:logcat** — App UID writes edited media to container paths (e.g., /data/data/<pkg>/files/, .../cache/, /storage/emulated/0/Pictures/<pkg>/) with high delta in size vs. original and elevated estimated segment entropy  
+- **android:logcat** — Create/write of high-entropy files in /data/data/<pkg>/(files|cache)/ or /storage/emulated/0/<...> with .dex/.so/.jar/.tmp/.bin
+- **android:logcat** — Create/write under /data/data/<pkg>/(files|cache)/ or /storage/emulated/0/ with extension .dex/.jar/.so/.zip/.tmp/.js and elevated entropy
+- **android:logcat** — CREATE/WRITE of archive or container (.zip/.gz/.7z/.db copy) that aggregates files pulled from other-package paths
+- **android:logcat** — CREATE/WRITE to app-writable DB/file path indicating clipboard dump (e.g., clipboard.db, clip_*.txt)
+- **android:logcat** — CREATE/WRITE paths like /data/data/<pkg>/files/(keys|inputs)/.*\\.db|\\.txt|\\.log
+- **android:logcat** — CREATE/WRITE to /data/data/<pkg>/(files|databases)/(keys|inputs|clipboard).*\\.(db|sqlite|txt|log)
+- **android:logcat** — CREATE/WRITE to /data/data/<pkg>/(files|databases)/(creds|form|prompt).*\\.(db|sqlite|json|txt)
+- **android:logcat** — CREATE/WRITE /data/data/<pkg>/(files|databases)/(app_inventory|pkg_list).*\\.(json|txt|db)
+- **android:logcat** — CREATE/WRITE /data/data/<pkg>/(files|databases)/(security_inventory|policy_audit).*\\.(json|txt|db|plist)
+- **auditd:FILE** — File creation with name starting with '.'
+- **auditd:FILE** — create: New file created in system binaries or temp directories
+- **auditd:FILE** — create: Creation of .zip, .gz, .bz2 files in /tmp, /var/tmp, or /home directories
+- **auditd:FILE** — create: Creation of archive files in /tmp, /var/tmp, or user home directories
+- **auditd:FILE** — create: Creation of files with anomalous headers and entropy levels in /tmp or user directories
+- **auditd:FILE** — Creation of hidden files (.*) in sensitive directories (/etc, /var, /usr/bin)
+- **auditd:FILE** — create: Creation of files ending in .tar, .gz, .bz2, .zip in /tmp or /var/tmp
+- **auditd:PATH** — Creation of files with extensions .sql, .csv, .sqlite, especially in user directories
+- **auditd:PATH** — New .py/.js/.sh files written to ~/.local/, ~/.cache/, or /tmp/ within 5 min of package install
+- **auditd:PATH** — mount target path within /proc/*
+- **auditd:PATH** — creation of .so files in non-standard directories (e.g., /tmp, /home/*)
+- **auditd:PATH** — WRITE: Drop of binaries/scripts in ~/.local, /tmp, or /opt tool dirs
+- **auditd:SYSCALL** — creat
+- **auditd:SYSCALL** — open or creat syscalls targeting excluded paths
+- **auditd:SYSCALL** — file creation/modification
+- **auditd:SYSCALL** — open,creat,rename: Writes in $HOME/Downloads, /tmp, ~/.cache with exe/script/archive/office extensions
+- **auditd:SYSCALL** — write/open, FIM audit
+- **auditd:SYSCALL** — open: Write to ~/.vscode-cli/code_tunnel.json
+- **auditd:SYSCALL** — write
+- **auditd:SYSCALL** — open, unlink, rename: File creation or deletion involving critical stored data
+- **auditd:SYSCALL** — creat, open, write on /etc/systemd/system and /usr/lib/systemd/system
+- **auditd:SYSCALL** — write, open, or rename to /etc/systemd/system/*.service
+- **auditd:SYSCALL** — open/create/rename: name in (/home/*/Downloads/*|/tmp/*|/run/user/*|/media/*) AND ext in SuspiciousExtensions
+- **auditd:SYSCALL** — File creations of *.qcow2, *.vdi, *.vmdk outside standard VM directories
+- **auditd:SYSCALL** — open: File creation under /tmp, /var/tmp, ~/.cache with executable bit or shell shebang
+- **auditd:SYSCALL** — open, write, unlink
+- **auditd:SYSCALL** — File creation events in /var/mail or /var/spool/mail exceeding baseline thresholds
+- **auditd:SYSCALL** — write or create file after .bash_history access
+- **auditd:SYSCALL** — new file created in /var/www/html, /srv/http, or similar web root
+- **auditd:SYSCALL** — Access or modification to /lib/modules or creation of .ko files
+- **auditd:SYSCALL** — open,create
+- **auditd:SYSCALL** — open,creat,rename,write
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: file transfer (scp, sftp, rsync, etc.) placing executable on Industrial Control Systems (ICS) Linux asset, followed by execve of the transferred file within tool transfer window
+- **AWS:CloudTrail** — PutObject
+- **CloudTrail:PutObject** — PutObject
+- **esxi:vmkernel** — file write
+- **esxi:vmkernel** — VMFS file creation
+- **File** — None
+- **fs:fileevents** — creat
+- **fs:fileevents** — create/write/rename in user-writable paths
+- **fs:fsevents** — Create in /Users/*/Downloads or /private/var/folders/* with quarantine attribute
+- **fs:fsevents** — Directory events (kFSEventStreamEventFlagItemCreated)
+- **fs:fsusage** — open/write/exec calls
+- **fs:fsusage** — disk activity on /Library/LaunchAgents or LaunchDaemons
+- **fs:fsusage** — File IO
+- **fs:fsusage** — file activity
+- **fs:fsusage** — file open/write
+- **fs:fsusage** — create: Attachment file creation in ~/Library/Mail directories
+- **fs:fsusage** — write or chmod to ~/Library/LaunchAgents/*.plist
+- **fs:fsusage** — file write
+- **fs:launchdaemons** — file_create
+- **gcp:workspaceaudit** — drive.activity logs
+- **iOS:unifiedlog** — NSFileHandle/NSFileManager writes creating high-entropy files within app container (/var/mobile/Containers/Data/Application/<GUID>/tmp|Library/Caches)
+- **iOS:unifiedlog** — Create/write of high-entropy Mach-O/bundle or generic blob in /var/mobile/Containers/Data/Application/<GUID>/(tmp|Library/Caches)/
+- **iOS:unifiedlog** — Create/write in /var/mobile/Containers/Data/Application/<GUID>/(tmp|Library/Caches)/ for .js/.bundle/.dylib/.zip with elevated entropy
+- **iOS:unifiedlog** — CREATE/WRITE of archive/container (.zip/.gz/.7z/.db export) aggregating recently read items
+- **iOS:unifiedlog** — CREATE/WRITE of clipboard dump artifacts in container (clipboard.db, clip_*.txt, caches)
+- **iOS:unifiedlog** — CREATE/WRITE clipboard/keylog artifacts (clipboard.db, keys_*.txt) in container
+- **iOS:unifiedlog** — CREATE/WRITE of keylog artifacts (keys_*.txt, inputs.db) within app/keyboard container
+- **iOS:unifiedlog** — CREATE/WRITE of form cache/credential-like artifacts (forms.db, creds.json) in container
+- **iOS:unifiedlog** — CREATE/WRITE container paths like /Library/Caches/app_inventory.*\\.(json|plist|db)
+- **iOS:unifiedlog** — CREATE/WRITE of /Library/Caches/security_inventory.*\\.(json|plist|db)
+- **linux:osquery** — file_events
+- **linux:Sysmon** — New files in /tmp, /var/tmp, $HOME/.cache, executed within TimeWindow after browser HTTP fetch
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_CREATE: path under /Users/*/(Downloads|Desktop|Library/*/Containers|Library/Group Containers) AND extension in SuspiciousExtensions
+- **macos:endpointsecurity** — es_event_open
+- **macos:fsevents** — /Library/StartupItems/, ~/Library/LaunchAgents/
+- **macos:osquery** — CREATE/MODIFY: Modification of app.asar inside .app bundle
+- **macos:osquery** — file_events
+- **macos:osquery** — CREATE/MODIFY: Creation of LaunchAgents/Daemons plists in user/system locations
+- **macos:unifiedlog** — file write
+- **macos:unifiedlog** — Creation or modification of browser extension .plist files
+- **macos:unifiedlog** — file creation in AV exclusion directories
+- **macos:unifiedlog** — file write/create
+- **macos:unifiedlog** — file events
+- **macos:unifiedlog** — Creation of .plist under /Library/Managed Preferences/
+- **macos:unifiedlog** — creation of ~/.vscode-cli/code_tunnel.json
+- **macos:unifiedlog** — create/modify dylib files in monitored directories
+- **macos:unifiedlog** — New files written to /var/folders, /tmp, ~/Library/Caches, or ~/Downloads by browser context or its children
+- **macos:unifiedlog** — File created in ~/Library/LaunchAgents or executable directories
+- **macos:unifiedlog** — Process wrote large .mov/.mp4 in user temp/hidden dirs
+- **macos:unifiedlog** — logd:file write
+- **macos:unifiedlog** — File creation
+- **macos:unifiedlog** — Attachment files written to ~/Downloads or temporary folders
+- **macos:unifiedlog** — Writes of .sql/.csv/.xlsx files to user documents/downloads
+- **macos:unifiedlog** — Creation of .zip, .gz, .dmg archives in /Users, /tmp, or application directories
+- **macos:unifiedlog** — Creation of .zip, .dmg, .tar.gz files in /Users, /tmp, or application directories
+- **macos:unifiedlog** — File Events
+- **macos:unifiedlog** — Creation or modification of postinstall scripts within .pkg or .mpkg contents
+- **macos:unifiedlog** — create: New files in /tmp or ~/Library/Application Support/* with executable or script extensions
+- **macos:unifiedlog** — File creation of unsigned binaries/scripts in user cache or download directories
+- **macos:unifiedlog** — Creation of files with anomalous headers and entropy values
+- **macos:unifiedlog** — Creation of LaunchAgents/LaunchDaemons in hidden or non-standard directories
+- **macos:unifiedlog** — Creation of .zip or .dmg files in user-accessible or temporary directories
+- **macos:unifiedlog** — file create or modify in /etc/emond.d/rules or /private/var/db/emondClients
+- **macos:unifiedlog** — Writes under ~/Library/Application Support/Code*/extensions or JetBrains plugins
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes asymmetric-encrypted blob or encoded ciphertext to local staging path before network transmission — encrypted staging artifact
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: Local file write between inbound retrieval
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT on path LIKE '/data/data/%/files/%' for binary or dex content by app_package NOT IN $LegitDynamicLoaders$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT on binary-typed path in /data/data/<app>/ within $StegoExecWindow$ of media file download from same session
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT for file with audio MIME type (audio/mp4, audio/aac, audio/3gpp) in /data/data/<app>/files/ within $AudioCaptureWindow$ of recording API start
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT for APK or binary file in /sdcard/ or /data/local/tmp/ by browser process within $DriveByWindow$ — payload drop confirms exploit code execution
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: PackageInstaller.install() with installer_source NOT IN $ApprovedInstallSources$ within $PolicyViolationWindow$ of settings change
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app binary written to device with signing certificate matching manually-trusted enterprise cert NOT IN $EnterpriseCertAllowList$ within $ProfileInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: PackageInstaller.install() with signing_cert NOT IN $EnterpriseCertList$ within $PolicyViolationWindow$ of settings change
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: IPA binary written with signing cert matching user-trusted certificate NOT IN $EnterpriseCertList$ within $ProfileInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app binary written to device storage as part of install — confirms impersonating app is being persisted
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: PackageInstaller.install() writes binary to device storage for impersonating app — install event is the enrollment of impersonating app
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT for APK file in /sdcard/ or /data/local/tmp/ within $PhishingWindow$ of navigation to flagged URL — APK drop confirms malware delivery phase
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: File with binary signature (.apk, .dex, .so, .sh) written to app storage or /data/local/tmp/ from USB-mounted path or external storage within $USBInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: Compromised app writes staging, cache, or export artifacts inconsistent with its declared function within $PostInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App stages or caches content retrieved from web-service platform locally before initiating secondary network connection
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes high-entropy blob (Shannon entropy > $EntropyThreshold$) to local staging path immediately before outbound transmission — encrypted staging artifact confirms app-layer encryption occurred
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes newly retrieved binary, archive, native library (.so), DEX, or script to /data/data/<app>/files/, cache, or shared storage within $IngressWriteWindow$ of network retrieval from non-CDN source
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: Managed app writes newly retrieved container-local file, dylib-like resource, or opaque payload after download from non-CDN source
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: APK, DEX, or native library written to app installation path outside MDM-authorized update mechanism — binary replacement is the persistence artifact
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App reads files across multiple directories or databases in background state (collection phase) then invokes archive or compression routines on collected content — read-then-archive sequence is the staging chain
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes archive-like container, high-entropy packaged blob, or .zip/.gz output to app-private or cache path after bulk data collection — archive artifact in private storage is the staging evidence
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes large container, temp package, or high-entropy blob to container-local storage after clustered data access — staged archive artifact
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes to or modifies protected configuration files or local control structures of deployed security tools
+- **MobileEDR:telemetry** — IPA binary written with signing cert matching user-trusted certificate NOT IN $EnterpriseCertList$ within $ProfileInstallWindow$
+- **MobileEDR:telemetry** — PackageInstaller.install() with signing_cert NOT IN $EnterpriseCertList$ within $PolicyViolationWindow$ of settings change
+- **MobileEDR:telemetry** — Browser/WebView process creates downloaded payloads, temporary files, dropped archives, or unusual cached web artifacts shortly after visiting external content
+- **MobileEDR:telemetry** — File writes from removable-media or USB-associated paths into download, package staging, temp, or application-accessible storage shortly after USB connection
+- **MobileEDR:telemetry** — large file write originating from /mnt/usb or external mounted storage
+- **MobileEDR:telemetry** — Recently installed or updated trusted app writes staging, cache, buffer, or export artifacts inconsistent with its approved function, especially when temporally adjacent to sensitive resource access or outbound transfer
+- **MobileEDR:telemetry** — App stages, buffers, caches, or exports data locally immediately before communication with legitimate external web-service endpoints in a way inconsistent with normal sync or offline workflow
+- **MobileEDR:telemetry** — Burst write to cache, buffer, temp, staging, or export path occurred between inbound retrieval and outbound write to same public web-service class
+- **MobileEDR:telemetry** — Burst write to media, cache, temp, export, or staging path occurred during or immediately after camera session from same app identity
+- **MobileEDR:telemetry** — App writes encoded/encrypted blobs (high entropy data) to local storage or memory buffers prior to transmission
+- **MobileEDR:telemetry** — App writes high-entropy encrypted blobs to local storage or memory buffers prior to transmission
+- **MobileEDR:telemetry** — App writes asymmetric-encrypted blobs or encoded ciphertext to local buffers or files prior to transmission
+- **MobileEDR:telemetry** — Application reads multiple user-data files, media objects, message stores, or app-private records in burst sequence immediately before packaging or encryption activity
+- **MobileEDR:telemetry** — Application writes archive-like container or high-entropy packaged blob to app storage, cache, temp path, or shared external path after burst collection activity
+- **MobileEDR:telemetry** — Application writes new large container, temp package, or high-entropy blob after clustered local data access and before outbound communication
+- **MobileEDR:telemetry** — Application performs burst reads across local system paths, external storage, media directories, cache locations, or local database files within a short interval as the primary collection phase
+- **MobileEDR:telemetry** — Application writes newly retrieved binary, archive, script-like asset, overlay content, library, or opaque payload to app-private, cache, temp, or shared external path as the primary local effect of transfer
+- **MobileEDR:telemetry** — Managed app writes newly retrieved container-local asset, dylib-like resource, archive, or opaque payload shortly after remote retrieval as the strongest local effect
+- **MobileEDR:telemetry** — APK, DEX, native library, or package-associated executable content is written, expanded, or swapped in app package paths, staging paths, or installer cache immediately before or during application replacement
+- **MobileEDR:telemetry** — application modifies protected configuration, local control files, security settings, or tool-related data immediately before security service degradation or non-reporting state
+- **snmp:syslog** — firmware write/log event
+- **WinEventLog:Microsoft-Windows-Shell-Core** — New startup folder shortcut or binary placed in Startup directory
+- **WinEventLog:Sysmon** — EventCode=11
+- **WinEventLog:Sysmon** — File creation of suspicious scripts/binaries in temporary directories
+- **WinEventLog:Sysmon** — EventCode=11 of alarm config paths by image not in Human-Machine Interface (HMI) alarm parent allowlist
+- **WinEventLog:Sysmon** — EventCode=11 with executable/script extension from remote-sourced write operation
+- **WinEventLog:Sysmon** — EventCode=11 from removable media path to Industrial Control Systems (ICS) engineering working directory
+- **WinEventLog:Sysmon** — EventCode=11 where an unrecognized process creates a staging/output file after bulk ICS data access activity
+- **WinEventLog:Sysmon** — EventCode=11 by same process within capture to file window of the Application Programming Interface (API) call
+- **WinEventLog:Sysmon** — EventCode=11 to alarm threshold config path by image not in Human-Machine Interface (HMI) alarm parent allowlist
+
+## Analytics using this component
+
+- [AN1661 - Analytic 1661](../Analytics/AN1661.md)
+- [AN1669 - Analytic 1669](../Analytics/AN1669.md)
+- [AN1679 - Analytic 1679](../Analytics/AN1679.md)
+- [AN1680 - Analytic 1680](../Analytics/AN1680.md)
+- [AN1716 - Analytic 1716](../Analytics/AN1716.md)
+- [AN1730 - Analytic 1730](../Analytics/AN1730.md)
+- [AN1731 - Analytic 1731](../Analytics/AN1731.md)
+- [AN1745 - Analytic 1745](../Analytics/AN1745.md)
+- [AN1746 - Analytic 1746](../Analytics/AN1746.md)
+- [AN1762 - Analytic 1762](../Analytics/AN1762.md)
+- [AN1767 - Analytic 1767](../Analytics/AN1767.md)
+- [AN1768 - Analytic 1768](../Analytics/AN1768.md)
+- [AN1770 - Analytic 1770](../Analytics/AN1770.md)
+- [AN1772 - Analytic 1772](../Analytics/AN1772.md)
+- [AN1780 - Analytic 1780](../Analytics/AN1780.md)
+- [AN1791 - Analytic 1791](../Analytics/AN1791.md)
+- [AN1802 - Analytic 1802](../Analytics/AN1802.md)
+- [AN1806 - Analytic 1806](../Analytics/AN1806.md)
+- [AN1808 - Analytic 1808](../Analytics/AN1808.md)
+- [AN1816 - Analytic 1816](../Analytics/AN1816.md)
+- [AN1843 - Analytic 1843](../Analytics/AN1843.md)
+- [AN1848 - Analytic 1848](../Analytics/AN1848.md)
+- [AN1849 - Analytic 1849](../Analytics/AN1849.md)
+- [AN1851 - Analytic 1851](../Analytics/AN1851.md)
+- [AN1853 - Analytic 1853](../Analytics/AN1853.md)
+- [AN2290 - Analytic 2290](../Analytics/AN2290.md)

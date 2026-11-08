@@ -1,0 +1,45 @@
+# M1006 - Use Recent OS Version
+
+[Mobile](../../README.md) / [Mitigations](README.md)
+
+New mobile operating system versions bring not only patches against discovered vulnerabilities but also often bring security architecture improvements that provide resilience against potential vulnerabilities or weaknesses that have not yet been discovered. They may also bring improvements that block use of observed adversary techniques.
+
+[MITRE ATT&CK record](https://attack.mitre.org/mitigations/M1006)
+
+## Mitigated techniques
+
+- [T1636.005 - Accounts](../../Tactics/09%20TA0035%20-%20Collection/T1636%20-%20Protected%20User%20Data/T1636.005%20-%20Accounts/README.md)
+- [T1638 - Adversary-in-the-Middle](../../Tactics/09%20TA0035%20-%20Collection/T1638%20-%20Adversary-in-the-Middle/README.md)
+- [T1661 - Application Versioning](../../Tactics/01%20TA0027%20-%20Initial%20Access/T1661%20-%20Application%20Versioning/README.md)
+- [T1429 - Audio Capture](../../Tactics/09%20TA0035%20-%20Collection/T1429%20-%20Audio%20Capture/README.md)
+- [T1624.001 - Broadcast Receivers](../../Tactics/03%20TA0028%20-%20Persistence/T1624%20-%20Event%20Triggered%20Execution/T1624.001%20-%20Broadcast%20Receivers/README.md)
+- [T1414 - Clipboard Data](../../Tactics/06%20TA0031%20-%20Credential%20Access/T1414%20-%20Clipboard%20Data/README.md)
+- [T1632.001 - Code Signing Policy Modification](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1632%20-%20Subvert%20Trust%20Controls/T1632.001%20-%20Code%20Signing%20Policy%20Modification/README.md)
+- [T1577 - Compromise Application Executable](../../Tactics/03%20TA0028%20-%20Persistence/T1577%20-%20Compromise%20Application%20Executable/README.md)
+- [T1641 - Data Manipulation](../../Tactics/12%20TA0034%20-%20Impact/T1641%20-%20Data%20Manipulation/README.md)
+- [T1626.001 - Device Administrator Permissions](../../Tactics/04%20TA0029%20-%20Privilege%20Escalation/T1626%20-%20Abuse%20Elevation%20Control%20Mechanism/T1626.001%20-%20Device%20Administrator%20Permissions/README.md)
+- [T1629.002 - Device Lockout](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1629%20-%20Impair%20Defenses/T1629.002%20-%20Device%20Lockout/README.md)
+- [T1407 - Download New Code at Runtime](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1407%20-%20Download%20New%20Code%20at%20Runtime/README.md)
+- [T1642 - Endpoint Denial of Service](../../Tactics/12%20TA0034%20-%20Impact/T1642%20-%20Endpoint%20Denial%20of%20Service/README.md)
+- [T1624 - Event Triggered Execution](../../Tactics/03%20TA0028%20-%20Persistence/T1624%20-%20Event%20Triggered%20Execution/README.md)
+- [T1627 - Execution Guardrails](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1627%20-%20Execution%20Guardrails/README.md)
+- [T1420 - File and Directory Discovery](../../Tactics/07%20TA0032%20-%20Discovery/T1420%20-%20File%20and%20Directory%20Discovery/README.md)
+- [T1627.001 - Geofencing](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1627%20-%20Execution%20Guardrails/T1627.001%20-%20Geofencing/README.md)
+- [T1417.002 - GUI Input Capture](../../Tactics/06%20TA0031%20-%20Credential%20Access/T1417%20-%20Input%20Capture/T1417.002%20-%20GUI%20Input%20Capture/README.md)
+- [T1417 - Input Capture](../../Tactics/06%20TA0031%20-%20Credential%20Access/T1417%20-%20Input%20Capture/README.md)
+- [T1430 - Location Tracking](../../Tactics/07%20TA0032%20-%20Discovery/T1430%20-%20Location%20Tracking/README.md)
+- [T1629.001 - Prevent Application Removal](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1629%20-%20Impair%20Defenses/T1629.001%20-%20Prevent%20Application%20Removal/README.md)
+- [T1424 - Process Discovery](../../Tactics/07%20TA0032%20-%20Discovery/T1424%20-%20Process%20Discovery/README.md)
+- [T1636 - Protected User Data](../../Tactics/09%20TA0035%20-%20Collection/T1636%20-%20Protected%20User%20Data/README.md)
+- [T1458 - Replication Through Removable Media](../../Tactics/01%20TA0027%20-%20Initial%20Access/T1458%20-%20Replication%20Through%20Removable%20Media/README.md)
+- [T1418.001 - Security Software Discovery](../../Tactics/07%20TA0032%20-%20Discovery/T1418%20-%20Software%20Discovery/T1418.001%20-%20Security%20Software%20Discovery/README.md)
+- [T1418 - Software Discovery](../../Tactics/07%20TA0032%20-%20Discovery/T1418%20-%20Software%20Discovery/README.md)
+- [T1635 - Steal Application Access Token](../../Tactics/06%20TA0031%20-%20Credential%20Access/T1635%20-%20Steal%20Application%20Access%20Token/README.md)
+- [T1409 - Stored Application Data](../../Tactics/09%20TA0035%20-%20Collection/T1409%20-%20Stored%20Application%20Data/README.md)
+- [T1632 - Subvert Trust Controls](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1632%20-%20Subvert%20Trust%20Controls/README.md)
+- [T1628.001 - Suppress Application Icon](../../Tactics/05%20TA0030%20-%20Defense%20Evasion/T1628%20-%20Hide%20Artifacts/T1628.001%20-%20Suppress%20Application%20Icon/README.md)
+- [T1422 - System Network Configuration Discovery](../../Tactics/07%20TA0032%20-%20Discovery/T1422%20-%20System%20Network%20Configuration%20Discovery/README.md)
+- [T1641.001 - Transmitted Data Manipulation](../../Tactics/12%20TA0034%20-%20Impact/T1641%20-%20Data%20Manipulation/T1641.001%20-%20Transmitted%20Data%20Manipulation/README.md)
+- [T1635.001 - URI Hijacking](../../Tactics/06%20TA0031%20-%20Credential%20Access/T1635%20-%20Steal%20Application%20Access%20Token/T1635.001%20-%20URI%20Hijacking/README.md)
+- [T1512 - Video Capture](../../Tactics/09%20TA0035%20-%20Collection/T1512%20-%20Video%20Capture/README.md)
+- [T1422.002 - Wi-Fi Discovery](../../Tactics/07%20TA0032%20-%20Discovery/T1422%20-%20System%20Network%20Configuration%20Discovery/T1422.002%20-%20Wi-Fi%20Discovery/README.md)

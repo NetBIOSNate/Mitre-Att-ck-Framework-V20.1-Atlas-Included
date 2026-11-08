@@ -1,0 +1,198 @@
+# DC0082 - Network Connection Creation
+
+[ICS](../../README.md) / [Data Components](README.md)
+
+The initial establishment of a network session, where a system or process initiates a connection to a local or remote endpoint. This typically involves capturing socket information (source/destination IP, ports, protocol) and tracking session metadata. Monitoring these events helps detect lateral movement, exfiltration, and command-and-control (C2) activities.
+
+*Data Collection Measures:*
+
+- Windows:
+    - Event ID 5156 – Filtering Platform Connection - Logs network connections permitted by Windows Filtering Platform (WFP).
+    - Sysmon Event ID 3 – Network Connection Initiated - Captures process, source/destination IP, ports, and parent process.
+- Linux/macOS:
+    - Netfilter (iptables), nftables logs - Tracks incoming and outgoing network connections.
+    - AuditD (`connect` syscall) - Logs TCP, UDP, and ICMP connections.
+    - Zeek (`conn.log`) - Captures protocol, duration, and bytes transferred.
+- Cloud & Network Infrastructure:
+    - AWS VPC Flow Logs / Azure NSG Flow Logs - Logs IP traffic at the network level in cloud environments.
+    - Zeek (conn.log) or Suricata (network events) - Captures packet metadata for detection and correlation.
+- Endpoint Detection & Response (EDR):
+    - Detect anomalous network activity such as new C2 connections or data exfiltration attempts.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0082)
+
+## Log sources and channels
+
+- **auditd:SYSCALL** — connect
+- **auditd:SYSCALL** — execve: Execs of chromium, google-chrome, firefox, libreoffice with http(s) in cmdline
+- **auditd:SYSCALL** — connect/sendto
+- **auditd:SYSCALL** — open or connect syscalls on /tmp/ssh-* or $SSH_AUTH_SOCK
+- **auditd:SYSCALL** — socket/connect with TLS context by unexpected process
+- **auditd:SYSCALL** — socket/bind: New bind() to a previously closed port shortly after the sequence.
+- **auditd:SYSCALL** — sendto/connect
+- **auditd:SYSCALL** — outbound connections
+- **auditd:SYSCALL** — socket/bind: Process binds to a new local port shortly after knock
+- **auditd:SYSCALL** — socket/connect calls showing SSH processes forwarding arbitrary ports
+- **auditd:SYSCALL** — openat,connect -k discovery
+- **AWS:VPCFlowLogs** — Outbound connection to 169.254.169.254 from EC2 workload
+- **AWS:VPCFlowLogs** — Large transfer volume (>20MB) from RDS IP range to external public IPs
+- **AWS:VPCFlowLogs** — High outbound traffic from new region resource
+- **AWS:VPCFlowLogs** — Outbound connections to port 22, 3389
+- **AWS:VPCFlowLogs** — Traffic observed on mirror destination instance
+- **cni:netflow** — outbound connection to internal or external APIs
+- **ebpf:syscalls** — socket connect
+- **esxi:esxupdate** — /var/log/esxupdate.log or /var/log/vmksummary.log
+- **esxi:hostd** — System service interactions
+- **esxi:hostd** — Service initiated connections
+- **esxi:hostd** — Service-Based Network Connection
+- **esxi:vmkernel** — protocol egress
+- **esxi:vmkernel** — network activity
+- **esxi:vmkernel** — None
+- **esxi:vmkernel** — network session initiation with external HTTPS services
+- **linux:osquery** — socket_events to broker/service, where deployed
+- **linux:osquery** — socket_events to DNS/DoH/DoT destinations, where deployed
+- **linux:osquery** — socket_events for Python-originated connections, where deployed
+- **linux:osquery** — socket_events for runtime-originated connections, where deployed 
+- **linux:osquery** — family=AF_PACKET or protocol raw; process name not in allowlist.
+- **linux:syslog** — network
+- **linux:syslog** — postfix/smtpd
+- **linux:syslog** — New Wi-Fi connection established or repeated association failures
+- **linux:syslog** — None
+- **linux:Sysmon** — EventCode=3, 22
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_CONNECT
+- **macos:osquery** — process_events/socket_events
+- **macos:osquery** — execution of trusted tools interacting with external endpoints
+- **macos:osquery** — launchd or network_events
+- **macos:osquery** — process_events + launchd
+- **macos:osquery** — process_events, socket_events
+- **macos:osquery** — CONNECT: Long-lived connections from remote-control parents to external IPs/domains
+- **macos:osquery** — None
+- **macos:unifiedlog** — connection attempts
+- **macos:unifiedlog** — connection open
+- **macos:unifiedlog** — network connection events
+- **macos:unifiedlog** — First outbound connection from the same PID/user shortly after an inbound trigger.
+- **macos:unifiedlog** — network sessions initiated by remote desktop apps
+- **macos:unifiedlog** — Inbound connections to VNC/SSH ports
+- **macos:unifiedlog** — network
+- **macos:unifiedlog** — Outbound Traffic
+- **macos:unifiedlog** — None
+- **macos:unifiedlog** — networkd or socket
+- **macos:unifiedlog** — log stream network activity
+- **macos:unifiedlog** — Association and authentication events including failures and new SSIDs
+- **Network** — None
+- **Network Traffic** — None
+- **networkdevice:Flow** — Traffic from mirrored interface to mirror target IP
+- **NetworkDevice:Syslog** — Permitted/denied connection creation where network devices record it
+- **networkdevice:syslog** — Dynamic route changes
+- **NSM:Connections** — New device-to-broker relationship outside documented profile
+- **NSM:Connections** — web domain alerts
+- **NSM:Connections** — New outbound connection from Safari/Chrome/Firefox/Word
+- **NSM:Connections** — Outbound connections from newly spawned child processes or from the browser to uncommon endpoints or on anomalous ports
+- **NSM:Connections** — Outbound connection after script or installer launch
+- **NSM:Firewall** — Outbound Connections
+- **NSM:Firewall** — proxy or TLS inspection logs
+- **NSM:Flow** — log entries indicating network connection initiation on macOS
+- **NSM:Flow** — New TCP/443 or TCP/80 to domain not previously seen for the user/host
+- **NSM:Flow** — conn.log
+- **NSM:Flow** — Outbound connection to *.tunnels.api.visualstudio.com or *.devtunnels.ms
+- **NSM:Flow** — Connections to *.devtunnels.ms or tunnels.api.visualstudio.com
+- **NSM:Flow** — HTTPs connection to tunnels.api.visualstudio.com
+- **NSM:Flow** — Outbound or inbound TFTP file transfers of ROMMON or firmware binaries
+- **NSM:Flow** — connection: TCP connections to ports 139/445 to multiple hosts
+- **NSM:Flow** — connection: SMB connections to multiple internal hosts
+- **NSM:Flow** — Outbound HTTP/S initiated by newly installed interpreter process
+- **NSM:Flow** — outbound connections to RMM services or to unusual destination ports
+- **NSM:Flow** — Multiple failed connections (conn_state=REJ/S0 or history has 'R') across distinct ports from the same src_ip followed by success to a specific port.
+- **NSM:Flow** — Sequence of REJ/S0 then SF success from same src_ip within TimeWindow.
+- **NSM:Flow** — Series of denied/closed flows to distinct ports then success to mgmt port from same src_ip within TimeWindow.
+- **NSM:Flow** — Outbound traffic spike through formerly blocked ports/subnets following config change
+- **NSM:Flow** — New egress to Internet by the same UID/host shortly after terminal exec
+- **NSM:Flow** — connection: Inbound connections to SSH or VPN ports
+- **NSM:Flow** — External access to container ports (2375, 6443)
+- **NSM:Flow** — remote access
+- **NSM:Flow** — Outbound Connections
+- **NSM:Flow** — connection attempts
+- **NSM:Flow** — High-volume or repeated SNMP GETBULK/GETNEXT queries from untrusted or external IPs
+- **NSM:Flow** — outbound connections from host during or immediately after image build
+- **NSM:Flow** — new outbound connection from browser/office lineage
+- **NSM:Flow** — new outbound connection from exploited lineage
+- **NSM:Flow** — Multiple failed connections to closed ports (history contains 'R' or conn_state in {REJ, S0}) followed by a successful handshake to a new port from same src within TimeWindowKnock
+- **NSM:Flow** — Closed-port hits followed by success from same src_ip
+- **NSM:Flow** — Port-knock pattern from one src to device unicast,broadcast,network addresses on same port within TimeWindowKnock
+- **NSM:Flow** — Unexpected inbound/outbound TFTP traffic for device image files
+- **NSM:Flow** — Unexpected or unauthorized inbound connections to SNMP, NETCONF, or RESTCONF services
+- **snmp:access** — GETBULK/GETNEXT requests for OIDs associated with configuration parameters
+- **WinEventLog:Microsoft-Windows-Bits-Client/Operational** — BITS job lifecycle events such as job create/modify/transfer/complete and URL/remote name fields
+- **WinEventLog:Microsoft-Windows-WLAN-AutoConfig** — EventCode=8001, 8002, 8003
+- **WinEventLog:Security** — EventCode=5156, 5157
+- **WinEventLog:Sysmon** — EventCode=3; process-to-broker connection
+- **WinEventLog:Sysmon** — EventCode=3; connection to DNS/DoH destination with process identity
+- **WinEventLog:Sysmon** — EventCode=3; Python-originated connection to OT or external destination
+- **WinEventLog:Sysmon** — EventCode=3, 22
+- **WinEventLog:System** — EventCode=8001
+- **android:EnterpriseNetworkLog** — DevicePolicyManager.retrieveNetworkLogs(): DnsEvent / ConnectEvent; VPN flow metadata
+- **iOS:NetworkExtension** — NEFilterFlow / per-app VPN / secure-web-gateway flow metadata
+- **NSM:Connections** — device establishes new network connections or activates protocols not seen in pre-reboot baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): bind/listen/connect syscalls show one process accepting ICS-protocol connections while also initiating an outbound connection to a non-ICS destination
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): execve of scripting interpreter with sustained network connect() calls to device subnet at rate exceeding poll baseline, by User Identifier (UID) not in service account allowlist
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): firmware updater connecting to device on firmware port, by User Identifier (UID) not in authorized firmware manager UIDs, outside maintenance window schedule
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): connect() syscall on port (e.g., 80, 443, 8080, etc.) to destination not in approved vendor domains, from Industrial Control Systems (ICS) service process
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): write Application Programming Interface (API) invocation rate to single Input/Output (I/O) point from Industrial Control Systems (ICS) service User Identifier (UID) exceeds max write rate per point
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): connect syscalls show a host outside the approved SCADA/master set opening ICS-protocol connections to multiple field devices
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): connect syscall from an ICS service/application process to a destination outside the approved network or vendor-service baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): socket/connect activity from a process outside the approved ICS monitoring-tool baseline to an ICS multicast destination/group
+- **NSM:Connections** — device process crash or unexpected restart immediately followed by privileged protocol command succeeding from same source session
+- **NSM:Connections** — rapid sequential connection attempts to same device Internet Protocol (IP) address across multiple Industrial Control System (ICS) protocol ports from source not in approved Supervisory Control and Data Acquisition (SCADA) servers
+- **WinEventLog:Sysmon** — EventCode=3 process holds connections to both device subnet and external/inter-zone destination simultaneously, combined with proxy-capable process spawn
+- **WinEventLog:Sysmon** — EventCode=3 to device subnet within auth-to-device window of the anomalous logon
+- **WinEventLog:Sysmon** — EventCode=3 network connection to an RDP/VNC service on an ICS Windows host from a source outside the approved management CIDR baseline
+- **WinEventLog:Security** — EventCode=5157 or firewall rule changes blocking Industrial Control Systems (ICS) command message traffic
+- **WinEventLog:Sysmon** — EventCode=3 on remote service ports (e.g., 22, 445, 3389, 5985/5986) between hosts not in approved communication matrix
+- **WinEventLog:Sysmon** — Microsoft-Windows-Sysmon/Operational Event ID 3 NetworkConnect: inbound connection rate to Industrial Control Systems (ICS) application port exceeds threshold per minute from unexpected sources
+- **WinEventLog:Sysmon** — EventCode=3 on port 80/443/8080 from process not matching Industrial Control Systems (ICS) vendor update process allowlist
+- **WinEventLog:Sysmon** — EventCode=3 same process holding connections to both device subnet and external Internet Protocol (IP) address simultaneously
+- **WinEventLog:Sysmon** — EventCode=3 from resulting process to destinations not in approved destinations list
+- **WinEventLog:Sysmon** — EventCode=3 unexpected Windows host opening Industrial Control Systems (ICS) protocol connections to multiple field device Internet Protocol (IP) addresses in polling pattern characteristic of master station
+- **WinEventLog:Sysmon** — EventCode=3 on Hypertext Transfer Protocol (HTTP)/Hypertext Transfer Protocol Secure (HTTPS)/Domain Name System (DNS) port from process not recognized as Industrial Control Systems (ICS) vendor application
+- **WinEventLog:Sysmon** — EventCode=3 to device subnet from process not in authorized Industrial Control Systems (ICS) applications
+- **WinEventLog:Sysmon** — EventCode=3 outbound User Datagram Protocol (UDP) broadcast traffic from process not in recognized Industrial Control Systems (ICS) asset management tools
+- **WinEventLog:Sysmon** — EventCode=3 outbound connection from a process outside the approved ICS monitoring-tool baseline to an ICS multicast destination
+
+## Analytics using this component
+
+- [AN1857 - Analytic 1857](../Analytics/AN1857.md)
+- [AN1871 - Analytic 1871](../Analytics/AN1871.md)
+- [AN1891 - Analytic 1891](../Analytics/AN1891.md)
+- [AN1896 - Analytic 1896](../Analytics/AN1896.md)
+- [AN1904 - Analytic 1904](../Analytics/AN1904.md)
+- [AN1923 - Analytic 1923](../Analytics/AN1923.md)
+- [AN1936 - Analytic 1936](../Analytics/AN1936.md)
+- [AN2066 - Analytic 2066](../Analytics/AN2066.md)
+- [AN2093 - Analytic 2093](../Analytics/AN2093.md)
+- [AN2094 - Analytic 2094](../Analytics/AN2094.md)
+- [AN2095 - Analytic 2095](../Analytics/AN2095.md)
+- [AN2098 - Analytic 2098](../Analytics/AN2098.md)
+- [AN2099 - Analytic 2099](../Analytics/AN2099.md)
+- [AN2100 - Analytic 2100](../Analytics/AN2100.md)
+- [AN2101 - Analytic 2101](../Analytics/AN2101.md)
+- [AN2102 - Analytic 2102](../Analytics/AN2102.md)
+- [AN2103 - Analytic 2103](../Analytics/AN2103.md)
+- [AN2115 - Analytic 2115](../Analytics/AN2115.md)
+- [AN2125 - Analytic 2125](../Analytics/AN2125.md)
+- [AN2126 - Analytic 2126](../Analytics/AN2126.md)
+- [AN2129 - Analytic 2129](../Analytics/AN2129.md)
+- [AN2130 - Analytic 2130](../Analytics/AN2130.md)
+- [AN2151 - Analytic 2151](../Analytics/AN2151.md)
+- [AN2155 - Analytic 2155](../Analytics/AN2155.md)
+- [AN2160 - Analytic 2160](../Analytics/AN2160.md)
+- [AN2163 - Analytic 2163](../Analytics/AN2163.md)
+- [AN2226 - Analytic 2226](../Analytics/AN2226.md)
+- [AN2263 - Analytic 2263](../Analytics/AN2263.md)
+- [AN2268 - Analytic 2268](../Analytics/AN2268.md)
+- [AN2271 - Analytic 2271](../Analytics/AN2271.md)
+- [AN2275 - Analytic 2275](../Analytics/AN2275.md)
+- [AN2278 - Analytic 2278](../Analytics/AN2278.md)
+- [AN2281 - Analytic 2281](../Analytics/AN2281.md)
+- [AN2283 - Analytic 2283](../Analytics/AN2283.md)
+- [AN2284 - Analytic 2284](../Analytics/AN2284.md)
+- [AN2285 - Analytic 2285](../Analytics/AN2285.md)

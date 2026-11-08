@@ -1,0 +1,461 @@
+# DC0085 - Network Traffic Content
+
+[ICS](../../README.md) / [Data Components](README.md)
+
+The full packet capture (PCAP) or session data that logs both protocol headers and payload content. This allows analysts to inspect command and control (C2) traffic, exfiltration, and other suspicious activity within network communications. Unlike metadata-based logs, full content analysis enables deeper protocol inspection, payload decoding, and forensic investigations.
+
+*Data Collection Measures:*
+
+- Network Packet Capture (Full Content Logging)
+    - Wireshark / tcpdump / tshark
+        - Full packet captures (PCAP files) for manual analysis or IDS correlation. `tcpdump -i eth0 -w capture.pcap`
+    - Zeek (formerly Bro)
+        - Extracts protocol headers and payload details into structured logs. `echo "redef Log::default_store = Log::ASCII;" > local.zeek | zeek -Cr capture.pcap local.zeek`
+    - Suricata / Snort (IDS/IPS with PCAP Logging)
+        - Deep packet inspection (DPI) with signature-based and behavioral analysis. `suricata -c /etc/suricata/suricata.yaml -i eth0 -l /var/log/suricata`
+- Host-Based Collection
+    - Sysmon Event ID 22 – DNS Query Logging, Captures DNS requests made by processes, useful for detecting C2 domains.
+    - Sysmon Event ID 3 – Network Connection Initiated, Logs process-to-network connection relationships.
+    - AuditD (Linux) – syscall=connect, Monitors outbound network requests from processes. `auditctl -a always,exit -F arch=b64 -S connect -k network_activity`
+- Cloud & SaaS Traffic Collection
+    - AWS VPC Flow Logs / Azure NSG Flow Logs / Google VPC Flow Logs, Captures metadata about inbound/outbound network traffic.
+    - Cloud IDS (AWS GuardDuty, Azure Sentinel, Google Chronicle), Detects malicious activity in cloud environments by analyzing network traffic patterns.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0085)
+
+## Log sources and channels
+
+- **VPN:MobileProxy** — Inspected application-package retrieval transaction, where authorized content inspection exposes the URL, response, or package type
+- **ALB:HTTPLogs** — AWS ALB/ELB/GCP/Azure Application Gateway HTTP logs with unusual methods, long URIs, serialized payloads, 4xx/5xx bursts
+- **apache:access_log** — Unusual HTTP POST or PUT requests to paths such as '/uploads/', '/admin/', or CMS plugin folders
+- **API:ConfigRepoAudit** — Access to configuration repository endpoints, unusual enumeration requests or mass downloads
+- **auditd:SYSCALL** — setsockopt, ioctl modifying ARP entries
+- **AWS:VPCFlowLogs** — Traffic between instances
+- **AWS:VPCFlowLogs** — Large volume of malformed or synthetic payloads to application endpoints prior to failure
+- **AWS:VPCFlowLogs** — Unusual volume of data transferred from S3 storage endpoints to non-corporate IPs
+- **AWS:VPCFlowLogs** — High volume internal-to-internal IP transfer or cross-account cloud transfer
+- **azure:activity** — networkInsightsLogs
+- **azure:vpcflow** — HTTP requests to 169.254.169.254 or Azure Metadata endpoints
+- **container:proxy** — outbound/inbound network activity from spawned pods
+- **dns:querylog** — Domain Name System (DNS) query from Industrial Control Systems (ICS) host to domain not in approved vendor domains, particularly domains exhibiting Domain Generation Algorithm (DGA)-like patterns
+- **docker:events** — remote API calls to /containers/create or /containers/{id}/start
+- **docker:stats** — unusual network TX/RX byte deltas
+- **ebpf:syscalls** — Process within container accesses link-local address 169.254.169.254
+- **EDR:hunting** — Advanced Hunting: DeviceProcessEvents + DeviceNetworkEvents
+- **esxcli:network** — Socket sessions with randomized payloads inconsistent with TLS
+- **esxcli:network** — listening sockets bound to non-standard ports
+- **esxcli:network** — listening sockets bound with non-standard encapsulated protocols
+- **esxcli:network** — Socket inspection showing RSA key exchange outside baseline endpoints
+- **esxi:vmkernel** — Network activity
+- **esxi:vmkernel** — Outbound traffic using encoded payloads post-login
+- **esxi:vmkernel** — HTTPS POST connections to webhook endpoints
+- **esxi:vmkernel** — Inspection of sockets showing encrypted sessions from non-baseline processes
+- **esxi:vmkernel** — HTTPS POST connections to pastebin-like domains
+- **esxi:vmkernel** — network stack module logs
+- **esxi:vmkernel** — Suspicious traffic filtered or redirected by VM networking stack
+- **esxi:vmkernel** — VMCI syslog entries
+- **esxi:vob** — NFS/remote access logs
+- **etw:Microsoft-Windows-NDIS-PacketCapture** — TLS Handshake/Network Flow
+- **etw:Microsoft-Windows-WinINet** — HTTPS Inspection
+- **etw:Microsoft-Windows-WinINet** — WinINet API telemetry
+- **gcp:audit** — network.query*
+- **gcp:vpcflow** — first 5m egress to unknown ASNs
+- **IDS:TLSInspection** — Malformed certs, incomplete asymmetric handshakes, or invalid CAs
+- **iOS:unifiedlog** — Per-app VPN flow logging indicating opaque/archived payload transfer preceding local decode
+- **iOS:unifiedlog** — Per-App VPN flow with code-like content types (application/octet-stream, application/zip, text/javascript, application/x-mach-o)
+- **iOS:unifiedlog** — WKWebView navigation to domain visually similar to target brand (IDN/punycode/alike score)
+- **linux:syslog** — Query to suspicious domain with high entropy or low reputation
+- **linux:syslog** — curl|wget|python .*http
+- **linux:syslog** — Unexpected SQL or application log entries showing tampered or malformed data
+- **linux:syslog** — Integrity mismatch warnings or malformed packets detected
+- **linux:syslog** — DNS response IPs followed by connections to non-standard calculated ports
+- **linux:syslog** — Multiple NXDOMAIN responses and high entropy domains
+- **m365:office** — External HTTP/DNS connection from Office binary shortly after macro trigger
+- **macos:unifiedlog** — process + network metrics correlation for bandwidth saturation
+- **macos:unifiedlog** — DNS query with pseudo-random subdomain patterns
+- **macos:unifiedlog** — network flow
+- **macos:unifiedlog** — curl|osascript.*open location
+- **macos:unifiedlog** — subsystem: com.apple.network
+- **macos:unifiedlog** — open URL|clicked link|LSQuarantineAttach
+- **macos:unifiedlog** — None
+- **macos:unifiedlog** — Connections to suspicious domains with mismatched certificate or unusual patterns
+- **macos:unifiedlog** — HTTP POST with encoded content in user-agent or cookie field
+- **macos:unifiedlog** — Suspicious outbound HTTPS requests to domains flagged as newly registered or untrusted after spearphishing message interaction
+- **macos:unifiedlog** — log stream (subsystem: com.apple.system.networking)
+- **macos:unifiedlog** — Encrypted connection with anomalous payload entropy
+- **macos:unifiedlog** — Rapid incoming TLS handshakes or HTTP requests in quick succession
+- **macos:unifiedlog** — network, socket, and http logs
+- **macos:unifiedlog** — DNS responses followed by connections to ports outside standard ranges
+- **macos:unifiedlog** — Persistent outbound traffic to mining domains
+- **macos:unifiedlog** — Encrypted session initiation by unexpected binary
+- **macos:unifiedlog** — eventMessage = 'promiscuous'
+- **macos:unifiedlog** — outbound HTTPS connections to code repository APIs
+- **macos:unifiedlog** — eventMessage = 'open', 'sendto', 'connect'
+- **macos:unifiedlog** — dns-sd, mDNSResponder, socket activity
+- **macos:unifiedlog** — process + network activity
+- **macos:unifiedlog** — subsystem=com.apple.WebKit
+- **macos:unifiedlog** — subsystem: com.apple.WebKit or com.apple.WebKit.Networking
+- **macos:unifiedlog** — encrypted outbound traffic carrying unexpected application data
+- **macos:unifiedlog** — Persistent outbound connections with consistent periodicity
+- **macos:unifiedlog** — TLS connections with abnormal handshake sequence or self-signed cert
+- **macos:unifiedlog** — Web server process initiating outbound TCP connections not tied to normal server traffic
+- **macos:unifiedlog** — outbound TLS connections to cloud storage providers
+- **macos:unifiedlog** — outbound HTTPS connections to cloud storage APIs
+- **macos:unifiedlog** — process, network
+- **macos:unifiedlog** — process = 'ssh' OR eventMessage CONTAINS 'ssh'
+- **Netfilter/iptables** — Forwarded packets log
+- **Network Traffic** — None
+- **networkconfig ** — interface flag PROMISC, netstat | ip link | ethtool
+- **networkdevice:config** — NAT table modification (add/update/delete rule)
+- **NetworkDevice:IDS** — DoH/DoT identification, SNI/HTTP host when observable, DNS tunneling signatures
+- **networkdevice:IDS** — content inspection / PCAP / HTTP body
+- **networkdevice:syslog** — ACL/Firewall rule modification or new route injection
+- **networkdevice:syslog** — config change (e.g., logging buffered, pcap buffers)
+- **networkdevice:syslog** — Authentication failures, unexpected community string usage, or unauthorized SNMPv1/v2 requests
+- **networkdevice:syslog** — Authentication failures or unusual community string usage in SNMP queries
+- **NSM:Connections** — Symmetric encryption detected without TLS handshake sequence
+- **NSM:Connections** — TLS handshake + HTTP headers
+- **NSM:Connections** — Abnormal certificate chains or non-standard ports carrying TLS
+- **NSM:Connections** — Unusual POST requests to admin or upload endpoints
+- **NSM:Connections** — Outbound connections to internal enterprise services exhibiting anomalous protocol behavior, malformed sessions, or exploit-consistent traffic patterns
+- **NSM:Content** — Pub/sub protocol, client ID, topic/queue and message metadata when observable
+- **NSM:Content** — Protocol identification; MQTT CONNECT/SUBSCRIBE/PUBLISH, AMQP/DDS metadata where parsable
+- **NSM:Content** — MQTT/AMQP/DDS protocol and message metadata when visible
+- **NSM:Content** — MQTT/AMQP/DDS protocol identification, broker/topic/client metadata when visible
+- **NSM:Content** — SSL Certificate Metadata
+- **NSM:Content** — HTTP Header Metadata
+- **NSM:Content** — TLS Fingerprint and Certificate Analysis
+- **NSM:Content** — Traffic on RPC DRSUAPI
+- **NSM:Content** — session on firmware-capable port exceeds session size threshold from source not in engineering workstation list outside change control window
+- **NSM:Content** — firmware write service targeting specific slot/rack address from source not in engineering workstation list outside change control window
+- **NSM:Content** — large session on firmware-capable port from source not in engineering workstation list outside change control window
+- **NSM:Content** — write/control command traffic from source not in approved Supervisory Control and Data Acquisition (SCADA) servers directed at multiple distinct device IPs within rogue master time window
+- **NSM:Content** — task/organization-block modification service from source not in engineering workstation list outside change control window
+- **NSM:Content** — S7comm Download Block / Common Industrial Protocol (CIP) Download Program / Distributed Network Protocol (DNP3) program file transfer to device_ip from source not in engineering workstation list within mode change to download window of mode-change event
+- **NSM:Content** — write to existing program block address from source not in engineering workstation list outside change control window
+- **NSM:Content** — download of block address not previously present in device program inventory, from source not in engineering workstation list
+- **NSM:Content** — decoded ICS protocol unsolicited response or OPC UA data-change message for a device/address not normally owned by the observed source
+- **NSM:Content** — decoded ICS protocol write/setpoint operation to a control/output address from a client identity or source not in the approved control-application baseline
+- **NSM:Content** — OPC UA Browse/BrowseNext request to namespace or system-information objects from a client identity or source not in the approved monitoring baseline
+- **NSM:Content** — source not in approved Supervisory Control and Data Acquisition (SCADA) servers issuing reads covering sequential address ranges across multiple device Internet Protocol (IP) addresses within auto collection time window
+- **NSM:Content** — malformed Protocol Data Unit (PDU) rate to device_ip exceeds threshold within detection window from source not in approved Supervisory Control and Data Acquisition (SCADA) server list
+- **NSM:Content** — EtherNet/IP ListIdentity broadcast or sequential Industrial Control System (ICS) protocol connection attempts across Internet Protocol (IP) range from source not in approved Supervisory Control and Data Acqusition (SCADA) servers
+- **NSM:Content** — structurally valid Industrial Control System (ICS) protocol message from source not in approved communication baseline for the destination device_ip
+- **NSM:Content** — read-only function codes from source not in approved Supervisory Control and Data Acquisition (SCADA) servers at rate exceeding baseline poll rate or covering address ranges outside known tag ranges
+- **NSM:Content** — Open Platform Communications Unified Architecture (OPC UA) BrowseNamespace or Distributed Network Protocol 3 (DNP3) object 0 all-variation read or Common Industrial Protocol (CIP) Get_Attributes_All from source not in approved Supervisory Control and Data Acquisition (SCADA) servers, covering above namespace coverage threshold percent of device tag space
+- **NSM:Content** — Generic Object Oriented Substation Event (GOOSE) dataset stNum value decreases (replay indicator) or test-mode bit asserted on protection relay without scheduled maintenance
+- **NSM:Content** — mode-change service from source not in engineering workstation list outside change control window
+- **NSM:Content** — write to alarm threshold address range from source not in approved write sources with new value outside safe alarm threshold range
+- **NSM:Content** — write/operate command targeting safety-critical output addresses from source not in approved Supervisory Control and Data Acquisition (SCADA) servers
+- **NSM:Content** — restart/reset service from source not in engineering workstation list outside change control window
+- **NSM:Content** — firmware-update-mode activation service from source not in engineering workstation list outside change control window
+- **NSM:Content** — write function code to same register address at rate exceeding max write rate per point within brute force detection window
+- **NSM:Content** — write function code (FC 6/16) to setpoint address range with value outside baseline value range, or from source not in approved write sources
+- **NSM:Content** — device authentication session from source Media Access Control (MAC)/Internet Protocol (IP) address not enrolled as authorized engineering workstation, with valid credential
+- **NSM:Content** — authentication success using credential matching default vendor credential list from source not in engineering workstation list
+- **NSM:Content** — credential/access code change command from source not in approved security admin list
+- **NSM:Content** — device authentication success using credential pattern matching known hardcoded credential patterns from source not in approved access list
+- **NSM:Content** — authentication success using credential matching default vendor credential list or known hardcoded credential patterns from source not in engineering workstation list
+- **NSM:Content** — restart/reset service from source not in engineering workstation list, with more than one device receiving the command within bulk restart time window
+- **NSM:Content** — GetIdentity/Identity Object response vendor/product string does not match enrolled asset inventory for device_ip
+- **NSM:Content** — CIP Port Object Get_Attribute_All or topology query from source not in approved Supervisory Control and Data Acquisition (SCADA) servers
+- **NSM:Content** — EtherNet/IP ListIdentity or Modbus broadcast from source Media Access Control (MAC) address not in approved device inventory
+- **NSM:Content** — Internet Group Management Protocol (IGMP) join or Generic Object Oriented Substation Event (GOOSE) multicast subscription from source Media Access Control (MAC) address not in approved device inventory
+- **NSM:Content** — Hypertext Transfer Protocol (HTTP) request to device management web interface with exploit-pattern payload from source not in engineering workstation list
+- **NSM:Content** — protocol-level latency inconsistent with direct communication, or Media Access Control (MAC)/Internet Protocol (IP) address binding change for device_ip
+- **NSM:Content** — transaction identifier reuse pattern or function-code distribution deviates from established per-device baseline within Adversary in the Middle (AiTM) correlation window of the Media Access Control (MAC) address binding change
+- **NSM:Content** — single session reads address range covering above full image coverage threshold percent of device total Input/Output (I/O) space, from source not in approved Supervisory Control and Data Acquisition (SCADA) servers
+- **NSM:Content** — write/control method invocation from client identity not in approved application list
+- **NSM:Content** — malformed or oversized Industrial Control System (ICS) protocol message from unexpected source followed by device behavioral anomaly (reboot, mode change) within a short window
+- **NSM:Content** — malformed or exploit-payload data via built-in communication interface from external source
+- **NSM:Content** — vendor diagnostic function code with payload matching code execution pattern from source not in engineering workstation list
+- **NSM:Content** — anomalous protocol exchange preceding device behavioral change (reboot, altered configuration)
+- **NSM:Content** — deterministic function code response content diverges from the device's established per-function response baseline without a corresponding firmware update event
+- **NSM:Content** — bulk read of configuration/data dictionary objects from source with no prior session history with this device
+- **NSM:Content** — event buffer clear or log clear service from source not in engineering workstation list, correlated with preceding suspicious activity on the same device
+- **NSM:Content** — reserved or vendor-specific function code accessing device registers directly from source not in engineering workstation list
+- **NSM:Content** — bulk configuration/program object read from source with no prior configuration-read session history
+- **NSM:Content** — Initialize_Memory or MEMORY_RESET service from source not in engineering workstation list
+- **NSM:Content** — S7comm Upload Block / Common Industrial Protocol (CIP) Read Program session from source not in engineering workstation list with bytes_recv exceeding program upload size threshold
+- **NSM:Content** — S7comm SZL Central Processing Unit (CPU)-state read or Common Industrial Protocol (CIP) Identity Object state attribute read from source not in approved Supervisory Control and Data Acquisition (SCADA) servers
+- **NSM:Content** — SZL module inventory, Identity Object, or Device Attributes query from source not in approved Supervisory Control and Data Acquisition (SCADA) servers
+- **NSM:Content** — S7comm Upload ALL or Common Industrial Protocol (CIP) full program upload from source not in engineering workstation list, bytes_recv exceeding full upload size threshold
+- **NSM:Content** — online block edit service from source not in engineering workstation list outside change control window, with device remaining in RUN mode throughout
+- **NSM:Content** — Virtual Network Computing (VNC) connection or screen-capture Hypertext Transfer Protocol (HTTP) request to embedded Human-Machine Interface (HMI) panel from source not in approved operator workstation list
+- **NSM:Content** — Virtual Network Computing (VNC) or remote console session to embedded Human-Machine Interface (HMI) panel from source not in approved management Classless Inter-Domain Routing (CIDR) subnet
+- **NSM:DNS** — Native DNS query/response content: long/encoded labels, TXT use, unusual query structure
+- **NSM:DNS** — Native DNS query/response content
+- **NSM:DNS** — DNS query/response metadata and content
+- **NSM:DNS** — Device DNS query/response content
+- **NSM:Firewall** — TLS/HTTP inspection
+- **NSM:Firewall** — High rate of inbound TCP SYN or ACK packets with missing 3-way handshake completion
+- **NSM:Firewall** — Anomalous TCP SYN or ACK spikes from specific source or interface
+- **NSM:Firewall** — Outbound encrypted traffic
+- **NSM:Firewall** — ICMP/UDP protocol anomaly
+- **NSM:Flow** — mqtt.log / xmpp.log (custom log feeds)
+- **NSM:Flow** — mqtt.log or AMQP custom log
+- **NSM:Flow** — mqtt.log, xmpp.log, amqp.log
+- **NSM:Flow** — TCP/UDP
+- **NSM:Flow** — TCP session tracking
+- **NSM:Flow** — Captured packet payloads
+- **NSM:Flow** — session behavior
+- **NSM:Flow** — External C2 channel over TLS
+- **NSM:Flow** — http/file-xfer: Inbound/outbound transfer of ELF shared objects
+- **NSM:Flow** — http.log, files.log
+- **NSM:Flow** — unexpected network activity initiated shortly after shell session starts
+- **NSM:Flow** — HTTP/WebDAV requests that contain NTLMSSP or PROPFIND/MOVE/OPTIONS with Authorization: NTLM
+- **NSM:Flow** — http.log, ssl.log
+- **NSM:Flow** — http.log, conn.log
+- **NSM:Flow** — SPAN or port-mirrored HTTP/S
+- **NSM:Flow** — http.log, ssl.log, websocket.log
+- **NSM:Flow** — ssl.log
+- **NSM:Flow** — Browser connections to known C2 or dynamic DNS domains
+- **NSM:Flow** — Session History Reset
+- **NSM:Flow** — HTTP 
+- **NSM:Flow** — query: High-volume LDAP traffic with filters targeting groupPolicyContainer attributes
+- **NSM:Flow** — HTTP/TLS Logs
+- **NSM:Flow** — Suspicious URL patterns, uncommon TLDs, short-lived domains, URL shorteners; HTTP method GET/POST
+- **NSM:Flow** — Suspicious URL patterns, uncommon TLDs, URL shorteners
+- **NSM:Flow** — Suspicious GET/POST; downloader patterns
+- **NSM:Flow** — SSH logins or scp activity
+- **NSM:Flow** — remote login and transfer
+- **NSM:Flow** — conn.log
+- **NSM:Flow** — Suspicious long-lived or reattached remote desktop sessions from unexpected IPs
+- **NSM:Flow** — HTTP payloads with SQLi/LFI/JNDI/deserialization indicators
+- **NSM:Flow** — outbound egress from web host after suspicious request
+- **NSM:Flow** — Requests towards cloud metadata or command & control from pod IPs
+- **NSM:Flow** — Connections to TCP 427 (SLP) or vCenter web services from untrusted sources
+- **NSM:Flow** — NetFlow/sFlow for odd egress to Internet from mgmt plane
+- **NSM:Flow** — packet capture or DPI logs
+- **NSM:Flow** — http.log
+- **NSM:Flow** — SMB2_LOGOFF/SMB_TREE_DISCONNECT
+- **NSM:Flow** — Unusual Base64-encoded content in URI, headers, or POST body
+- **NSM:Flow** — Base64 strings or gzip in URI, headers, or POST body
+- **NSM:Flow** — Inbound connections to 445, 3389, 5985-5986 with high error/connection-reset rate, followed by new outbound sessions from the same host to internal assets within short interval.
+- **NSM:Flow** — Inbound connections to monitored service ports from external or unusual internal sources; rapid follow-on lateral connections from the same host.
+- **NSM:Flow** — Inbound to tcp/427 (OpenSLP), tcp/443 (vSphere APIs), tcp/902, tcp/5989 followed by new unexpected outbound sessions from the ESXi/vCenter host.
+- **NSM:Flow** — Inbound to 22/5900/8080 and follow-on internal connections.
+- **NSM:Flow** — http: HTTP body or headers contain long Base64 sections; gzip/deflate + Base64
+- **NSM:Flow** — http: HTTP body contains long Base64 sections
+- **NSM:Flow** — http: Base64/MIME looking payloads from ESXi host IP
+- **NSM:Flow** — LDAP Bind/Search
+- **NSM:Flow** — LDAP Query
+- **NSM:Flow** — smtp.log
+- **NSM:Flow** — smtp.log, conn.log
+- **NSM:Flow** — remote CLI session detection
+- **NSM:Flow** — http.log, ftp.log
+- **NSM:Flow** — PCAP inspection
+- **NSM:Flow** — large HTTPS POST requests to webhook endpoints
+- **NSM:Flow** — Single, low-volume inbound packet (REJ/S0/OTH or uncommon dport/protocol) from src_ip followed by outbound SF connection to src_ip.
+- **NSM:Flow** — Rare inbound packet characteristics (ICMP/UDP/TCP to uncommon port) from src_ip followed ≤TimeWindow by outbound SF from same host to src_ip.
+- **NSM:Flow** — Inbound one-off packet to uncommon port → outbound SF to same src_ip within TimeWindow.
+- **NSM:Flow** — large upload to firmware interface port or path
+- **NSM:Flow** — http.request: HTTP requests and responses for specific script resources, unexpected content-types (application/octet-stream for script URLs), suspicious referrers, or obfuscated javascript resources
+- **NSM:Flow** — http::response: HTTP responses with suspicious content-type for scripts, long obfuscated javascript bodies, or redirects to exploit kit domains
+- **NSM:Flow** — HTTP/HTTPS requests for script resources flagged by content inspection (excessive obfuscation, eval usage, unusual redirects)
+- **NSM:Flow** — ssl.log + http.log
+- **NSM:Flow** — http/file-xfer: Outbound transfer of large video-like MIME types soon after capture
+- **NSM:Flow** — Outbound SCP, TFTP, or FTP sessions carrying configuration file content
+- **NSM:Flow** — Session Transfer Content
+- **NSM:Flow** — Captured File Content
+- **NSM:Flow** — C2 exfiltration
+- **NSM:Flow** — Transferred file observations
+- **NSM:Flow** — http::post: Outbound HTTP POST from host shortly after DB export activity
+- **NSM:Flow** — HTTPS API requests to Dropbox, iCloud, Google Drive, OneDrive shortly after DB tool usage
+- **NSM:Flow** — Observed downgrade in negotiated cipher suites or TLS/SSH versions across sessions
+- **NSM:Flow** — New egress from container IP/namespace to Internet or non-approved CIDRs/ASNs
+- **NSM:Flow** — New VM egress to crypto-mining pools or non-approved Internet ranges within minutes of boot
+- **NSM:Flow** — http::request: Network connection to package registry or C2 from interpreter shortly after install
+- **NSM:Flow** — http::request: Outbound HTTP initiated by Python interpreter
+- **NSM:Flow** — DrsAddEntry, DrsReplicaAdd, GetNCChanges calls between non-DC and DCs.
+- **NSM:Flow** — large HTTPS POST requests to text storage domains
+- **NSM:Flow** — Unexpected ARP replies or DNS responses inconsistent with authoritative servers
+- **NSM:Flow** — TLS downgrade or inconsistent DNS answers
+- **NSM:Flow** — Unusual request pattern leading up to service crash (e.g., malformed or oversized payload)
+- **NSM:Flow** — conn.log or http.log
+- **NSM:Flow** — http: HTTP bodies/headers contain long tokens with non-standard alphabets or constant-size periodic POSTs
+- **NSM:Flow** — dns: DNS labels with excessive length and restricted custom alphabets (e.g., base36 only) repeated frequently
+- **NSM:Flow** — http: suspicious long tokens with custom alphabets in body/headers
+- **NSM:Flow** — http: HTTP bodies from ESXi host IPs containing long, non-standard tokens
+- **NSM:Flow** — Traffic patterns showing downgrade from strong encryption (AES-256) to weaker or plaintext protocols
+- **NSM:Flow** — HTTP(S) requests with User-Agents typical of PowerShell or curl from desktop; or URIs matching paste-inspired payload hosts
+- **NSM:Flow** — Egress to non-approved networks from host after terminal exec
+- **NSM:Flow** — Flow/PCAP analysis for outbound payloads
+- **NSM:Flow** — conn.log + files.log + ssl.log
+- **NSM:Flow** — HTTPS or custom protocol traffic with large payloads
+- **NSM:Flow** — Unexpected script or binary content returned in HTTP response body
+- **NSM:Flow** — Injected content responses with unexpected script/malware signatures
+- **NSM:Flow** — Content injection observed in HTTPS responses with mismatched certificates or altered payloads
+- **NSM:Flow** — Relay patterns across IP hops
+- **NSM:Flow** — ldap.log
+- **NSM:Flow** — Probe responses from unauthorized APs responding to client probe requests
+- **NSM:Flow** — Excessive gratuitous ARP replies on local subnet
+- **NSM:Flow** — Inbound HTTP POST with suspicious payload size or user-agent
+- **NSM:Flow** — POST requests to .php, .jsp, .aspx files with high entropy body
+- **NSM:Flow** — dns.log
+- **NSM:FLow** — dns.log
+- **NSM:Flow** — Encrypted tunnels or proxy traffic to non-standard destinations
+- **NSM:Flow** — large transfer from management IPs to unauthorized host
+- **NSM:Flow** — Sustained abnormal inbound request rate targeting application ports (e.g., 80/443/25)
+- **NSM:Flow** — ftp.log, smb_files.log
+- **NSM:Flow** — ftp.log, conn.log
+- **NSM:Flow** — mirror/SPAN port
+- **NSM:Flow** — ftp.log, conn.log, smb_files.log
+- **NSM:Flow** — SSL/TLS Inspection or PCAP
+- **NSM:Flow** — conn.log, ssl.log
+- **NSM:Flow** — http, dns, smb, ssl logs
+- **NSM:Flow** — dns, ssl, conn
+- **NSM:Flow** — conn.log, http.log, dns.log, ssl.log
+- **NSM:Flow** — ICMP/UDP traffic (Wireshark, Suricata, Zeek)
+- **NSM:Flow** — icmp.log, weird.log
+- **NSM:Flow** — ICMP/UDP monitoring (tcpdump, Wireshark, Zeek)
+- **NSM:Flow** — Unusual responses to LLMNR (UDP 5355) or NBT-NS (UDP 137) queries from unauthorized hosts
+- **NSM:Flow** — DHCP OFFER or ACK with unauthorized DNS/gateway parameters
+- **NSM:Flow** — Multiple DHCP OFFER responses for a single DISCOVER
+- **NSM:Flow** — SSL/TLS Handshake Analysis
+- **NSM:Flow** — HTTP Header Metadata
+- **NSM:Flow** — Network Capture TLS/HTTP
+- **NSM:Flow** — container egress to unknown IPs/domains
+- **NSM:Flow** — HTTP Request Logging
+- **NSM:Flow** — ssh connections originating from third-party CIDRs
+- **NSM:Flow** — ssh/smb connections to internal resources from third-party devices
+- **NSM:Flow** — Degraded encryption throughput or switch to weaker cipher suites compared to historical baselines
+- **NSM:Flow** — ssl.log (for TLS handshake analysis), dns.log (tunneling indicators)
+- **NSM:Flow** — host switch egress data
+- **NSM:Flow** — Outbound HTTP/S
+- **NSM:Flow** — ssl.log - Certificate Analysis
+- **NSM:Flow** — ssl.log, conn.log
+- **NSM:Flow** — ssl.log, x509.log
+- **NSM:Flow** — Packets with unusual flags or payloads outside established flows (e.g., WoL magic FF×6 + 16×MAC)
+- **NSM:Flow** — Suspicious POSTs to upload endpoints
+- **NSM:Flow** — TLS/HTTP download with atypical MIME (application/octet-stream, application/x-zip, application/x-gzip) followed by local decode/write
+- **NSM:Flow** — HTTP(S)/QUIC media download with opaque content types (image/*, audio/*, video/*) from non-gallery domains or CDNs not previously used by the app
+- **NSM:Flow** — HTTP(S)/QUIC download of executable/opaque content (application/octet-stream, application/zip, application/java-archive, application/x-dex, application/x-sharedlib, text/javascript)
+- **NSM:Flow** — burst of DNS queries/connection attempts to RFC1918 or local gateway immediately after scans
+- **NSM:Flow** — HTTPS sessions exhibiting periodic request cadence or structured payload exchanges inconsistent with application baseline
+- **NSM:Flow** — Application-layer indicators observable via enterprise network controls (HTTP method, URI path pattern class, TLS SNI, JA3/ALPN when available, DNS qname/type) showing anomalous or low-and-slow command polling behavior
+- **NSM:Flow** — Near-term increase in traffic to identity endpoints associated with SMS MFA, account recovery, or OTP verification (IdP, banking, crypto), correlated to SIM/service loss
+- **NSM:Flow** — Abrupt shift from cellular egress to Wi-Fi-only egress, or new VPN/proxy session establishment following cellular service loss
+- **NSM:Flow** — Application-layer web traffic showing suspicious redirect chains, iframe/ad-tech cascades, user-agent or environment fingerprinting requests, or staged payload retrieval after page visit
+- **NSM:Flow** — Application initiates HTTPS connection with repeated certificate validation failure under enterprise proxy followed by direct network retry or stable opaque TLS communication to same endpoint within correlation window
+- **NSM:Flow** — App-destination pair shows consistent inspection bypass/refusal pattern followed by direct encrypted communication or repeated short-lived TLS sessions to same endpoint within correlation window
+- **NSM:Flow** — Application retrieves remote content from non-baselined domain or IP and the transfer direction is inbound to device during the file acquisition phase
+- **NSM:Flow** — Managed iOS app retrieves remote content from non-baselined domain or IP with inbound payload transfer during the acquisition phase
+- **NSM:Flow** — Device shows correlated inbound session establishment followed by outbound connections to separate external destinations with overlapping timing and relay-like byte symmetry
+- **NSM:Flow** — Traffic spike preceding control crash
+- **NSM:Inspection** — TLS session from mobile app fails, resets, or refuses enterprise interception while same destination/app pair repeatedly establishes direct encrypted communication pattern consistent with pinned certificate/public-key validation
+- **NSM:Inspection** — TLS handshake from iOS app repeatedly fails or is rejected only when enterprise SSL inspection certificate is presented, indicating certificate or public-key pin validation effect
+- **NSM:TLS/HTTP** — SNI/HTTP host or resolver endpoint identification when observable
+- **otids:ProtocolDecoder** — SNMP request/response decoder: OID, operation type, source/destination; flag access to undocumented/vendor-internal OIDs from non-approved NMS sources
+- **otids:ProtocolDecoder** — Decoded OT/file-transfer transaction: transfer operation, source/destination, object/file identifier where exposed by the protocol, outside approved engineering/change window
+- **otids:ProtocolDecoder** — Decoded DNP3/IEC 61850 file-transfer transaction: source/destination and file/object identifier where exposed; correlate with approved engineering source and change window
+- **otids:ProtocolDecoder** — Protocol decoder/IDS transaction: traffic on an ICS service port fails expected protocol parsing/conformance or decodes as a different application protocol
+- **otids:ProtocolDecoder** — Protocol decoder/IDS transaction/signature: exploit-relevant request against ICS remote service from unexpected source, correlated with subsequent endpoint/device anomaly
+- **saas:box** — API calls exceeding baseline thresholds
+- **saas:confluence** — REST API access from non-browser agents
+- **TelecomLogs:SS7Signaling** — Subscriber information queries, routing requests, or location update messages with anomalous node identifiers or unexpected origin patterns
+- **TelecomLogs:SS7Signaling** — Location resolution, routing, or subscriber information exchanges with anomalous signaling paths or node identities
+- **Traffic** — None
+- **VPN:MobileProxy** — Inspected HTTP transaction showing APK/package retrieval, including URL, response content type, or validated payload type
+- **VPN:MobileProxy** — Supervised or newly activated device initiates outbound connections to destinations outside Apple, MDM, update, or enterprise-managed baselines while locked, with no recent user interaction, or before expected app enrollment completion
+- **VPN:MobileProxy** — Application or device component communicates with legitimate external web-service infrastructure such as cloud storage, social media, messaging, collaboration, paste, code-hosting, CDN-backed API, or generic HTTPS service in a pattern inconsistent with the app's approved network baseline, timing, or service class
+- **VPN:MobileProxy** — Supervised device or managed app communicates with legitimate external web-service infrastructure such as cloud storage, messaging, collaboration, social, paste, or generic HTTPS API platforms in a pattern inconsistent with expected service baseline, managed app role, or normal background refresh behavior
+- **VPN:MobileProxy** — App-attributed HTTP GET or HTTPS session to public web platform (social, paste, collaboration, cloud storage, code-hosting) returned content followed by outbound connection to a different domain or IP within TimeWindow
+- **VPN:MobileProxy** — DNS query or TLS SNI for previously unseen domain occurred within TimeWindow after session to legitimate web-service domain from same app identity
+- **VPN:MobileProxy** — Initial session to public web-service domain transferred small response payload followed by connection to new external endpoint with different ASN or domain category
+- **VPN:MobileProxy** — App-attributed session to public web-service domain included inbound content retrieval followed by outbound POST, PUT, upload, comment, message send, document update, or API write to same service class within TimeWindow
+- **VPN:MobileProxy** — Repeated alternating inbound and outbound sessions to same public web-service domain or API endpoint occurred from same app identity with stable recurrence interval
+- **VPN:MobileProxy** — Outbound write operation to public web-service domain occurred after small inbound response retrieval from same domain or service class without preceding user-visible foreground activity
+- **VPN:MobileProxy** — App-attributed HTTP GET, content fetch, sync pull, or inbound-oriented HTTPS session to public web-service domain recurred within TimeWindow without app-attributed POST, PUT, PATCH, upload, comment, message send, or API write to same service class
+- **VPN:MobileProxy** — Repeated app-attributed retrieval from same public web-service domain or API endpoint occurred at stable recurrence interval with low outbound volume relative to inbound content
+- **VPN:MobileProxy** — Inbound content retrieval from public web-service domain occurred without subsequent writeback to same service class and was followed by local or downstream activity outside normal app sync profile
+- **VPN:MobileProxy** — TLS handshake, HTTP method/header pattern, or WebSocket upgrade was observed on destination port outside approved port set for detected protocol during app-attributed outbound session
+- **VPN:MobileProxy** — Repeated app-attributed sessions to same destination or service class used non-standard destination port with stable recurrence interval or persistent connection behavior
+- **VPN:MobileProxy** — Destination port was not in approved protocol-to-port mapping for app identity or service class and session did not match known enterprise proxy, relay, or developer tooling exception
+- **VPN:MobileProxy** — Observed protocol-to-port pairing was outside approved mapping for managed bundle or service class and did not match enterprise proxy, relay, or developer tooling exception
+- **WebProxy:AccessLogs** — SSRF-like patterns accessing metadata endpoint through proxy (e.g., Host: 169.254.169.254)
+- **webproxy:applog** — DNS/HTTP(S) inspection or proxy transaction metadata where enterprise decryption/inspection is deployed
+- **WIDS:AssociationLogs** — Unauthorized AP or anomalous MAC address connection attempts
+- **WinEventLog:iis** — IIS Logs
+- **WinEventLog:Microsoft-Windows-Windows Defender/Operational** — Unusual external domain access
+- **WinEventLog:Sysmon** — Outbound requests with forged tokens/cookies in headers
+- **WinEventLog:System** — EventCode=5005 (WLAN), EventCode=302 (Bluetooth)
+- **zeek:conn** — exploit-pattern traffic to Industrial Control Systems (ICS) server/device Internet Protocol (IP) from unexpected source, followed by behavioral anomaly within a short window
+- **zeek:ssl** — Transport Layer Security (TLS) Server Name Indication (SNI) or certificate issuer does not match approved vendor domains or recognized Content Delivery Network (CDN) serving vendor content
+
+## Analytics using this component
+
+- [AN1856 - Analytic 1856](../Analytics/AN1856.md)
+- [AN1860 - Analytic 1860](../Analytics/AN1860.md)
+- [AN1861 - Analytic 1861](../Analytics/AN1861.md)
+- [AN1864 - Analytic 1864](../Analytics/AN1864.md)
+- [AN1867 - Analytic 1867](../Analytics/AN1867.md)
+- [AN1869 - Analytic 1869](../Analytics/AN1869.md)
+- [AN1870 - Analytic 1870](../Analytics/AN1870.md)
+- [AN1874 - Analytic 1874](../Analytics/AN1874.md)
+- [AN1884 - Analytic 1884](../Analytics/AN1884.md)
+- [AN1887 - Analytic 1887](../Analytics/AN1887.md)
+- [AN1893 - Analytic 1893](../Analytics/AN1893.md)
+- [AN1900 - Analytic 1900](../Analytics/AN1900.md)
+- [AN1903 - Analytic 1903](../Analytics/AN1903.md)
+- [AN1906 - Analytic 1906](../Analytics/AN1906.md)
+- [AN1908 - Analytic 1908](../Analytics/AN1908.md)
+- [AN1915 - Analytic 1915](../Analytics/AN1915.md)
+- [AN1920 - Analytic 1920](../Analytics/AN1920.md)
+- [AN1922 - Analytic 1922](../Analytics/AN1922.md)
+- [AN1924 - Analytic 1924](../Analytics/AN1924.md)
+- [AN1927 - Analytic 1927](../Analytics/AN1927.md)
+- [AN1930 - Analytic 1930](../Analytics/AN1930.md)
+- [AN1931 - Analytic 1931](../Analytics/AN1931.md)
+- [AN1933 - Analytic 1933](../Analytics/AN1933.md)
+- [AN1934 - Analytic 1934](../Analytics/AN1934.md)
+- [AN2045 - Analytic 2045](../Analytics/AN2045.md)
+- [AN2047 - Analytic 2047](../Analytics/AN2047.md)
+- [AN2056 - Analytic 2056](../Analytics/AN2056.md)
+- [AN2057 - Analytic 2057](../Analytics/AN2057.md)
+- [AN2058 - Analytic 2058](../Analytics/AN2058.md)
+- [AN2096 - Analytic 2096](../Analytics/AN2096.md)
+- [AN2097 - Analytic 2097](../Analytics/AN2097.md)
+- [AN2098 - Analytic 2098](../Analytics/AN2098.md)
+- [AN2099 - Analytic 2099](../Analytics/AN2099.md)
+- [AN2100 - Analytic 2100](../Analytics/AN2100.md)
+- [AN2101 - Analytic 2101](../Analytics/AN2101.md)
+- [AN2102 - Analytic 2102](../Analytics/AN2102.md)
+- [AN2103 - Analytic 2103](../Analytics/AN2103.md)
+- [AN2136 - Analytic 2136](../Analytics/AN2136.md)
+- [AN2145 - Analytic 2145](../Analytics/AN2145.md)
+- [AN2149 - Analytic 2149](../Analytics/AN2149.md)
+- [AN2153 - Analytic 2153](../Analytics/AN2153.md)
+- [AN2171 - Analytic 2171](../Analytics/AN2171.md)
+- [AN2183 - Analytic 2183](../Analytics/AN2183.md)
+- [AN2211 - Analytic 2211](../Analytics/AN2211.md)
+- [AN2212 - Analytic 2212](../Analytics/AN2212.md)
+- [AN2217 - Analytic 2217](../Analytics/AN2217.md)
+- [AN2218 - Analytic 2218](../Analytics/AN2218.md)
+- [AN2219 - Analytic 2219](../Analytics/AN2219.md)
+- [AN2228 - Analytic 2228](../Analytics/AN2228.md)
+- [AN2229 - Analytic 2229](../Analytics/AN2229.md)
+- [AN2230 - Analytic 2230](../Analytics/AN2230.md)
+- [AN2231 - Analytic 2231](../Analytics/AN2231.md)
+- [AN2232 - Analytic 2232](../Analytics/AN2232.md)
+- [AN2233 - Analytic 2233](../Analytics/AN2233.md)
+- [AN2234 - Analytic 2234](../Analytics/AN2234.md)
+- [AN2235 - Analytic 2235](../Analytics/AN2235.md)
+- [AN2237 - Analytic 2237](../Analytics/AN2237.md)
+- [AN2238 - Analytic 2238](../Analytics/AN2238.md)
+- [AN2239 - Analytic 2239](../Analytics/AN2239.md)
+- [AN2240 - Analytic 2240](../Analytics/AN2240.md)
+- [AN2241 - Analytic 2241](../Analytics/AN2241.md)
+- [AN2242 - Analytic 2242](../Analytics/AN2242.md)
+- [AN2243 - Analytic 2243](../Analytics/AN2243.md)
+- [AN2244 - Analytic 2244](../Analytics/AN2244.md)
+- [AN2245 - Analytic 2245](../Analytics/AN2245.md)
+- [AN2246 - Analytic 2246](../Analytics/AN2246.md)
+- [AN2247 - Analytic 2247](../Analytics/AN2247.md)
+- [AN2248 - Analytic 2248](../Analytics/AN2248.md)
+- [AN2249 - Analytic 2249](../Analytics/AN2249.md)
+- [AN2250 - Analytic 2250](../Analytics/AN2250.md)
+- [AN2251 - Analytic 2251](../Analytics/AN2251.md)
+- [AN2286 - Analytic 2286](../Analytics/AN2286.md)
+- [AN2287 - Analytic 2287](../Analytics/AN2287.md)
+- [AN2288 - Analytic 2288](../Analytics/AN2288.md)

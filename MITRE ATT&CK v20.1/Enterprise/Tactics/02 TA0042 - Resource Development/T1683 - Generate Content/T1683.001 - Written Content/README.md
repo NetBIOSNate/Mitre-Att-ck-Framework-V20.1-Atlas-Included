@@ -1,0 +1,41 @@
+# T1683.001 - Written Content
+
+[Enterprise](../../../../README.md) / [Resource Development](../../README.md) / [T1683 - Generate Content](../README.md)
+
+Adversaries may create or tailor written materials to support targeting and malicious operations. Content may include phishing lures, fraudulent financial communications, fabricated job postings, fabricated employment credentials and documentation, decoy documents, social media persona content, and supporting narratives used to sustain fabricated personas over time.(Citation: GenAI Phishing)(Citation: GTIG AI Threat Tracker) Content may be authored manually, commissioned through third parties, or produced using AI-assisted tools.
+
+Written materials may impersonate legitimate government correspondence, diplomatic communications, or internal organizational documents to support targeting efforts. AI-assisted tools may also be used to tailor content to specific targets, industries, or regions. For example, adversaries may leverage AI to translate content into a target's native language or mimic the communication style of trusted senders.
+
+Written content produced through these methods may be used in support of other techniques, such as [Phishing](https://attack.mitre.org/techniques/T1660), [Spearphishing via Service](https://attack.mitre.org/techniques/T1566/003), [Phishing for Information](https://attack.mitre.org/techniques/T1598), [Internal Spearphishing](https://attack.mitre.org/techniques/T1534), [Social Engineering](https://attack.mitre.org/techniques/T1684), [Financial Theft](https://attack.mitre.org/techniques/T1657), or [Establish Accounts](https://attack.mitre.org/techniques/T1585).
+
+Written content does not include malicious code or scripts; for development of malicious code and scripts, see [Develop Capabilities](https://attack.mitre.org/techniques/T1587).
+
+[MITRE ATT&CK record](https://attack.mitre.org/techniques/T1683/001)
+
+**Tactics**  [Resource Development](../../README.md)
+
+**Platforms**  [PRE](../../../../Platforms/PRE.md)
+
+## Procedure examples
+
+- [C0064 - AI-Assisted Breach of Mexico's Government Infrastructure](../../../../Threat%20Intelligence/Campaigns/C0064%20-%20AI-Assisted%20Breach%20of%20Mexico%27s%20Government%20Infrastructure.md) — During the [AI-Assisted Breach of Mexico's Government Infrastructure](https://attack.mitre.org/campaigns/C0064), the adversary tasked Claude Code to generate forged tax compliance certificates with the data collected by custom python scripts.(Citation: AI-Mexico-Govt-Breach) [AI-Mexico-Govt-Breach](https://cdn.prod.website-files.com/69944dd945f20ca4a27a7c47/69d8bb5aea59e31efb3b8a7f_Tech_Report_ai_breach_mex_gov.pdf)
+- [G0099 - APT-C-36](../../../../Threat%20Intelligence/Groups/G0099%20-%20APT-C-36.md) — [APT-C-36](https://attack.mitre.org/groups/G0099) has generated email content impersonating official notifications and documents that direct victims to execute malicious payloads.(Citation: Kaspersky BlindEagle AUG 2024) [Kaspersky BlindEagle AUG 2024](https://securelist.com/blindeagle-apt/113414/)
+- [G0082 - APT38](../../../../Threat%20Intelligence/Groups/G0082%20-%20APT38.md) — [APT38](https://attack.mitre.org/groups/G0082) has created decoy content that resembles legitimate guidance for support to victims that contain hidden malicious actions.(Citation: Microsoft Sapphire Sleet APR 2026) [Microsoft Sapphire Sleet APR 2026](https://www.microsoft.com/en-us/security/blog/2026/04/16/dissecting-sapphire-sleets-macos-intrusion-from-lure-to-compromise/)
+- [G1052 - Contagious Interview](../../../../Threat%20Intelligence/Groups/G1052%20-%20Contagious%20Interview.md) — [Contagious Interview](https://attack.mitre.org/groups/G1052) has created fake social media accounts such as LinkedIn and Telegram accounts for their targeting efforts.(Citation: ESET Contagious Interview BeaverTail InvisibleFerret February 2025) [ESET Contagious Interview BeaverTail InvisibleFerret February 2025](https://www.welivesecurity.com/en/eset-research/deceptivedevelopment-targets-freelance-developers/)
+- [S9044 - Kali365](../../../../Threat%20Intelligence/Software/Malware/S9044%20-%20Kali365.md) — [Kali365](https://attack.mitre.org/software/S9044) has generated tailored branded phishing lures to target victims utilizing a myriad of reputable services and brands that entice users to interact with the content.(Citation: Artic Wolf Labs Kali365 Device Code April 2026)(Citation: Artic Wolf Kali365 Device Code OAuth June 2026)(Citation: FBI IC3 Alert I-052126 Kali365 May 2026)(Citation: Huntress Kali365 Device Code June 2026) [Kali365](https://attack.mitre.org/software/S9044) has also been enabled with AI such as Claude Sonnet that evaluates emails and generates tailored responses to facilitate BEC activities.(Citation: Huntress Kali365 Device Code June 2026) [Artic Wolf Labs Kali365 Device Code April 2026](https://arcticwolf.com/resources/blog/token-bingo-dont-let-your-code-be-the-winner/) · [Artic Wolf Kali365 Device Code OAuth June 2026](https://arcticwolf.com/resources/blog/kali365-expands-into-aws-microsoft-okta-xerox-max-messenger/) · [FBI IC3 Alert I-052126 Kali365 May 2026](https://www.ic3.gov/PSA/2026/PSA260521) · [Huntress Kali365 Device Code June 2026](https://www.huntress.com/blog/kali365-device-code-phishing-kit)
+- [G1059 - NIMBUS MANTICORE](../../../../Threat%20Intelligence/Groups/G1059%20-%20NIMBUS%20MANTICORE.md) — [NIMBUS MANTICORE](https://attack.mitre.org/groups/G1059) has created career-themed phishing lures to entice victims.(Citation: CheckPoint_NimbusManticore_May2026)(Citation: Mandiant_UNC1549_Feb2024) [CheckPoint_NimbusManticore_May2026](https://research.checkpoint.com/2026/fast-and-furious-nimbus-manticore-operations-during-the-iranian-conflict/) · [Mandiant_UNC1549_Feb2024](https://cloud.google.com/blog/topics/threat-intelligence/suspected-iranian-unc1549-targets-israel-middle-east)
+- [G1056 - TeamPCP](../../../../Threat%20Intelligence/Groups/G1056%20-%20TeamPCP.md) — [TeamPCP](https://attack.mitre.org/groups/G1056) has created Dune-themed GitHub repositories using stolen tokens.(Citation: Wiz Mini Shai-Hulud MAY 2026) [Wiz Mini Shai-Hulud MAY 2026](https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised)
+- [G1058 - The Gentlemen](../../../../Threat%20Intelligence/Groups/G1058%20-%20The%20Gentlemen.md) — [The Gentlemen](https://attack.mitre.org/groups/G1058) has utilized branded code and ransom notes.(Citation: MSTI_GentelmenRansomware_May2026)(Citation: Intel471_TheGentlemen_Aug2026)(Citation: Sophos_TheGentlemen_Sept2026)(Citation: CheckPointResearch_TheGentlemen_April2026)(Citation: CarveyODonnellWelchHuntress_TheGentlemen_May2026)(Citation: TrendAI_TheGentlemen_Sept2025) [CarveyODonnellWelchHuntress_TheGentlemen_May2026](https://www.huntress.com/blog/the-gentlemen-ransomware-defense-evasion-ttps) · [CheckPointResearch_TheGentlemen_April2026](https://research.checkpoint.com/2026/dfir-report-the-gentlemen/) · [Intel471_TheGentlemen_Aug2026](https://www.intel471.com/blog/threat-hunting-case-study-the-gentlemen) · [MSTI_GentelmenRansomware_May2026](https://www.microsoft.com/en-us/security/blog/2026/05/28/the-gentlemen-ransomware-dissecting-a-self-propagating-go-encryptor/) · [TrendAI_TheGentlemen_Sept2025](https://www.trendaisecurity.com/en-us/resources-insights/trendai-security-blog/unmasking-the-gentlemen-ransomware) · [Sophos_TheGentlemen_Sept2026](https://www.sophos.com/en-gb/blog/ungentlemanly-behavior-insights-into-a-ransomware-operation)
+
+## Mitigations
+
+- [M1056 - Pre-compromise](../../../../Defenses/Mitigations/M1056%20-%20Pre-compromise.md) — This technique cannot be easily mitigated with preventive controls since it is based on behaviors performed outside of the scope of enterprise defenses and controls. Efforts should focus on designing defenses that are not reliant on atomic indicators.
+
+## Detection strategies
+
+- [DET0917 - Detection of Written Content](../../../../Defenses/Detection%20Strategies/DET0917%20-%20Detection%20of%20Written%20Content.md)
+
+## Sources
+
+- [GenAI Phishing](https://www.adaptivesecurity.com/blog/ai-phishing)
+- [GTIG AI Threat Tracker](https://cloud.google.com/blog/topics/threat-intelligence/distillation-experimentation-integration-ai-adversarial-use)

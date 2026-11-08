@@ -1,0 +1,423 @@
+# DC0032 - Process Creation
+
+[Mobile](../../README.md) / [Data Components](README.md)
+
+Refers to the event in which a new process (executable) is initialized by an operating system. This can involve parent-child process relationships, process arguments, and environmental variables. Monitoring process creation is crucial for detecting malicious behaviors, such as execution of unauthorized binaries, scripting abuse, or privilege escalation attempts..
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0032)
+
+## Log sources and channels
+
+- **android:logcat** — dlopen of a recently created .so OR short-lived child (/system/bin/sh,toybox,linker) spawned by app_process
+- **android:logcat** — startActivity on top of <target_pkg> (launchMode/singleTop), task switch immediately after focus
+- **android:logcat** — unexpected spikes in fork/exec/app process start events for helper utilities used for enumeration (ps, toybox/toolbox variants) from same UID
+- **AndroidLogs:Framework** — Creation of a new process running as system or root UID whose executable path resides under an app container path (for example, /data/app or /data/user/0/<pkg>), or whose parent process originates from an app sandbox
+- **AndroidLogs:Kernel** — init or zygote process executing scripts or binaries from non-standard data or sdcard locations during early boot
+- **auditd:EXECVE** — execve: Processes launched with LD_PRELOAD/LD_LIBRARY_PATH pointing to non-system dirs
+- **auditd:EXECVE** — EXECVE
+- **auditd:EXECVE** — execution of unexpected binaries during user shell startup
+- **auditd:EXECVE** — systemctl spawning managed processes
+- **auditd:EXECVE** — execve
+- **auditd:EXECVE** — Execution of dd, shred, wipe targeting block devices
+- **auditd:EXECVE** — /usr/sbin/postfix, /usr/sbin/exim, /usr/sbin/sendmail
+- **auditd:EXECVE** — None
+- **auditd:EXECVE** — Shell commands invoked by SQL process such as postgres, mysqld, or mariadbd
+- **auditd:EXECVE** — Execution of ssh/scp/sftp without corresponding authentication log
+- **auditd:EXECVE** — Execution of dd/sgdisk with arguments writing to sector 0 or partition table
+- **auditd:EXECVE** — Execution of dd, shred, or wipe with arguments targeting block devices
+- **auditd:EXECVE** — systemctl stop auditd, kill -9 <pid>, or modifications to /etc/selinux/config
+- **auditd:EXECVE** — cat|less|grep accessing .bash_history from a non-shell process
+- **auditd:EXECVE** — Process execution via .desktop Exec path from /etc/xdg/autostart or ~/.config/autostart
+- **auditd:SYSCALL** — execve for python/python3 and script path/arguments
+- **auditd:SYSCALL** — execve for node/nodejs or JavaScript runtime and child processes 
+- **auditd:SYSCALL** — execve for shell/interpreter and child commands 
+- **auditd:SYSCALL** — syscall=execve; command or executable associated with the technique runs outside the approved ICS administrative/application baseline
+- **auditd:SYSCALL** — execve
+- **auditd:SYSCALL** — execve network tools
+- **auditd:SYSCALL** — execve calls to soffice.bin with suspicious macro execution flags
+- **auditd:SYSCALL** — execve of systemctl or service stop
+- **auditd:SYSCALL** — execve of launchctl or pkill
+- **auditd:SYSCALL** — execve: Execution of klist, kinit, or tools interacting with ccache outside normal user context
+- **auditd:SYSCALL** — execve: Electron-based binary spawning shell or script interpreter
+- **auditd:SYSCALL** — execve calls with high-frequency or known bandwidth-intensive tools
+- **auditd:SYSCALL** — execve or syscall invoking vm artifact check commands (e.g., dmidecode, lspci, dmesg)
+- **auditd:SYSCALL** — process persists beyond parent shell termination
+- **auditd:SYSCALL** — execve: Execution of scripts or binaries sourced from mail directories (/var/mail, ~/Maildir)
+- **auditd:SYSCALL** — execve: Execution of container management CLIs (docker, crictl, kubectl) or interpreted shells (sh, bash, python) within container context
+- **auditd:SYSCALL** — execve: Execution of discovery commands targeting backup binaries, processes, or config paths
+- **auditd:SYSCALL** — execve: Execution of scripts or binaries spawned from browser processes
+- **auditd:SYSCALL** — EXECVE
+- **auditd:SYSCALL** — execve: Execution of bash, python, or perl processes spawned by browser/email client
+- **auditd:SYSCALL** — execve of /bin/sh,/bin/bash,/usr/bin/curl,/usr/bin/python by service accounts (e.g., apache, mysql, nobody) immediately after inbound network activity.
+- **auditd:SYSCALL** — SYSCALL record where exe contains passwd/userdel/chage and auid != root
+- **auditd:SYSCALL** — execve of base64|openssl|xxd|python|perl with arguments matching Base64 flags
+- **auditd:SYSCALL** — execve on code or jetbrains-gateway with remote flags
+- **auditd:SYSCALL** — execve of sleep or ping command within script interpreted by bash/python
+- **auditd:SYSCALL** — execve or socket/connect system calls from processes using crypto libraries
+- **auditd:SYSCALL** — type=EXECVE or SYSCALL for /bin/date, /usr/bin/timedatectl, /sbin/hwclock, /bin/cat /etc/timezone, /bin/cat /proc/uptime
+- **auditd:SYSCALL** — socket(AF_PACKET|AF_INET, SOCK_RAW, *), setsockopt(… SO_ATTACH_FILTER|SO_ATTACH_BPF …), bpf(cmd=BPF_PROG_LOAD), open/openat path="/dev/bpf*" (BSD/macOS-like) or setcap cap_net_raw.
+- **auditd:SYSCALL** — execution of known flash tools (e.g., flashrom, fwupd)
+- **auditd:SYSCALL** — execve of system tools like dmidecode, lspci, lscpu, dmesg, systemd-detect-virt
+- **auditd:SYSCALL** — execve: Suspicious binaries or scripts interacting with authentication binaries (sshd, gdm, login)
+- **auditd:SYSCALL** — execve: execve calls where a browser/webview process is parent and child is interpreter (python, sh, ruby) or downloader (curl, wget)
+- **auditd:SYSCALL** — execve of smbclient, smbmap, rpcclient, nmblookup, crackmapexec smb
+- **auditd:SYSCALL** — execve call with argv matching known disk enumeration commands (lsblk, parted, fdisk)
+- **auditd:SYSCALL** — execve, connect
+- **auditd:SYSCALL** — execve logging for /usr/bin/systemctl and systemd-run
+- **auditd:SYSCALL** — execve: Execution of files saved in mail or download directories
+- **auditd:SYSCALL** — execve: Execution of CLI tools like psql, mysql, mongo, sqlite3
+- **auditd:SYSCALL** — execve: Execution of pip, npm, gem, or similar package managers
+- **auditd:SYSCALL** — fork/exec of service via PID 1 (systemd)
+- **auditd:SYSCALL** — execve: execve where exe=/usr/bin/python3 or similar interpreter
+- **auditd:SYSCALL** — Execution of binaries located in /etc/init.d/ or systemd service paths
+- **auditd:SYSCALL** — execve: exe in {/bin/bash,/bin/sh,/usr/bin/python*,/usr/bin/perl,/usr/bin/php,/usr/bin/node,/usr/bin/curl,/usr/bin/wget,/usr/bin/xdg-open,/usr/bin/ssh,/usr/bin/rundll32 (wine)} AND ppid process is a document viewer/browser
+- **auditd:SYSCALL** — execve: Commands that alter firewall or start listeners: iptables|nft|ufw|firewall-cmd|pfctl|systemctl start sshd/telnet/dropbear; raw-socket/libpcap tools (tcpdump, tshark, nmap --raw).
+- **auditd:SYSCALL** — execve: Execution of binaries/scripts presenting false health messages for security daemons
+- **auditd:SYSCALL** — execve, setifflags
+- **auditd:SYSCALL** — execve calls for qemu-system*, kvm, or VBoxHeadless
+- **auditd:SYSCALL** — execve of interpreters (python, perl), custom binaries, or shell utilities with long arguments containing non-standard tokens
+- **auditd:SYSCALL** — Execution of dpkg or rpm followed by fork/execve from within postinst, prerm, etc.
+- **auditd:SYSCALL** — execve: exe in (/usr/bin/bash,/usr/bin/sh,/usr/bin/zsh,/usr/bin/python*) AND cmdline matches '(curl|wget).*(\||\|\s*sh|bash)|base64\s*-d|python\s*-c'
+- **auditd:SYSCALL** — Invocation of packet generation tools (e.g., hping3, nping) or fork bombs
+- **auditd:SYSCALL** — execve for proxy tools
+- **auditd:SYSCALL** — execve or nanosleep with no stdout/stderr I/O
+- **auditd:SYSCALL** — Execution of dpkg, rpm, or other package manager with list flag
+- **auditd:SYSCALL** — apache2 or nginx spawning sh, bash, or python interpreter
+- **auditd:SYSCALL** — execve: Execution of commands modifying iptables/nftables to block selective IPs
+- **auditd:SYSCALL** — execve with LD_PRELOAD or linker-related environment variables set
+- **auditd:SYSCALL** — execve of re-parented process
+- **auditd:SYSCALL** — socket: Suspicious creation of AF_UNIX sockets outside expected daemons
+- **auditd:SYSCALL** — execve: Agent/headless flags (listen/connect/reverse/tunnel) or remote-control binaries spawning shells
+- **auditd:SYSCALL** — systemctl enable/start: Creation/enablement of custom .service units in /etc/systemd/system
+- **auditd:SYSCALL** — execve: systemctl stop, service stop, or kill -9 on security daemons (e.g., falcon-sensor, auditd)
+- **auditd:SYSCALL** — Execution of network stress tools or anomalies in socket/syscall behavior
+- **auditd:SYSCALL** — execve: Commands altering firewall or enabling listeners (iptables, nft, ufw, firewall-cmd, systemctl start *ssh*/*telnet*, ip route add, tcpdump, tshark)
+- **auditd:SYSCALL** — execve, unlink
+- **auditd:SYSCALL** — execve or socket/connect system calls for processes using RSA handshake
+- **auditd:SYSCALL** — execve: parent process is usb/hid device handler, child process bash/python invoked
+- **auditd:SYSCALL** — execve: Execution of suspicious exploit binaries targeting security daemons
+- **azure:vmguest** — Unexpected execution of cloud agent processes (e.g., WindowsAzureGuestAgent.exe, ssm-agent) followed by arbitrary script or binary execution
+- **containerd:events** — New container with suspicious image name or high resource usage
+- **containerd:Events** — unusual process spawned from container image context
+- **containerd:runtime** — /var/log/containers/*.log
+- **containers:osquery** — bandwidth-intensive command execution from within a container namespace
+- **docker:audit** — Process execution events within container namespace context
+- **docker:events** — Docker/Kubernetes audit of exec/attach (kubectl exec) or unexpected child processes inside container
+- **ebpf:syscalls** — process execution or network connect from just-created container PID namespace
+- **ebpf:syscalls** — execve
+- **esxi:cron** — process or cron activity
+- **esxi:hostd** — process execution across cloud VM
+- **esxi:hostd** — execution of esxcli with args matching 'storage', 'filesystem', 'core device list'
+- **esxi:hostd** — process
+- **esxi:hostd** — host daemon events related to VM operations and configuration queries during reconnaissance
+- **esxi:shell** — /root/.ash_history or /etc/init.d/*
+- **esxi:shell** — /var/log/shell.log
+- **esxi:shell** — commands containing base64, openssl enc -base64, xxd -p
+- **esxi:shell** — /var/log/vmkernel.log, /var/log/vmkwarning.log
+- **esxi:shell** — Shell Execution
+- **esxi:shell** — None
+- **esxi:shell** — commands containing long non-standard tokens or custom lookup tables
+- **esxi:vmkernel** — spawned shell or execution environment activity
+- **esxi:vmkernel** — Exec
+- **esxi:vmkernel** — VMware kernel events for hardware and system configuration access during environmental validation
+- **esxi:vobd** — /var/log/vobd.log
+- **etw:Microsoft-Windows-Kernel-Process** — provider: ETW CreateProcess events linking msbuild.exe to suspicious children where standard logs are incomplete
+- **fs:fsusage** — Execution of disguised binaries
+- **fs:fsusage** — binary execution of security_authtrampoline
+- **iOS:unifiedlog** — launchd invocation of binary from non-Apple, non-AppStore, or sideloaded location during boot or shortly after unlock
+- **iOS:unifiedlog** — Creation of a new process with elevated UID or sensitive entitlements whose binary path is associated with an app container or whose parent/caller is a low-privileged app/webcontent process
+- **kubernetes:apiserver** — kubectl exec or kubelet API calls targeting running pods
+- **kubernetes:apiserver** — exec into pod followed by secret retrieval via API
+- **linux:osquery** — Execution of binary resolved from $PATH not located in /usr/bin or /bin
+- **linux:osquery** — process_events
+- **linux:osquery** — execution of known firewall binaries
+- **linux:osquery** — execve: command like 'date', 'timedatectl', 'hwclock', 'cat /etc/timezone'
+- **linux:osquery** — Process execution with LD_PRELOAD or modified library path
+- **linux:osquery** — process listening or connecting on non-standard ports
+- **linux:osquery** — Processes linked with libssl or crypto libraries making outbound connections
+- **linux:osquery** — process execution events for permission modification utilities with command-line analysis
+- **linux:osquery** — Anomalous parent PID change
+- **linux:osquery** — child process invoking dynamic linker post-ptrace
+- **linux:osquery** — socat, ssh, or nc processes opening unexpected ports
+- **linux:osquery** — processes modifying environment variables related to history logging
+- **linux:syslog** — KERN messages about eBPF program load/verify or LSM denials related to bpf.
+- **linux:syslog** — Unauthorized sudo or shell access, especially leading to file changes in /var/www or /srv/http
+- **linux:syslog** — systemd-udevd spawning user-defined action from RUN+=
+- **linux:Sysmon** — EventCode=1
+- **linux:Sysmon** — process creation events linked to container namespaces executing host-level binaries
+- **m365:defender** — AdvancedHunting(DeviceEvents, ProcessCreate, ImageLoad, AMSI/ETW derived signals)
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_EXEC
+- **macos:endpointsecurity** — exec
+- **macos:endpointsecurity** — exec: Process execution context for loaders calling dlopen/dlsym
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_EXEC with unusual parent-child process relationships from zsh
+- **macos:endpointsecurity** — es_event_exec
+- **macos:endpointsecurity** — exec: arguments contain Base64-like strings
+- **macos:endpointsecurity** — exec: binary == "/usr/sbin/systemsetup" and args contains "-gettimezone"
+- **macos:endpointSecurity** — ES_EVENT_TYPE_NOTIFY_EXEC
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_EXEC: Process execution of "sharing -l", "smbutil view", "mount_smbfs"
+- **macos:endpointsecurity** — exec: Exec of ffmpeg, avfoundation-based binaries, or custom signed apps accessing camera
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_EXEC: arguments contain long, non-standard tokens / custom alphabets
+- **macos:endpointsecurity** — exec events
+- **macos:osquery** — processes
+- **macos:osquery** — process_events
+- **macos:osquery** — process reading browser configuration paths
+- **macos:osquery** — Execution of non-standard binaries accessing Kerberos APIs
+- **macos:osquery** — execve
+- **macos:osquery** — process_events OR launchd
+- **macos:osquery** — launchd or process_events
+- **macos:osquery** — parent_name in ('sshd','httpd','screensharingd') spawning shells or scripting runtimes.
+- **macos:osquery** — execve: command LIKE '%systemsetup -gettimezone%' OR '%date%'
+- **macos:osquery** — execve: Processes unexpectedly invoking Keychain or authentication APIs
+- **macos:osquery** — Invocation of osascript or dylib injection
+- **macos:osquery** — query: process_events, launchd, and tcc.db access
+- **macos:osquery** — exec
+- **macos:osquery** — process_events where path like '%tcpdump%'
+- **macos:osquery** — process execution monitoring for permission modification utilities with command-line argument analysis
+- **macos:osquery** — Execution of flooding tools or compiled packet generators
+- **macos:osquery** — process_events table
+- **macos:osquery** — curl, python scripts, rsync with internal share URLs
+- **macos:osquery** — Rapid spawning of resource-heavy applications (e.g., Preview, Safari, Office)
+- **macos:osquery** — Processes executing kextload, spctl, or modifying kernel extension directories
+- **macos:osquery** — Unsigned or ad-hoc signed process executions in user contexts
+- **macos:osquery** — process event monitoring with focus on discovery utilities and cryptographic framework usage correlation
+- **macos:osquery** — launchd, processes
+- **macos:osquery** — execve: Unsigned or unnotarized processes launched with high privileges
+- **macos:unifiedlog** — log stream 'eventMessage contains pubsub or broker'
+- **macos:unifiedlog** — Process execution path inconsistent with baseline PATH directories
+- **macos:unifiedlog** — Execution of launchctl with suspicious arguments
+- **macos:unifiedlog** — Process execution of Microsoft Word, Excel, PowerPoint with macro execution attempts
+- **macos:unifiedlog** — exec logs
+- **macos:unifiedlog** — launch of Terminal.app or shell with non-standard environment setup
+- **macos:unifiedlog** — process::exec
+- **macos:unifiedlog** — Electron app spawning unexpected child process
+- **macos:unifiedlog** — exec or spawn calls to proxy tools or torrent clients
+- **macos:unifiedlog** — process launch
+- **macos:unifiedlog** — log stream --info --predicate 'subsystem == "com.apple.cfprefsd"'
+- **macos:unifiedlog** — execution of security, sqlite3, or unauthorized binaries
+- **macos:unifiedlog** — Unexpected applications generating outbound DNS queries
+- **macos:unifiedlog** — Unexpected child process of Safari or Chrome
+- **macos:unifiedlog** — execution of system_profiler, ioreg, kextstat with argument patterns related to VM/sandbox checks
+- **macos:unifiedlog** — process writes or modifies files in excluded paths
+- **macos:unifiedlog** — process
+- **macos:unifiedlog** — com.apple.mail.* exec.*
+- **macos:unifiedlog** — execution of memory inspection tools (lldb, gdb, osqueryi)
+- **macos:unifiedlog** — background process persists beyond user logout
+- **macos:unifiedlog** — Preview.app, Safari.app, or Mail.app spawning new processes outside normal patterns
+- **macos:unifiedlog** — None
+- **macos:unifiedlog** — Execution of processes linked to hijacked sessions (e.g., anomalous parent-child process lineage)
+- **macos:unifiedlog** — exec events where web process starts a shell/tooling
+- **macos:unifiedlog** — exec of osascript, bash, curl with suspicious parameters
+- **macos:unifiedlog** — Process execution logs showing discovery commands like mdfind, system_profiler, or launchctl list
+- **macos:unifiedlog** — process and file events via log stream
+- **macos:unifiedlog** — Browser processes launching unexpected interpreters (osascript, bash)
+- **macos:unifiedlog** — exec: Execution of defaults, plutil, or common editors (vim/nano) targeting plist files
+- **macos:unifiedlog** — process:exec
+- **macos:unifiedlog** — Execution of osascript, bash, or Terminal initiated from Mail.app or Safari
+- **macos:unifiedlog** — process activity stream
+- **macos:unifiedlog** — Post-login execution of unrecognized child process from launchd or loginwindow
+- **macos:unifiedlog** — process command line contains base64, -enc, openssl enc -base64
+- **macos:unifiedlog** — Execution of process launched via loginwindow session restore
+- **macos:unifiedlog** — process: exec + filewrite: ~/.ssh/authorized_keys
+- **macos:unifiedlog** — Execution of Java apps or other processes with hidden window attributes
+- **macos:unifiedlog** — Process Execution
+- **macos:unifiedlog** — process: code or jetbrains-gateway launching with --tunnel or --remote
+- **macos:unifiedlog** — log stream --predicate 'processImagePath CONTAINS "curl" OR "osascript"'
+- **macos:unifiedlog** — Process using AES/RC4 routines unexpectedly
+- **macos:unifiedlog** — process exec events of systemsetup, date, ioreg with command_line parameters indicating time discovery
+- **macos:unifiedlog** — execution of osascript, curl, or unexpected automation
+- **macos:unifiedlog** — exec /usr/bin/pwpolicy
+- **macos:unifiedlog** — Exec of tcpdump, rvictl, custom tools linked to libpcap.A.dylib; sysextd/systemextensionsctl events for NetworkExtension content filters.
+- **macos:unifiedlog** — com.apple.firmwareupdater activity or update-firmware binary invoked
+- **macos:unifiedlog** — exec or spawn of 'system_profiler', 'ioreg', 'kextstat', 'sysctl', or calls to sysctl API
+- **macos:unifiedlog** — process_create: Process creation where parent is Safari/Google Chrome and child is script interpreter or signed-but-unusual helper binary
+- **macos:unifiedlog** — process:launch
+- **macos:unifiedlog** — Execution of scp, rsync, curl with remote destination
+- **macos:unifiedlog** — logMessage contains pbpaste or osascript
+- **macos:unifiedlog** — process launch of diskutil or system_profiler with SPStorageDataType
+- **macos:unifiedlog** — Mail.app executing with parameters updating rules state
+- **macos:unifiedlog** — process_name IN ("VBoxManage", "prlctl") AND command CONTAINS ("list", "show")
+- **macos:unifiedlog** — exec srm|exec openssl|exec gpg
+- **macos:unifiedlog** — Execution of process with DYLD_INSERT_LIBRARIES set
+- **macos:unifiedlog** — process and signing chain events
+- **macos:unifiedlog** — launchservices events for misleading extensions
+- **macos:unifiedlog** — launchd services binding to non-standard ports
+- **macos:unifiedlog** — Execution of binaries with unsigned or anomalously signed certificates
+- **macos:unifiedlog** — Execution of Terminal, osascript, or other interpreters originating from Mail or Preview
+- **macos:unifiedlog** — process events
+- **macos:unifiedlog** — Execution of unexpected terminal or web scripts modifying /Library/WebServer/Documents
+- **macos:unifiedlog** — Process start of Java or native DB client tools
+- **macos:unifiedlog** — loginwindow or tccd-related entries
+- **macos:unifiedlog** — Command line invocation of pip3, brew install, npm install from interactive Terminal
+- **macos:unifiedlog** — Execution of ssh or sftp without corresponding login event
+- **macos:unifiedlog** — launch of remote desktop app or helper binary
+- **macos:unifiedlog** — Unexpected processes making network calls based on DNS-derived ports
+- **macos:unifiedlog** — launchctl spawning new processes
+- **macos:unifiedlog** — launchctl activity and process creation
+- **macos:unifiedlog** — Execution of Python, Swift, or other binaries invoking archiving libraries
+- **macos:unifiedlog** — Process invoking SSL routines from Security framework
+- **macos:unifiedlog** — Execution of binary listed in newly modified LaunchAgent plist
+- **macos:unifiedlog** — Execution of bless or nvram modifying boot parameters
+- **macos:unifiedlog** — Unexpected processes registered with launchd
+- **macos:unifiedlog** — Process launch
+- **macos:unifiedlog** — execution of curl, osascript, or unexpected Office processes
+- **macos:unifiedlog** — Trust validation failures or bypass attempts during notarization and code signing checks
+- **macos:unifiedlog** — process_exec: image in {/bin/bash,/bin/zsh,/usr/bin/osascript,/usr/bin/python*,/usr/bin/curl,/usr/bin/ssh,/usr/bin/open} AND parent in {Preview, TextEdit, Microsoft Word, Microsoft Excel, AdobeReader, Archive Utility, Finder}
+- **macos:unifiedlog** — Execution of zip, ditto, hdiutil, or openssl by processes not normally associated with archiving
+- **macos:unifiedlog** — process execution events for chmod, chown, chflags with unusual parameters or targets
+- **macos:unifiedlog** — execve or dylib load from memory without backing file
+- **macos:unifiedlog** — exec: Execution of pfctl, socketfilterfw, launchctl start ssh/telnet, libpcap consumers.
+- **macos:unifiedlog** — Unusual child process tree indicating attempted recovery after crash
+- **macos:unifiedlog** — Execution of processes mimicking Apple Security & Privacy GUIs
+- **macos:unifiedlog** — execution of curl, git, or Office processes with network connections
+- **macos:unifiedlog** — log stream - process subsystem
+- **macos:unifiedlog** — Process execution for VBoxHeadless, prl_vm_app, vmware-vmx
+- **macos:unifiedlog** — process logs
+- **macos:unifiedlog** — command line or log output shows non-standard encoding routines
+- **macos:unifiedlog** — Execution of /usr/sbin/installer spawning child process from within /private/tmp or package contents
+- **macos:unifiedlog** — execve: Helper tools invoked through XPC executing unexpected binaries
+- **macos:unifiedlog** — execution of modified binary without valid signature
+- **macos:unifiedlog** — exec: ParentImage in (Terminal, iTerm2) AND Image in (/bin/zsh,/bin/bash,/usr/bin/python*) AND CommandLine matches '(curl|wget).*(\||\|\s*sh|bash)|base64 -D|python -c'
+- **macos:unifiedlog** — process created with repeated ICMP or UDP flood behavior
+- **macos:unifiedlog** — process: exec
+- **macos:unifiedlog** — Child processes of Safari, Chrome, or Firefox executing scripting interpreters
+- **macos:unifiedlog** — Execution of older or non-standard interpreters
+- **macos:unifiedlog** — process execution events for chmod, chown, chflags with parameter analysis and target path examination
+- **macos:unifiedlog** — process, socket, and DNS logs
+- **macos:unifiedlog** — Command line containing `trap` or `echo 'trap` written to login shell files
+- **macos:unifiedlog** — log collect --predicate
+- **macos:unifiedlog** — launchd or osascript spawns process with delay command
+- **macos:unifiedlog** — process:spawn
+- **macos:unifiedlog** — log stream --predicate 'eventMessage contains "exec"'
+- **macos:unifiedlog** — Execution of system_profiler or osascript invoking enumeration
+- **macos:unifiedlog** — httpd spawning bash, zsh, python, or osascript
+- **macos:unifiedlog** — Execution of /usr/libexec/security_authtrampoline or child processes originating from non-trusted binaries triggering credential prompts
+- **macos:unifiedlog** — execution of security or osascript
+- **macos:unifiedlog** — launchd spawning processes tied to new or modified LaunchDaemon .plist entries
+- **macos:unifiedlog** — Execution of ping, nping, or crafted network packets via bash or python to reflection services
+- **macos:unifiedlog** — System process modifications altering DNS/proxy settings
+- **macos:unifiedlog** — process: spawn, exec
+- **macos:unifiedlog** — Process creation events where command line = pmset with arguments affecting sleep, hibernatemode, displaysleep
+- **macos:unifiedlog** — Unexpected apps performing repeated DNS lookups
+- **macos:unifiedlog** — launchservices or loginwindow events
+- **macos:unifiedlog** — execution of process with DYLD_INSERT_LIBRARIES set
+- **macos:unifiedlog** — Suspicious Swift/Objective-C or scripting processes writing archive-like outputs
+- **macos:unifiedlog** — Process creation with parent PID of 1 (launchd)
+- **macos:unifiedlog** — Execution of diskutil or hdiutil attaching hidden partitions
+- **macos:unifiedlog** — process execution events for discovery utilities (system_profiler, sw_vers, dscl, networksetup) with command-line parameter analysis
+- **macos:unifiedlog** — Unexpected apps generating frequent DNS queries
+- **macos:unifiedlog** — process exec
+- **macos:unifiedlog** — Non-standard processes invoking financial applications or payment APIs
+- **macos:unifiedlog** — Process exec of remote-control apps or binaries with headless/connect flags
+- **macos:unifiedlog** — Execution of launchctl unload, kill, or removal of security agent daemons
+- **macos:unifiedlog** — process activity, exec events
+- **macos:unifiedlog** — log stream process subsystem
+- **macos:unifiedlog** — process:exec and kext load events
+- **macos:unifiedlog** — log stream --info --predicate 'eventMessage CONTAINS "exec"'
+- **macos:unifiedlog** — Unsigned binary execution following SIP change
+- **macos:unifiedlog** — exec: Execution of /sbin/pfctl, /usr/libexec/ApplicationFirewall/socketfilterfw, ifconfig, tcpdump, npcap/libpcap consumers
+- **macos:unifiedlog** — Execution of zip, ditto, hdiutil, or openssl by non-terminal parent processes
+- **macos:unifiedlog** — Execution of binaries with TCC protected access under unexpected parent processes such as Finder.app, SystemUIServer, or nsurlsessiond
+- **macos:unifiedlog** — process execution of ssh with -L/-R forwarding flags
+- **macos:unifiedlog** — launchd or cron spawning mining binaries
+- **macos:unifiedlog** — Process invoking SecKeyCreateRandomKey or asymmetric crypto APIs
+- **macos:unifiedlog** — Script interpreter invoked by nginx/apache worker process
+- **macos:unifiedlog** — execution of Office binaries with network activity
+- **macos:unifiedlog** — launch of bash/zsh/python/osascript targeting key file locations
+- **macos:unifiedlog** — execution of /sbin/emond with child processes launched
+- **macos:unifiedlog** — shutdown -h now or reboot
+- **macos:unifiedlog** — Execution of Code.app, idea, JetBrainsToolbox, eclipse with install/extension flags
+- **macos:unifiedlog** — process execution events for system discovery utilities (system_profiler, sysctl, networksetup, ioreg) with parameter analysis
+- **macos:unifiedlog** — execution of curl, rclone, or Office apps invoking network sessions
+- **macos:unifiedlog** — exec: Execution of kextstat, kextfind, or ioreg targeting driver information
+- **macos:unifiedlog** — Process creation involving binaries interacting with resource fork data
+- **macos:unifiedlog** — process event
+- **macos:unifiedlog** — security OR injection attempts into 1Password OR LastPass
+- **MobileEDR:telemetry** — Application writes audio buffer or recorded audio file into application storage directories
+- **MobileEDR:telemetry** — Browser or WebView-hosting application brought to foreground and navigates to external content, followed by abnormal state transition, crash, restart, or process spawn behavior
+- **MobileEDR:telemetry** — application installed from adb, sideload, or unknown USB source
+- **MobileEDR:telemetry** — Application invokes Runtime.exec, ProcessBuilder, JNI-backed command launcher, or equivalent command-execution bridge immediately before shell or command process creation
+- **MobileEDR:telemetry** — Managed app invokes lower-level OS process-launch or command-execution behavior before file or network effects, including interpreter-like execution flow where visible to sensor
+- **MobileEDR:telemetry** — application execution triggered with unexpected parent context or via indirect invocation (intent redirection or component hijack)
+- **OpenBSM:AuditTrail** — open/openat of /dev/bpf*; ioctl BIOCSETF-like operations.
+- **OpenBSM:AuditTrail** — BSM audit events for process execution and system call monitoring during reconnaissance
+- **Process** — None
+- **WinEventLog:AppLocker** — EventCode=8003, 8004
+- **WinEventLog:Microsoft-Windows-DotNETRuntime** — Unexpected AppDomain creation events or anomalous AppDomainManager assembly load behavior
+- **WinEventLog:Security** — EventCode=4688; cmd.exe/batch execution with parent and command line 
+- **WinEventLog:Security** — EventCode=4688
+- **WinEventLog:Sysmon** — EventCode=1; Python interpreter/script execution and lineage
+- **WinEventLog:Sysmon** — EventCode=1; process lineage and command line
+- **WinEventLog:Sysmon** — EventCode=1; powershell/pwsh or suspicious parent-child chain
+- **WinEventLog:Sysmon** — EventCode=1
+- **WinEventLog:Sysmon ** — EventCode=1; wscript.exe/cscript.exe/mshta.exe and child-process lineage 
+- **mobile:DynamicAnalysis** — Application invokes Runtime.exec(), ProcessBuilder.start(), or JNI-backed launcher with sh, bash, toybox, toolbox, or su as command argument NOT IN $ApprovedShellApps$ — explicit Unix shell invocation
+- **mobile:DynamicAnalysis** — Managed iOS app invokes process-launch behavior resulting in sh, bash, or equivalent shell child process on supervised device — any shell spawn on stock iOS is a jailbreak indicator
+- **mobile:DynamicAnalysis** — execve()
+- **mobile:DynamicAnalysis** — com.apple.WebKit or com.apple.WebContent process fault at level=fault within $DriveByWindow$ of navigation to flagged URL — kernel fault in WebKit subsystem is the exploit-execution signal
+- **mobile:DynamicAnalysis** — execve() of modified binary (hash != baseline) — execution of modified binary is the persistence activation
+- **mobile:DynamicAnalysis** — com.apple.WebContent or com.apple.imagent process shows unexpected child spawn or memory fault at level=fault in Unified Log — kernel fault in message-processing subsystem is exploit execution signal
+- **mobile:DynamicAnalysis** — execve() from APK installed within $PhishingWindow$ of navigation to flagged URL — first execution confirms malware activation
+- **mobile:DynamicAnalysis** — sh or cmd process spawned with arguments containing 'pm uninstall' or 'rm' by parent NOT IN $MDMAgentPackageList$ — shell invocation for destruction commands
+- **mobile:DynamicAnalysis** — kernel fault or unexpected child spawn in subsystem IN (com.apple.WebKit, com.apple.imtransferagent, com.apple.imagent) at level=fault in Unified Log
+- **mobile:DynamicAnalysis** — Application installed with install_source=adb or install_source=sideload from USB-connected host within $USBInstallWindow$ of USB mode change
+- **mobile:DynamicAnalysis** — App invokes Runtime.exec(), ProcessBuilder.start(), or JNI-backed command execution framework to spawn shell or command interpreter process NOT IN $ApprovedShellApps$ — programmatic shell spawn is the interpreter invocation
+- **mobile:DynamicAnalysis** — Managed iOS app invokes lower-level process-launch behavior or command-execution-equivalent activity outside sandbox-permitted APIs on supervised device
+- **mobile:DynamicAnalysis** — App execution triggered with unexpected parent context or via indirect invocation (intent redirect, implicit intent resolution to unexpected handler) — indirect invocation path is the flow hijack confirmation
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; command line invokes iptables/nftables to change ICS traffic filtering or redirection outside the authorized network-administration baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; mount/udisksctl invoked to mount a removable block device on an ICS asset outside the approved removable-media workflow
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): execve with path under /media/ or /mnt/ removable mount point within Universial Serial Bus (USB) execution window of mount event
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): execve of network discovery tool (nmap, arp-scan, PLCScan) by User Identifier (UID) not in authorized net admin UIDs
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): unexpected process creation from web server daemon User Identifier (UID) spawning shell process
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): Secure Shell (SSH)-based propagation pattern (connection to multiple hosts followed by file transfer and execution) within a short window
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; systemctl/kill command targets a critical ICS service from a UID not in the authorized service-administration set
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; shell/interpreter process is spawned by an ICS network-facing service or other unexpected parent process
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; network-enumeration utility launched by a UID not in the authorized network-administration set
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; passwd/chpasswd targets an ICS service account outside the approved credential-rotation workflow
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; ICS HMI/GUI application launched from an SSH-associated process/session outside the approved remote-administration baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; browser process spawns a command shell, script interpreter, or executable child inconsistent with the approved browser-child baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; SSH/SNMP/remote-management command includes a remote target host and queries system identity/inventory from an account outside the authorized management set
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; document/viewer process launches a child process outside the expected viewer-child baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; device restart/shutdown command invoked outside the approved change-control window by an unauthorized UID
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; firmware-update utility invoked outside the approved maintenance window or by a UID not in the authorized firmware-management set
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): execve of nmap/masscan with arguments targeting Industrial Control Systems (ICS) protocol port ranges
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; command or executable associated with the technique runs outside the approved ICS administrative/application baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; iptables/nftables command adds a rule that blocks ICS protocol traffic outside the authorized network-administration baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; ip link command disables an interface on an ICS gateway outside the authorized network-administration baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=execve; hostapd/wireless-controller configuration command disables or alters an ICS wireless network outside the authorized wireless-administration baseline
+- **WinEventLog:System** — System crash or unexpected halt occurring within wiper crash window of the bulk deletion event
+- **WinEventLog:Sysmon** — EventCode=1 firmware-update utility spawned by an account outside the authorized firmware-management set or outside the approved maintenance window
+- **WinEventLog:Sysmon** — EventCode=1 where a browser process spawns cmd.exe, powershell.exe, wscript.exe, or another executable outside the approved browser-child baseline
+- **WinEventLog:Sysmon** — EventCode=1 with parent matching web/application server process and image matching shell/script interpreter within exploit-to-shell window of anomalous request
+- **WinEventLog:Sysmon** — EventCode=1 of the newly-created file within tool transfer window of its creation
+- **WinEventLog:Sysmon** — EventCode=1 process execution associated with a remote session targets ICS application directories or initiates device-subnet activity
+- **WinEventLog:Sysmon** — Microsoft-Windows-Sysmon/Operational Event ID 1 ProcessCreate: Process execution within the remote session targeting Industrial Control Systems (ICS) application directories or device subnet connections
+- **WinEventLog:Sysmon** — EventCode=1 with image path on removable drive letter within Universal Serial Bus (USB) execution window of insertion event
+- **WinEventLog:Sysmon** — EventCode=1 of network discovery tool (nmap, PLCScan) from process not in authorized network tools list
+- **WinEventLog:Sysmon** — EventCode=1 of archive utility immediately following bulk file access pattern from same parent process tree
+- **WinEventLog:Sysmon** — EventCode=1 sc.exe/net.exe invocation targeting a critical ICS service from an account outside the authorized service-administration set
+- **WinEventLog:Sysmon** — EventCode=1 network enumeration command from account not in approved network admins, with more than one distinct command within enumeration time window
+- **WinEventLog:Sysmon** — EventCode=1 parent matches outlook.exe/winword.exe/excel.exe and image matches cmd.exe/powershell.exe/wscript.exe/mshta.exe on host in Industrial Control Systems (ICS) workstation inventory
+- **WinEventLog:Sysmon** — EventCode=1 remote-management command (for example wmic /node, winrs, or PowerShell/CIM with -ComputerName) includes a remote target and queries system identity/inventory outside the authorized management baseline
+- **WinEventLog:Sysmon** — EventCode=1 chain originating from user-invoked file open or link click action, spawning processes not in expected document viewer children
+- **WinEventLog:Sysmon** — EventCode=1 image matches certutil.exe/regsvr32.exe/mshta.exe/rundll32.exe and command line matches Living-off-the-Land Binary (LOLBin) abuse patterns on host in Industrial Control Systems (ICS) workstation inventory
+- **WinEventLog:Sysmon** — EventCode=1 capture utility execution from account not in approved network analysts
+- **WinEventLog:Sysmon** — EventCode=1 firmware update tool process activating firmware mode, by account not in authorized firmware managers, outside maintenance window schedule
+- **WinEventLog:Sysmon** — EventCode=1 of port scanning utility with arguments targeting Industrial Control Systems (ICS) protocol port ranges
+
+## Analytics using this component
+
+- [AN1657 - Analytic 1657](../Analytics/AN1657.md)
+- [AN1658 - Analytic 1658](../Analytics/AN1658.md)
+- [AN1669 - Analytic 1669](../Analytics/AN1669.md)
+- [AN1670 - Analytic 1670](../Analytics/AN1670.md)
+- [AN1699 - Analytic 1699](../Analytics/AN1699.md)
+- [AN1700 - Analytic 1700](../Analytics/AN1700.md)
+- [AN1741 - Analytic 1741](../Analytics/AN1741.md)
+- [AN1742 - Analytic 1742](../Analytics/AN1742.md)
+- [AN1760 - Analytic 1760](../Analytics/AN1760.md)
+- [AN1761 - Analytic 1761](../Analytics/AN1761.md)
+- [AN1769 - Analytic 1769](../Analytics/AN1769.md)
+- [AN1791 - Analytic 1791](../Analytics/AN1791.md)
+- [AN1802 - Analytic 1802](../Analytics/AN1802.md)
+- [AN1807 - Analytic 1807](../Analytics/AN1807.md)
+- [AN1838 - Analytic 1838](../Analytics/AN1838.md)

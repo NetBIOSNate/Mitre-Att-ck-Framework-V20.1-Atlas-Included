@@ -1,0 +1,322 @@
+# DC0021 - OS API Execution
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+Calls made by a process to operating system-provided Application Programming Interfaces (APIs). These calls are essential for interacting with system resources such as memory, files, and hardware, or for performing system-level tasks. Monitoring these calls can provide insight into a process's intent, especially if the process is malicious.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0021)
+
+## Log sources and channels
+
+- **MobileEDR:telemetry** — UIDevice.current.model AND CMMotionManager.isDeviceMotionAvailable AND UIScreen.main.scale all read within $EnvCheckWindow$ at cold launch by app NOT IN $SystemEnumAllowList$
+- **MobileEDR:telemetry** — System.getProperty() AND SensorManager.getSensorList() AND getNetworkInterfaces() all called > $EnvCheckThreshold$ calls within $EnvCheckWindow$ by app NOT IN $SystemEnumAllowList$ where app_state=background
+- **android:logcat** — SELinux AVC for execmem/execute_no_trans/mprotect following recent writes by same UID
+- **android:logcat** — QUERY on exported ContentProviders of other packages (content://<other.pkg>/*) or MediaStore scoped queries immediately preceding file reads
+- **android:logcat** — ClipboardManager (addOnPrimaryClipChangedListener|getPrimaryClip|getPrimaryClipDescription) invoked by <pkg>
+- **android:logcat** — AccessibilityService connected|TYPE_VIEW_TEXT_CHANGED|TYPE_VIEW_FOCUSED events for other packages
+- **android:logcat** — TYPE_WINDOW_STATE_CHANGED / TYPE_VIEW_FOCUSED shows foreign target package in foreground
+- **android:logcat** — PackageManager getInstalledApplications|getInstalledPackages|getPackagesHoldingPermissions burst for <pkg>. TYPE_WINDOW_STATE_CHANGED shows foreground app then immediate package queries by <pkg>
+- **android:logcat** — getInstalledPackages/getPackagesHoldingPermissions with filters for known security/MDM/VPN package names. Queries to isDeviceOwnerApp/isProfileOwnerApp/getActiveAdmins/getPermissionGrantState. Requests list of enabled services or monitors TYPE_WINDOW_STATE_CHANGED to time checks
+- **android:logcat** — ACTION_VIEW redirect_uri handled by unexpected package
+- **android:logcat** — canOpenURL/LSApplicationWorkspace resolved to unexpected bundle for redirect_uri
+- **android:logcat** — query() against MediaStore/DocumentsContract URIs (Images/Video/Audio/Downloads/DocumentTree)
+- **android:logcat** — wifiservice startScan / scanResults retrieved repeatedly or by unexpected package
+- **android:logcat** — bluetoothmanager startDiscovery / getBondedDevices / scan callback bursts by package
+- **android:logcat** — telephony cell info enumeration bursts (neighboring/all cell info) by package
+- **android:logcat** — repeated queries or dumps related to running tasks/services/process state by same package/UID (e.g., getRunningAppProcesses, running services/task inspection)
+- **android:logcat** — Application accesses android.os.Build fields or device configuration APIs (MODEL, MANUFACTURER, VERSION.SDK_INT, HARDWARE)
+- **android:logcat** — Invocation of MediaRecorder.start(), AudioRecord.startRecording(), or VOICE_CALL audio source
+- **android:logcat** — Application invokes LocationManager, FusedLocationProviderClient, or GPS/location sensor APIs
+- **android:logcat** — Invocation of Calendar.set() and Calendar.add()
+- **android:logcat** — Invocation of CallLogs.getLastOutgoingCall()
+- **android:logcat** — Invocation of ContactsContract.Contacts.getLookupUri() and/or ContactsContract.Contacts.lookupContact()
+- **android:logcat** — Invocation of AccountManager.getAccounts()
+- **AndroidLogs:Kernel** — Unprivileged app process (app UID, non-system) invoking sensitive syscalls or device interfaces associated with privilege escalation (setuid, ptrace, perf_event_open, vulnerable drivers)
+- **auditd:MMAP** — memory region with RWX permissions allocated
+- **auditd:SYSCALL** — ptrace, ioctl
+- **auditd:SYSCALL** — Rules capturing clock_gettime, time, gettimeofday syscalls when enabled
+- **auditd:SYSCALL** — openat/read/ioctl: openat/read/ioctl on /dev/video* by uncommon user/process
+- **auditd:SYSCALL** — mmap, ptrace, process_vm_writev or direct memory ops
+- **auditd:SYSCALL** — unshare, mount, keyctl, setns syscalls executed by containerized processes
+- **auditd:SYSCALL** — send, recv, write: Abnormal interception or alteration of transmitted data
+- **auditd:SYSCALL** — sudo or pkexec invocation
+- **auditd:SYSCALL** — mount system call with bind or remap flags
+- **auditd:SYSCALL** — fork/clone/daemon syscall tracing
+- **auditd:SYSCALL** — ptrace, mmap, mprotect, open, dlopen
+- **auditd:SYSCALL** — ptrace, mmap, process_vm_writev
+- **auditd:SYSCALL** — execve of dd or sed targeting /proc/*/mem
+- **AWS:CloudTrail** — GetMetadata, DescribeInstanceIdentity
+- **AWS:CloudTrail** — Describe* or List* API calls
+- **AWS:CloudTrail** — Decrypt
+- **EDR:file** — SetFileTime
+- **EDR:memory** — Behavioral API telemetry (GetProcAddress, LoadLibrary, VirtualAlloc)
+- **EDR:memory** — API usage MFCreateDeviceSource, IAMStreamConfig, ICaptureGraphBuilder2, DirectShow filter graph creation from uncommon callers
+- **EDR:memory** — Objective‑C/Swift calls to AVCaptureDevice/AVCaptureSession by non-whitelisted processes
+- **EDR:memory** — VirtualAlloc/VirtualProtect/MapViewOfFile indicators via stack/heap activity and ImageLoad
+- **EDR:memory** — MemoryWriteToExecutable
+- **esxi:hostd** — Remote access API calls and file uploads
+- **ETW** — Calls to GetUserDefaultUILanguage, GetSystemDefaultUILanguage, GetKeyboardLayoutList
+- **etw:Microsoft-Windows-Directory-Services-SAM** — api_call: Calls to DsAddSidHistory or related RPC operations
+- **etw:Microsoft-Windows-DotNETRuntime** — AssemblyLoad/ModuleLoad (Loader keyword) from Microsoft-Windows-DotNETRuntime
+- **etw:Microsoft-Windows-Kernel-Base** — GetLocaleInfoW, GetTimeZoneInformation API calls
+- **etw:Microsoft-Windows-Kernel-File** — ZwSetEaFile or ZwQueryEaFile function calls
+- **etw:Microsoft-Windows-Kernel-Process** — API tracing / stack tracing via ETW or telemetry-based EDR
+- **etw:Microsoft-Windows-Kernel-Process** — APCQueueOperations
+- **etw:Microsoft-Windows-Kernel-Process** — High-frequency or suspicious sequence of QueryPerformanceCounter/GetTickCount API calls from a non-standard process lineage
+- **etw:Microsoft-Windows-Kernel-Process** — API Calls
+- **etw:Microsoft-Windows-Kernel-Process** — NtQueryInformationProcess
+- **etw:Microsoft-Windows-Kernel-Process** — NtUnmapViewOfSection, VirtualAllocEx, WriteProcessMemory, SetThreadContext, ResumeThread
+- **etw:Microsoft-Windows-Kernel-Process** — api_call: UpdateProcThreadAttribute (PROC_THREAD_ATTRIBUTE_PARENT_PROCESS) and CreateProcess* with EXTENDED_STARTUPINFO_PRESENT / StartupInfoEx
+- **etw:Microsoft-Windows-Kernel-Process** — API calls
+- **etw:Microsoft-Windows-Kernel-Process** — CreateTransaction, CreateFileTransacted, RollbackTransaction, NtCreateProcessEx, NtCreateThreadEx
+- **etw:Microsoft-Windows-Kernel-Process** — WriteProcessMemory: WriteProcessMemory targeting regions containing KernelCallbackTable addresses
+- **etw:Microsoft-Windows-RPC** — rpc_call: srvsvc.NetShareEnum / NetShareEnumAll from non-admin or unusual processes
+- **etw:Microsoft-Windows-Security-Auditing** — api_call: LogonUser(A|W), LsaLogonUser, SetThreadToken, ImpersonateLoggedOnUser
+- **etw:Microsoft-Windows-Win32k** — SetWindowLong, SetClassLong, NtUserMessageCall, SendNotifyMessage, PostMessage
+- **etw:Microsoft-Windows-Win32k** — SendMessage, PostMessage, LVM_*
+- **ETW:ProcThread** — api_call: CreateProcessWithTokenW, CreateProcessAsUserW
+- **ETW:Token** — token_analysis: API calls such as DuplicateTokenEx or ImpersonateLoggedOnUser
+- **ETW:Token** — api_call: DuplicateTokenEx, ImpersonateLoggedOnUser, SetThreadToken
+- **fs:fsusage** — Detached process execution with no associated parent
+- **iOS:unifiedlog** — kernel fault referencing ptrace OR task_for_pid OR get-task-allow outside developer-signed build + MDM integrity_check=fail within KernelFaultWindow where no developer entitlement justifies kernel-level process access
+- **iOS:unifiedlog** — mmap/mprotect transitions to PROT_EXEC for pages associated with recently written files
+- **iOS:unifiedlog** — LSApplicationWorkspace or canOpenURL probe bursts for many URL schemes
+- **iOS:unifiedlog** — Queries indicating MDM profile presence, supervised state, restrictions read. LSApplicationWorkspace enumeration or app proxy queries referencing security vendors
+- **iOS:unifiedlog** — enumeratorForContainerItemIdentifier / itemForIdentifier across multiple containers/providers
+- **iOS:unifiedlog** — Application invokes UIDevice queries (model, systemVersion, name)
+- **iOS:unifiedlog** — Invocation of AVAudioRecorder, AVCaptureSession, or related audio capture framework calls
+- **iOS:unifiedlog** — Application activates CoreLocation services or CLLocationManager APIs
+- **iOS:unifiedlog** — Supplemental anomaly in baseband, IOKit, accessory, security, or activation-related subsystem logging temporally adjacent to suspicious posture or network behavior
+- **iOS:unifiedlog** — Supplemental managed app or system subsystem anomalies near install/update, launch services, extension handling, app activation, or background execution temporally adjacent to suspicious network or lifecycle behavior
+- **iOS:unifiedlog** — Supplemental launch, background task, networking, or extension-handling anomalies occur temporally adjacent to suspicious web-service communication from a managed app or supervised device
+- **iOS:unifiedlog** — Background task or networking subsystem event occurred immediately before resolver retrieval and pivot connection sequence
+- **iOS:unifiedlog** — Background task, networking, or app-activation subsystem event occurred immediately before or during retrieve-then-write exchange with public web-service platform
+- **iOS:unifiedlog** — Camera, media capture, app-activation, or background-task subsystem event occurred immediately before or during sustained camera session from same managed-app or device context
+- **linux:syslog** — Execution of modified binaries or abnormal library load sequences
+- **macos:osquery** — open, execve: Unexpected processes accessing or modifying critical files
+- **macos:osquery** — CALCULATE: Integrity validation of transmitted data via hash checks
+- **macos:unifiedlog** — None
+- **macos:unifiedlog** — Invocation of SMLoginItemSetEnabled by non-system or recently installed application
+- **macos:unifiedlog** — flock|NSDistributedLock|FileHandle.*lockForWriting
+- **macos:unifiedlog** — application logs referencing NSTimer, sleep, or launchd delays
+- **macos:unifiedlog** — Access decisions to kTCCServiceCamera for unexpected binaries
+- **macos:unifiedlog** — audio APIs
+- **macos:unifiedlog** — com.apple.securityd, com.apple.tccd
+- **macos:unifiedlog** — authorization execute privilege requests
+- **macos:unifiedlog** — ptrace: Processes invoking ptrace with PTRACE_TRACEME flag
+- **macos:unifiedlog** — Calls to AuthorizationExecuteWithPrivileges() observed via Apple System Logger or security_auditing tools
+- **macos:unifiedlog** — access or unlock attempt to keychain database
+- **macos:unifiedlog** — Execution of input detection APIs (e.g., CGEventSourceKeyState)
+- **MobileEDR:telemetry** — PackageInstaller.install() with install_initiator NOT IN ApprovedInstallSources + MDM policy_violation raised within InstallWindow where approved sources do not include this installer origin
+- **MobileEDR:telemetry** — ptrace with action IN (PTRACE_ATTACH, PTRACE_POKETEXT, PTRACE_POKEDATA, PTRACE_SETREGS) where caller_uid != target_uid + MDM developer_mode=false within PtraceWindow where no debug session justifies memory write to unrelated process
+- **MobileEDR:telemetry** — process accesses memory region or task port beyond declared entitlement set + MDM integrity_check=fail within same device session where declared entitlements do not justify observed resource access
+- **MobileEDR:telemetry** — ptrace(PTRACE_ATTACH) from caller_pid where caller is NOT parent of target AND NOT in DebuggerAllowList + MDM usb_debug=false within PtraceWindow where developer context does not justify cross-process attach
+- **MobileEDR:telemetry** — dylib loaded into process address space with path OR behavioral hash matching KnownJailbreakLibPatterns + MDM compliance=pass within same device session where compliance posture does not justify library presence
+- **MobileEDR:telemetry** — execve/execveat with effective UID=0 from path NOT IN KnownSystemBinPaths + MDM compliance root_status=false within same device context where compliance state does not justify elevated execution
+- **MobileEDR:telemetry** — Framework-based networking usage spikes or uncommon networking stacks observed by agent telemetry (e.g., repeated URLSession/OkHttp-like patterns) without corresponding foreground/user interaction
+- **MobileEDR:telemetry** — Agent-observable telephony subscription/state API signals indicating SIM/eSIM subscription change (vendor-agnostic: 'telephony subscription changed')
+- **MobileEDR:telemetry** — Accessibility framework usage patterns such as event subscription, performAction invocation, node traversal, text change observation, or overlay/window presentation correlated to app identity
+- **MobileEDR:telemetry** — Browser/WebView framework usage indicating external URL load, script execution enablement, file download initiation, intent handoff, or package install prompt sequence
+- **MobileEDR:telemetry** — Observed device-service, trust-service, backup/service interaction, or other privileged framework activity associated with physical host access
+- **MobileEDR:telemetry** — Connectivity manager, telephony, Wi-Fi, network callback, or location-provider framework reports repeated unavailable, disconnected, suspended, or degraded state transitions
+- **MobileEDR:telemetry** — Observed network-path, reachability, DNS, transport, or location-provider framework reports repeated unavailable or failed state near active device use
+- **MobileEDR:telemetry** — Content resolver, document provider, media store, storage access framework, bulk stream processing, or repeated crypto-adjacent framework use observed during multi-file transformation
+- **MobileEDR:telemetry** — Known application begins first-seen or expanded use of content providers, account services, accessibility, package services, cryptographic routines, dynamic loading, or other framework interactions after update/install
+- **MobileEDR:telemetry** — Known application begins first-seen or expanded use of protected frameworks, account services, background task APIs, crypto/network service APIs, or other runtime behaviors after update/install
+- **MobileEDR:telemetry** — Known application begins first-seen or expanded use of account services, accessibility, content providers, dynamic loading, package services, WebView bridges, crypto/network APIs, or advertising/telemetry-adjacent framework behavior after install or update
+- **MobileEDR:telemetry** — Privileged or OEM-context framework/API use tied to telephony, device policy, accessibility, overlay, input injection, package visibility, or protected settings modification from an identity not expected for the device model or approved image
+- **MobileEDR:telemetry** — Recently installed or updated trusted app invokes Android framework paths or special access patterns inconsistent with its role, including accessibility-like behavior, overlay behavior, package visibility expansion, protected settings access, device policy interaction, or unusual IPC/provider access
+- **MobileEDR:telemetry** — App uses Android framework behaviors associated with background work scheduling, network job execution, IPC/provider access, overlay or accessibility-like interaction, or unusual package visibility immediately adjacent to web-service communication
+- **MobileEDR:telemetry** — Background work scheduler, job execution, or persistent service triggered network request to public web-service followed by second outbound connection within TimeWindow
+- **MobileEDR:telemetry** — Background work scheduler, job execution, foreground-service start, or persistent service activation immediately preceded retrieve-then-write exchange with public web-service platform
+- **MobileEDR:telemetry** — Background work scheduler, job execution, foreground-service start, or persistent service activation immediately preceded outbound session using non-standard protocol-to-port pairing
+- **MobileEDR:telemetry** — MediaProjection-style screen capture session began from app identity while a different app was foregrounded and capture path was not mapped to approved recording workflow
+- **MobileEDR:telemetry** — Accessibility-service activity from app identity coincided with foreground content observation and subsequent screenshot, frame buffer, or screenrecord artifact behavior within TimeWindow
+- **MobileEDR:telemetry** — Privileged screencap, screenrecord, adb-driven capture, or root-context screen acquisition behavior occurred from app, shell, or elevated identity while foreground app context changed or sensitive app remained active
+- **MobileEDR:telemetry** — Accessibility-enabled app invoked programmatic click or action on behalf of user while a different app was foregrounded and injected action was not mapped to approved accessibility or autofill workflow
+- **MobileEDR:telemetry** — Accessibility-enabled app invoked global action such as back, home, recents, or navigation control while target foreground app context changed within TimeWindow
+- **MobileEDR:telemetry** — Accessibility-enabled app inserted text into active field of different foreground app without user keyboard activity or approved autofill relationship
+- **MobileEDR:telemetry** — App intercepts notification content from external package (e.g., messaging/auth apps) while in background OR without recent user interaction
+- **MobileEDR:telemetry** — App invokes cryptographic functions (e.g., AES/RSA/KeyStore usage) on buffer data followed by encode/transform operations not tied to normal app workflows
+- **MobileEDR:telemetry** — App invokes symmetric encryption routines (e.g., AES/RC4 cipher initialization + encrypt operations) with repeated key usage across multiple data buffers
+- **MobileEDR:telemetry** — Symmetric key material reused across multiple encryption operations within short interval OR derived locally without secure hardware-backed storage
+- **MobileEDR:telemetry** — App invokes asymmetric cryptographic operations (e.g., RSA/ECC keypair generation OR public key encryption OR signature operations) on outbound data buffers
+- **MobileEDR:telemetry** — Keypair generation, import, or access events (public/private key usage) occurring prior to network communication
+- **MobileEDR:telemetry** — Application invokes custom TLS trust evaluation logic or pin validation routines (e.g., custom TrustManager, HostnameVerifier override, certificate/public key comparison) immediately before outbound TLS session establishment
+- **MobileEDR:telemetry** — Application invokes archive, compression, or bulk-buffer packaging routines on previously accessed local data within the same execution chain
+- **MobileEDR:telemetry** — Application encrypts newly created archive or staged data blob after collection and before storage or outbound transfer
+- **MobileEDR:telemetry** — Application performs bulk data transformation or packaging-like processing on collected records prior to file creation or upload
+- **MobileEDR:telemetry** — Application queries or opens multiple local SQLite or app-associated database stores containing records unrelated to the app's declared function during the collection phase
+- **MobileEDR:telemetry** — Application performs repeated record access, container traversal, or local data extraction processing against local stores before staging or transmission
+- **MobileEDR:telemetry** — Application calls startForegroundService() or startForeground() / ServiceCompat.startForeground() and transitions to persistent foreground-service execution at the start of the chain
+- **MobileEDR:telemetry** — Application invokes direct file retrieval, DownloadManager usage, or streaming write from network response to local storage immediately after remote session establishment
+- **MobileEDR:telemetry** — Managed app performs post-download unpacking, dynamic resource handling, or module preparation immediately after local payload creation
+- **MobileEDR:telemetry** — Application loads or resolves native shared library (.so) or JNI bridge immediately before suspicious native execution phase
+- **MobileEDR:telemetry** — Application transitions from managed code into JNI/native function execution or attaches native thread to runtime during the execution phase
+- **MobileEDR:telemetry** — Existing application is replaced, updated, or reinstalled and the resulting package metadata, code sections, or executable-supporting artifacts diverge from known-good baseline during the persistence-establishment phase
+- **MobileEDR:telemetry** — Application invokes SMS send, intercept, delete, or provider-write behavior, including handling SMS_DELIVER or interacting with SMS content provider during unauthorized message-control phase
+- **MobileEDR:telemetry** — Application enqueues WorkManager work request or schedules JobScheduler or AlarmManager task with delay, periodic interval, or execution constraints during the persistence/execution setup phase
+- **MobileEDR:telemetry** — Application creates or executes NSBackgroundActivityScheduler activity with repeating or deferred invocation semantics during the scheduling and trigger phases
+- **MobileEDR:telemetry** — Application initializes proxy-capable or raw-socket networking constructs, including SOCKS-capable Proxy API usage or direct socket listener/setup immediately before traffic relay phase
+- **MobileEDR:telemetry** — Application invokes call placement, answer, redirect, block, screening, or ConnectionService call-handling APIs during unauthorized call-control phase
+- **MobileEDR:telemetry** — application process loads external code modules or injects into runtime (zygote/app_process) + abnormal library loading or method interception behavior
+- **MobileEDR:telemetry** — Application registers broadcast receiver, WorkManager job, JobScheduler task, or intent filter tied to system event such as BOOT_COMPLETED, SMS_RECEIVED, CONNECTIVITY_CHANGE during persistence setup phase
+- **MobileEDR:telemetry** — application registers or invokes broadcast receiver via registerReceiver() or manifest-declared receiver + intent filter tied to system or app events
+- **MobileEDR:telemetry** — application launches or executes code where loaded library or component path does not match application package path or expected signing context
+- **MobileEDR:telemetry** — multiple applications invoking core system APIs (e.g., sensor, permission, telephony) with abnormal or inconsistent return values across apps within short interval
+- **MobileEDR:telemetry** — device integrity degradation + root detected or system partition modification affecting runtime libraries (e.g., /system/lib*, /vendor/lib*)
+- **MobileEDR:telemetry** — application invokes privileged framework APIs (Accessibility events, UI automation, package install flows) immediately following permission grant
+- **MobileEDR:telemetry** — application invokes DevicePolicyManager APIs (e.g., resetPassword, lockNow, setCameraDisabled) immediately following admin activation
+- **MobileEDR:telemetry** — application queries target-selection attributes (e.g., location, SIM/operator, locale, device state, network identity) and then conditionally invokes sensitive framework APIs only after expected value is observed
+- **MobileEDR:telemetry** — application exhibits repeated environment-context evaluation followed by delayed privileged framework use only after target-specific match
+- **MobileEDR:telemetry** — application invokes geolocation or geofencing framework operations (e.g., location polling or geofence registration/evaluation) and sensitive framework activity begins only after region match or location threshold condition
+- **MobileEDR:telemetry** — application exhibits repeated location-context evaluation followed by delayed privileged framework use or feature activation only after target region match
+- **MobileEDR:telemetry** — application invokes package or component state changes affecting launcher-facing activity availability and subsequently continues operational framework activity after icon suppression
+- **MobileEDR:telemetry** — application invokes motion-sensor or device-activity framework operations followed by conditional execution of sensitive framework activity only after inferred user absence
+- **MobileEDR:telemetry** — application invokes system framework operations that alter monitoring, accessibility, or execution visibility followed by reduction in expected telemetry generation
+- **MobileEDR:telemetry** — application invokes accessibility global actions (back/home/recents) or observes package-management UI immediately after uninstall/settings screen becomes foreground
+- **MobileEDR:telemetry** — application invokes lock-related or UI-denial framework operations, including DevicePolicyManager lock actions, persistent overlay behavior, or accessibility-driven navigation interference immediately before device enters locked or unusable state
+- **MobileEDR:telemetry** — application invokes package, settings, or privileged framework operations capable of disabling security software, altering security enforcement, or interfering with reporting before telemetry loss
+- **MobileEDR:telemetry** — application invokes uninstall-related package-management operations, accessibility-driven uninstall confirmation actions, or privileged file-removal operations immediately before installed-state loss
+- **MobileEDR:telemetry** — application invokes file-management, package, storage, or administrative wipe operations immediately before loss of expected local files or file collections
+- **networkdevice:syslog** — aaa privilege_exec
+- **networkdevice:syslog** — Unexpected reload, crashinfo, or boot message not tied to scheduled maintenance
+- **NSM:Flow** — smb_command: TreeConnectAndX to \\*\IPC$ / srvsvc or Trans2/NT_CREATE for listing shares
+- **Process** — None
+- **snmp:trap** — management queries
+- **WinEventLog:Application** — API call to AddMonitor invoked by non-installer process
+- **WinEventLog:Microsoft-Windows-COM/Operational** — CLSID activation events where ProcessName=mmc.exe and CLSID not in allowed baseline
+- **WinEventLog:Security** — EventCode=4663, 4670, 4656
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes DevicePolicyManager.lockNow(), creates persistent fullscreen overlay (TYPE_APPLICATION_OVERLAY covering full screen), or uses accessibility to block UI interaction — lock or UI-denial API invocation
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Background work scheduler or persistent service triggered the platform retrieval without user interaction
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Background task or networking subsystem event immediately before platform retrieval
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes DevicePolicyManager.resetPassword(), lockNow(), wipeData(), or setCameraDisabled() immediately after Device Admin activation without MDM-initiated policy context or user interaction
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes file management, storage-clear, or wipe operations in background state following network upload without user-initiated delete action
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes custom TLS trust evaluation, OkHttp CertificatePinner, or custom-anchor TrustManager NOT IN $ApprovedPinningApps$ — custom pin validation is the evasion mechanism
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes RSA/ECC keypair generation, public-key import, or asymmetric encryption operations (KeyPairGenerator, Cipher.RSA, ECDH) NOT IN $ApprovedCryptoApps$ before network transmission
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Keypair generation, import, or private-key access events occurring prior to outbound communication not matching app declared secure-communication function
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: MediaProjection capture session, accessibility-based foreground content observation, or privileged screencap/screenrecord invocation from app while different app is foregrounded — cross-app screen content access
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Multiple applications invoking core system APIs (sensor, permission, telephony, PackageManager) show inconsistent, suppressed, or modified return values compared to OS-expected behavior — cross-app API result inconsistency is the runtime hi
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Device integrity degradation (root detected, system partition modification, SafetyNet/Play Integrity failure) coincident with anomalous system API behavior affecting runtime resolution
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes PackageInstaller uninstall or pm uninstall for own package or companion package NOT IN $ProtectedPackageList$ without user-initiated UI flow matching
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Background scheduler or persistent service triggers retrieve-then-write cycle
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Background task activation immediately before retrieve-then-write cycle on supervised device
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Application registers BroadcastReceiver via registerReceiver() or manifest-declared receiver for sensitive system intents (BOOT_COMPLETED, SMS_RECEIVED, ACTION_PACKAGE_REPLACED, CONNECTIVITY_CHANGE, USER_PRESENT) NOT IN $ApprovedReceiverApp
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes PackageManager.setComponentEnabledSetting() to COMPONENT_ENABLED_STATE_DISABLED on its own LAUNCHER activity while continuing active background or foreground-service execution
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Unified Log entry at level=fault in subsystem com.apple.kernel or com.apple.sandbox within $KernelFaultWindow$ of integrity_check failure — kernel-level fault coincident with integrity failure is the exploit-execution signal; requires super
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: ConnectivityManager, TelephonyManager, or WifiManager framework callbacks report repeated failure, disable, or oscillation events outside expected coverage-transition pattern
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: ContentResolver, DocumentProvider, StorageAccessFramework, or bulk stream I/O invocations exceed $FileModificationRateThreshold$ operations per minute across distinct file paths — API-level operation rate distinguishes ransomware from norma
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Known application begins first-seen or expanded use of content providers, account services, accessibility, or network destinations not in $AppBehaviorBaseline$ post-update
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Known app begins first-seen use of protected framework categories (location, microphone, contacts) or background task patterns post-update
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App begins first-seen network connections to destinations matching known-malicious SDK C2 patterns or outside $SDKBaselineEndpoints$ for embedded SDK namespace
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Known app begins first-seen use of protected categories (analytics, location, contacts) matching known-SDK behavior patterns post-update
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Recently updated trusted app invokes special-access paths, account services, or accessibility not present in prior version baseline
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Launch services, extension-handling, or framework subsystem anomalies occur near install or first launch of recently updated trusted app on supervised device
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App uses background work scheduler, JobScheduler, or persistent service to trigger web-service resolver fetch without user interaction
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Background task or networking subsystem event occurs immediately before web-service resolver fetch
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Background work scheduler, foreground service, or persistent service activates
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Background task or persistent networking event activates
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Accessibility-enabled app NOT IN $AccessibilityAllowList$ invokes performAction() click, global action (GLOBAL_ACTION_BACK/HOME/RECENTS), or insertText() on a UI element belonging to a different foregrounded app — cross-app UI action is the
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App intercepts notification content from source_app IN $HighValueNotifApps$ (banking, auth, messaging) while AppState=background
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes cryptographic functions (javax.crypto.Cipher, Android KeyStore, AES/RSA/ECC operations) on data buffer followed by encode-then-transmit sequence NOT matching app declared network function — app-layer crypto on data before transm
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes ContentResolver or SAF (Storage Access Framework) queries across multiple user-data paths outside its own sandbox in background state
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Managed app accesses broad local data scope without user-initiated document picker interaction on supervised device
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes startForegroundService() or startForeground() NOT IN $ApprovedForegroundServiceApps$
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes DownloadManager, URLConnection, or OkHttp download to write retrieved content to app-controlled path outside original APK scope — programmatic download of executable artifact
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Managed app performs post-download processing, dynamic resource handling, or module preparation immediately after retrieval from non-CDN source on supervised device
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App loads native library (.so) or resolves JNI bridge NOT IN $ApprovedNativeLibraries$ immediately before suspicious lower-level activity (sensor access, file write, network connection) — native code loading before anomalous activity is the
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App transitions from managed-code execution into JNI/native function context or attaches native thread,
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App is replaced or reinstalled
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App enqueues WorkManager work, schedules JobScheduler job, or sets AlarmManager with repeating interval NOT IN $ApprovedSchedulerApps$
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Managed app creates NSBackgroundActivityScheduler activity or registers BGTask with repeating=true or deferred interval outside $ApprovedSchedulerApps$ function
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App initializes proxy-capable or raw-socket networking constructs (ServerSocket, SOCKS proxy client, bidirectional relay) NOT IN $ApprovedProxyApps$ — proxy initialization is the technique enabler
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes TelecomManager.answerCall(), placeCall(), endCall(), or ConnectionService call-handling operations without corresponding user-initiated call UI interaction
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App process loads external code module or native library from non-system path injected into zygote or app_process runtime — abnormal library injection path is the hooking mechanism indicator
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes SensorManager.registerListener() for TYPE_ACCELEROMETER or TYPE_GYROSCOPE NOT IN $ApprovedMotionApps$ followed by conditional execution branching correlated with sensor readings — motion sensing followed by behavioral conditiona
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes ZIP, GZIP, or bulk-buffer packaging routines (ZipOutputStream, DeflaterOutputStream, similar) on previously accessed local data in background state
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App applies encryption to newly created archive or staged data blob before network transmission — encrypt-after-archive confirms adversary-controlled packing for exfil
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App performs bulk data transformation or packaging-like processing on collected records prior to outbound transfer on supervised device
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App registers BroadcastReceiver or schedules job for system events (BOOT_COMPLETED, SMS_RECEIVED, ACTION_PACKAGE_REPLACED, CONNECTIVITY_CHANGE, ACTION_USER_PRESENT) NOT IN $ApprovedEventTriggerApps$ — sensitive system event registration is
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App loads library or executes component
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes privileged framework APIs (accessibility performAction, WindowManager.addView TYPE_APPLICATION_OVERLAY, PackageInstaller) immediately after acquiring elevation control mechanism without expected user settings navigation time
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App performs burst of environmental check APIs (Build properties, TelephonyManager IMSI, PackageManager security-tool query) at cold launch before user interaction — multi-category environment fingerprint is the guardrail setup
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App performs UIDevice model + iOS version + enrollment state checks at cold launch before user interaction — device fingerprinting guardrail setup
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes package management, DevicePolicyManager, or settings operations capable of disabling security tooling — API invocation to disable security control
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes accessibility global actions (back, home, recents) or DevicePolicyManager removal-resistance operations when package-management or uninstall UI is in foreground — active uninstall interference
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes package manager operations (disable component, clear data, request uninstall) or settings modifications targeting security tool packages IN $SecurityToolPackageList$
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes file deletion, database truncation, log clearing, or app-data-clear operations within $CleanupWindow$ of prior data access or network exfiltration event — post-exfil cleanup chain
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: App invokes file deletion, container-local database truncation, or cache-clear operations on supervised device within $CleanupWindow$ of prior data access or upload event
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Protected resource use, privileged API invocation, or telephony/accessibility/overlay access occurs from system-app context while device is locked or before normal setup completion
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: Supplemental baseband, IOKit, accessory, security, or activation-related subsystem anomalies on supervised device at activation — Unified Log supplemental confirmation
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): dlopen() of Industrial Control Systems (ICS) vendor shared library by process not in authorized ICS applications, followed by write-capable network connection to device subnet
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): ioctl or mmap syscall against Industrial Control Systems (ICS) hardware device file from process not in authorized ICS applications
+- **edr:Syscall** — DeviceIoControl or raw socket creation to Industrial Control Systems (ICS) protocol port from process not in authorized ICS applications, bypassing documented vendor Software Development Kit (SDK) call pattern
+
+## Analytics using this component
+
+- [AN0119 - Analytic 0119](../Analytics/AN0119.md)
+- [AN0122 - Analytic 0122](../Analytics/AN0122.md)
+- [AN0164 - Analytic 0164](../Analytics/AN0164.md)
+- [AN0244 - Analytic 0244](../Analytics/AN0244.md)
+- [AN0250 - Analytic 0250](../Analytics/AN0250.md)
+- [AN0257 - Analytic 0257](../Analytics/AN0257.md)
+- [AN0273 - Analytic 0273](../Analytics/AN0273.md)
+- [AN0277 - Analytic 0277](../Analytics/AN0277.md)
+- [AN0283 - Analytic 0283](../Analytics/AN0283.md)
+- [AN0340 - Analytic 0340](../Analytics/AN0340.md)
+- [AN0374 - Analytic 0374](../Analytics/AN0374.md)
+- [AN0383 - Analytic 0383](../Analytics/AN0383.md)
+- [AN0398 - Analytic 0398](../Analytics/AN0398.md)
+- [AN0430 - Analytic 0430](../Analytics/AN0430.md)
+- [AN0431 - Analytic 0431](../Analytics/AN0431.md)
+- [AN0497 - Analytic 0497](../Analytics/AN0497.md)
+- [AN0513 - Analytic 0513](../Analytics/AN0513.md)
+- [AN0514 - Analytic 0514](../Analytics/AN0514.md)
+- [AN0568 - Analytic 0568](../Analytics/AN0568.md)
+- [AN0569 - Analytic 0569](../Analytics/AN0569.md)
+- [AN0570 - Analytic 0570](../Analytics/AN0570.md)
+- [AN0579 - Analytic 0579](../Analytics/AN0579.md)
+- [AN0580 - Analytic 0580](../Analytics/AN0580.md)
+- [AN0608 - Analytic 0608](../Analytics/AN0608.md)
+- [AN0613 - Analytic 0613](../Analytics/AN0613.md)
+- [AN0621 - Analytic 0621](../Analytics/AN0621.md)
+- [AN0622 - Analytic 0622](../Analytics/AN0622.md)
+- [AN0689 - Analytic 0689](../Analytics/AN0689.md)
+- [AN0703 - Analytic 0703](../Analytics/AN0703.md)
+- [AN0704 - Analytic 0704](../Analytics/AN0704.md)
+- [AN0786 - Analytic 0786](../Analytics/AN0786.md)
+- [AN0822 - Analytic 0822](../Analytics/AN0822.md)
+- [AN0838 - Analytic 0838](../Analytics/AN0838.md)
+- [AN0839 - Analytic 0839](../Analytics/AN0839.md)
+- [AN0907 - Analytic 0907](../Analytics/AN0907.md)
+- [AN0908 - Analytic 0908](../Analytics/AN0908.md)
+- [AN0941 - Analytic 0941](../Analytics/AN0941.md)
+- [AN0976 - Analytic 0976](../Analytics/AN0976.md)
+- [AN0977 - Analytic 0977](../Analytics/AN0977.md)
+- [AN1045 - Analytic 1045](../Analytics/AN1045.md)
+- [AN1047 - Analytic 1047](../Analytics/AN1047.md)
+- [AN1068 - Analytic 1068](../Analytics/AN1068.md)
+- [AN1076 - Analytic 1076](../Analytics/AN1076.md)
+- [AN1098 - Analytic 1098](../Analytics/AN1098.md)
+- [AN1111 - Analytic 1111](../Analytics/AN1111.md)
+- [AN1112 - Analytic 1112](../Analytics/AN1112.md)
+- [AN1184 - Analytic 1184](../Analytics/AN1184.md)
+- [AN1196 - Analytic 1196](../Analytics/AN1196.md)
+- [AN1201 - Analytic 1201](../Analytics/AN1201.md)
+- [AN1206 - Analytic 1206](../Analytics/AN1206.md)
+- [AN1223 - Analytic 1223](../Analytics/AN1223.md)
+- [AN1224 - Analytic 1224](../Analytics/AN1224.md)
+- [AN1241 - Analytic 1241](../Analytics/AN1241.md)
+- [AN1253 - Analytic 1253](../Analytics/AN1253.md)
+- [AN1289 - Analytic 1289](../Analytics/AN1289.md)
+- [AN1324 - Analytic 1324](../Analytics/AN1324.md)
+- [AN1351 - Analytic 1351](../Analytics/AN1351.md)
+- [AN1375 - Analytic 1375](../Analytics/AN1375.md)
+- [AN1399 - Analytic 1399](../Analytics/AN1399.md)
+- [AN1400 - Analytic 1400](../Analytics/AN1400.md)
+- [AN1494 - Analytic 1494](../Analytics/AN1494.md)
+- [AN1501 - Analytic 1501](../Analytics/AN1501.md)
+- [AN1561 - Analytic 1561](../Analytics/AN1561.md)
+- [AN1593 - Analytic 1593](../Analytics/AN1593.md)
+- [AN1626 - Analytic 1626](../Analytics/AN1626.md)
+- [AN2029 - Analytic 2029](../Analytics/AN2029.md)

@@ -1,0 +1,429 @@
+# DC0039 - File Creation
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+A new file is created on a system or network storage. This action often signifies an operation such as saving a document, writing data, or deploying a file. Logging these events helps identify legitimate or potentially malicious file creation activities. Examples include logging file creation events (e.g., Sysmon Event ID 11 or Linux auditd logs).
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0039)
+
+## Log sources and channels
+
+- **MobileEDR:telemetry** — Monitored creation of an APK or application-package staging artifact following external retrieval
+- **android:logcat** — App UID writes new file with suspicious extension/location (.tmp, .dat, .enc, /data/data/<pkg>/files/, /sdcard/Download/) and high estimated entropy
+- **android:logcat** — App UID writes edited media to container paths (e.g., /data/data/<pkg>/files/, .../cache/, /storage/emulated/0/Pictures/<pkg>/) with high delta in size vs. original and elevated estimated segment entropy  
+- **android:logcat** — Create/write of high-entropy files in /data/data/<pkg>/(files|cache)/ or /storage/emulated/0/<...> with .dex/.so/.jar/.tmp/.bin
+- **android:logcat** — Create/write under /data/data/<pkg>/(files|cache)/ or /storage/emulated/0/ with extension .dex/.jar/.so/.zip/.tmp/.js and elevated entropy
+- **android:logcat** — CREATE/WRITE of archive or container (.zip/.gz/.7z/.db copy) that aggregates files pulled from other-package paths
+- **android:logcat** — CREATE/WRITE to app-writable DB/file path indicating clipboard dump (e.g., clipboard.db, clip_*.txt)
+- **android:logcat** — CREATE/WRITE paths like /data/data/<pkg>/files/(keys|inputs)/.*\\.db|\\.txt|\\.log
+- **android:logcat** — CREATE/WRITE to /data/data/<pkg>/(files|databases)/(keys|inputs|clipboard).*\\.(db|sqlite|txt|log)
+- **android:logcat** — CREATE/WRITE to /data/data/<pkg>/(files|databases)/(creds|form|prompt).*\\.(db|sqlite|json|txt)
+- **android:logcat** — CREATE/WRITE /data/data/<pkg>/(files|databases)/(app_inventory|pkg_list).*\\.(json|txt|db)
+- **android:logcat** — CREATE/WRITE /data/data/<pkg>/(files|databases)/(security_inventory|policy_audit).*\\.(json|txt|db|plist)
+- **auditd:FILE** — File creation with name starting with '.'
+- **auditd:FILE** — create: New file created in system binaries or temp directories
+- **auditd:FILE** — create: Creation of .zip, .gz, .bz2 files in /tmp, /var/tmp, or /home directories
+- **auditd:FILE** — create: Creation of archive files in /tmp, /var/tmp, or user home directories
+- **auditd:FILE** — create: Creation of files with anomalous headers and entropy levels in /tmp or user directories
+- **auditd:FILE** — Creation of hidden files (.*) in sensitive directories (/etc, /var, /usr/bin)
+- **auditd:FILE** — create: Creation of files ending in .tar, .gz, .bz2, .zip in /tmp or /var/tmp
+- **auditd:PATH** — Creation of files with extensions .sql, .csv, .sqlite, especially in user directories
+- **auditd:PATH** — New .py/.js/.sh files written to ~/.local/, ~/.cache/, or /tmp/ within 5 min of package install
+- **auditd:PATH** — mount target path within /proc/*
+- **auditd:PATH** — creation of .so files in non-standard directories (e.g., /tmp, /home/*)
+- **auditd:PATH** — WRITE: Drop of binaries/scripts in ~/.local, /tmp, or /opt tool dirs
+- **auditd:SYSCALL** — creat
+- **auditd:SYSCALL** — open or creat syscalls targeting excluded paths
+- **auditd:SYSCALL** — file creation/modification
+- **auditd:SYSCALL** — open,creat,rename: Writes in $HOME/Downloads, /tmp, ~/.cache with exe/script/archive/office extensions
+- **auditd:SYSCALL** — write/open, FIM audit
+- **auditd:SYSCALL** — open: Write to ~/.vscode-cli/code_tunnel.json
+- **auditd:SYSCALL** — write
+- **auditd:SYSCALL** — open, unlink, rename: File creation or deletion involving critical stored data
+- **auditd:SYSCALL** — creat, open, write on /etc/systemd/system and /usr/lib/systemd/system
+- **auditd:SYSCALL** — write, open, or rename to /etc/systemd/system/*.service
+- **auditd:SYSCALL** — open/create/rename: name in (/home/*/Downloads/*|/tmp/*|/run/user/*|/media/*) AND ext in SuspiciousExtensions
+- **auditd:SYSCALL** — File creations of *.qcow2, *.vdi, *.vmdk outside standard VM directories
+- **auditd:SYSCALL** — open: File creation under /tmp, /var/tmp, ~/.cache with executable bit or shell shebang
+- **auditd:SYSCALL** — open, write, unlink
+- **auditd:SYSCALL** — File creation events in /var/mail or /var/spool/mail exceeding baseline thresholds
+- **auditd:SYSCALL** — write or create file after .bash_history access
+- **auditd:SYSCALL** — new file created in /var/www/html, /srv/http, or similar web root
+- **auditd:SYSCALL** — Access or modification to /lib/modules or creation of .ko files
+- **auditd:SYSCALL** — open,create
+- **auditd:SYSCALL** — open,creat,rename,write
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: file transfer (scp, sftp, rsync, etc.) placing executable on Industrial Control Systems (ICS) Linux asset, followed by execve of the transferred file within tool transfer window
+- **AWS:CloudTrail** — PutObject
+- **CloudTrail:PutObject** — PutObject
+- **esxi:vmkernel** — file write
+- **esxi:vmkernel** — VMFS file creation
+- **File** — None
+- **fs:fileevents** — creat
+- **fs:fileevents** — create/write/rename in user-writable paths
+- **fs:fsevents** — Create in /Users/*/Downloads or /private/var/folders/* with quarantine attribute
+- **fs:fsevents** — Directory events (kFSEventStreamEventFlagItemCreated)
+- **fs:fsusage** — open/write/exec calls
+- **fs:fsusage** — disk activity on /Library/LaunchAgents or LaunchDaemons
+- **fs:fsusage** — File IO
+- **fs:fsusage** — file activity
+- **fs:fsusage** — file open/write
+- **fs:fsusage** — create: Attachment file creation in ~/Library/Mail directories
+- **fs:fsusage** — write or chmod to ~/Library/LaunchAgents/*.plist
+- **fs:fsusage** — file write
+- **fs:launchdaemons** — file_create
+- **gcp:workspaceaudit** — drive.activity logs
+- **iOS:unifiedlog** — NSFileHandle/NSFileManager writes creating high-entropy files within app container (/var/mobile/Containers/Data/Application/<GUID>/tmp|Library/Caches)
+- **iOS:unifiedlog** — Create/write of high-entropy Mach-O/bundle or generic blob in /var/mobile/Containers/Data/Application/<GUID>/(tmp|Library/Caches)/
+- **iOS:unifiedlog** — Create/write in /var/mobile/Containers/Data/Application/<GUID>/(tmp|Library/Caches)/ for .js/.bundle/.dylib/.zip with elevated entropy
+- **iOS:unifiedlog** — CREATE/WRITE of archive/container (.zip/.gz/.7z/.db export) aggregating recently read items
+- **iOS:unifiedlog** — CREATE/WRITE of clipboard dump artifacts in container (clipboard.db, clip_*.txt, caches)
+- **iOS:unifiedlog** — CREATE/WRITE clipboard/keylog artifacts (clipboard.db, keys_*.txt) in container
+- **iOS:unifiedlog** — CREATE/WRITE of keylog artifacts (keys_*.txt, inputs.db) within app/keyboard container
+- **iOS:unifiedlog** — CREATE/WRITE of form cache/credential-like artifacts (forms.db, creds.json) in container
+- **iOS:unifiedlog** — CREATE/WRITE container paths like /Library/Caches/app_inventory.*\\.(json|plist|db)
+- **iOS:unifiedlog** — CREATE/WRITE of /Library/Caches/security_inventory.*\\.(json|plist|db)
+- **linux:osquery** — file_events
+- **linux:Sysmon** — New files in /tmp, /var/tmp, $HOME/.cache, executed within TimeWindow after browser HTTP fetch
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_CREATE: path under /Users/*/(Downloads|Desktop|Library/*/Containers|Library/Group Containers) AND extension in SuspiciousExtensions
+- **macos:endpointsecurity** — es_event_open
+- **macos:fsevents** — /Library/StartupItems/, ~/Library/LaunchAgents/
+- **macos:osquery** — CREATE/MODIFY: Modification of app.asar inside .app bundle
+- **macos:osquery** — file_events
+- **macos:osquery** — CREATE/MODIFY: Creation of LaunchAgents/Daemons plists in user/system locations
+- **macos:unifiedlog** — file write
+- **macos:unifiedlog** — Creation or modification of browser extension .plist files
+- **macos:unifiedlog** — file creation in AV exclusion directories
+- **macos:unifiedlog** — file write/create
+- **macos:unifiedlog** — file events
+- **macos:unifiedlog** — Creation of .plist under /Library/Managed Preferences/
+- **macos:unifiedlog** — creation of ~/.vscode-cli/code_tunnel.json
+- **macos:unifiedlog** — create/modify dylib files in monitored directories
+- **macos:unifiedlog** — New files written to /var/folders, /tmp, ~/Library/Caches, or ~/Downloads by browser context or its children
+- **macos:unifiedlog** — File created in ~/Library/LaunchAgents or executable directories
+- **macos:unifiedlog** — Process wrote large .mov/.mp4 in user temp/hidden dirs
+- **macos:unifiedlog** — logd:file write
+- **macos:unifiedlog** — File creation
+- **macos:unifiedlog** — Attachment files written to ~/Downloads or temporary folders
+- **macos:unifiedlog** — Writes of .sql/.csv/.xlsx files to user documents/downloads
+- **macos:unifiedlog** — Creation of .zip, .gz, .dmg archives in /Users, /tmp, or application directories
+- **macos:unifiedlog** — Creation of .zip, .dmg, .tar.gz files in /Users, /tmp, or application directories
+- **macos:unifiedlog** — File Events
+- **macos:unifiedlog** — Creation or modification of postinstall scripts within .pkg or .mpkg contents
+- **macos:unifiedlog** — create: New files in /tmp or ~/Library/Application Support/* with executable or script extensions
+- **macos:unifiedlog** — File creation of unsigned binaries/scripts in user cache or download directories
+- **macos:unifiedlog** — Creation of files with anomalous headers and entropy values
+- **macos:unifiedlog** — Creation of LaunchAgents/LaunchDaemons in hidden or non-standard directories
+- **macos:unifiedlog** — Creation of .zip or .dmg files in user-accessible or temporary directories
+- **macos:unifiedlog** — file create or modify in /etc/emond.d/rules or /private/var/db/emondClients
+- **macos:unifiedlog** — Writes under ~/Library/Application Support/Code*/extensions or JetBrains plugins
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes asymmetric-encrypted blob or encoded ciphertext to local staging path before network transmission — encrypted staging artifact
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: Local file write between inbound retrieval
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT on path LIKE '/data/data/%/files/%' for binary or dex content by app_package NOT IN $LegitDynamicLoaders$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT on binary-typed path in /data/data/<app>/ within $StegoExecWindow$ of media file download from same session
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT for file with audio MIME type (audio/mp4, audio/aac, audio/3gpp) in /data/data/<app>/files/ within $AudioCaptureWindow$ of recording API start
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT for APK or binary file in /sdcard/ or /data/local/tmp/ by browser process within $DriveByWindow$ — payload drop confirms exploit code execution
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: PackageInstaller.install() with installer_source NOT IN $ApprovedInstallSources$ within $PolicyViolationWindow$ of settings change
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app binary written to device with signing certificate matching manually-trusted enterprise cert NOT IN $EnterpriseCertAllowList$ within $ProfileInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: PackageInstaller.install() with signing_cert NOT IN $EnterpriseCertList$ within $PolicyViolationWindow$ of settings change
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: IPA binary written with signing cert matching user-trusted certificate NOT IN $EnterpriseCertList$ within $ProfileInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app binary written to device storage as part of install — confirms impersonating app is being persisted
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: PackageInstaller.install() writes binary to device storage for impersonating app — install event is the enrollment of impersonating app
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() with O_CREAT for APK file in /sdcard/ or /data/local/tmp/ within $PhishingWindow$ of navigation to flagged URL — APK drop confirms malware delivery phase
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: File with binary signature (.apk, .dex, .so, .sh) written to app storage or /data/local/tmp/ from USB-mounted path or external storage within $USBInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: Compromised app writes staging, cache, or export artifacts inconsistent with its declared function within $PostInstallWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App stages or caches content retrieved from web-service platform locally before initiating secondary network connection
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes high-entropy blob (Shannon entropy > $EntropyThreshold$) to local staging path immediately before outbound transmission — encrypted staging artifact confirms app-layer encryption occurred
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes newly retrieved binary, archive, native library (.so), DEX, or script to /data/data/<app>/files/, cache, or shared storage within $IngressWriteWindow$ of network retrieval from non-CDN source
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: Managed app writes newly retrieved container-local file, dylib-like resource, or opaque payload after download from non-CDN source
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: APK, DEX, or native library written to app installation path outside MDM-authorized update mechanism — binary replacement is the persistence artifact
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App reads files across multiple directories or databases in background state (collection phase) then invokes archive or compression routines on collected content — read-then-archive sequence is the staging chain
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes archive-like container, high-entropy packaged blob, or .zip/.gz output to app-private or cache path after bulk data collection — archive artifact in private storage is the staging evidence
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes large container, temp package, or high-entropy blob to container-local storage after clustered data access — staged archive artifact
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App writes to or modifies protected configuration files or local control structures of deployed security tools
+- **MobileEDR:telemetry** — IPA binary written with signing cert matching user-trusted certificate NOT IN $EnterpriseCertList$ within $ProfileInstallWindow$
+- **MobileEDR:telemetry** — PackageInstaller.install() with signing_cert NOT IN $EnterpriseCertList$ within $PolicyViolationWindow$ of settings change
+- **MobileEDR:telemetry** — Browser/WebView process creates downloaded payloads, temporary files, dropped archives, or unusual cached web artifacts shortly after visiting external content
+- **MobileEDR:telemetry** — File writes from removable-media or USB-associated paths into download, package staging, temp, or application-accessible storage shortly after USB connection
+- **MobileEDR:telemetry** — large file write originating from /mnt/usb or external mounted storage
+- **MobileEDR:telemetry** — Recently installed or updated trusted app writes staging, cache, buffer, or export artifacts inconsistent with its approved function, especially when temporally adjacent to sensitive resource access or outbound transfer
+- **MobileEDR:telemetry** — App stages, buffers, caches, or exports data locally immediately before communication with legitimate external web-service endpoints in a way inconsistent with normal sync or offline workflow
+- **MobileEDR:telemetry** — Burst write to cache, buffer, temp, staging, or export path occurred between inbound retrieval and outbound write to same public web-service class
+- **MobileEDR:telemetry** — Burst write to media, cache, temp, export, or staging path occurred during or immediately after camera session from same app identity
+- **MobileEDR:telemetry** — App writes encoded/encrypted blobs (high entropy data) to local storage or memory buffers prior to transmission
+- **MobileEDR:telemetry** — App writes high-entropy encrypted blobs to local storage or memory buffers prior to transmission
+- **MobileEDR:telemetry** — App writes asymmetric-encrypted blobs or encoded ciphertext to local buffers or files prior to transmission
+- **MobileEDR:telemetry** — Application reads multiple user-data files, media objects, message stores, or app-private records in burst sequence immediately before packaging or encryption activity
+- **MobileEDR:telemetry** — Application writes archive-like container or high-entropy packaged blob to app storage, cache, temp path, or shared external path after burst collection activity
+- **MobileEDR:telemetry** — Application writes new large container, temp package, or high-entropy blob after clustered local data access and before outbound communication
+- **MobileEDR:telemetry** — Application performs burst reads across local system paths, external storage, media directories, cache locations, or local database files within a short interval as the primary collection phase
+- **MobileEDR:telemetry** — Application writes newly retrieved binary, archive, script-like asset, overlay content, library, or opaque payload to app-private, cache, temp, or shared external path as the primary local effect of transfer
+- **MobileEDR:telemetry** — Managed app writes newly retrieved container-local asset, dylib-like resource, archive, or opaque payload shortly after remote retrieval as the strongest local effect
+- **MobileEDR:telemetry** — APK, DEX, native library, or package-associated executable content is written, expanded, or swapped in app package paths, staging paths, or installer cache immediately before or during application replacement
+- **MobileEDR:telemetry** — application modifies protected configuration, local control files, security settings, or tool-related data immediately before security service degradation or non-reporting state
+- **snmp:syslog** — firmware write/log event
+- **WinEventLog:Microsoft-Windows-Shell-Core** — New startup folder shortcut or binary placed in Startup directory
+- **WinEventLog:Sysmon** — EventCode=11
+- **WinEventLog:Sysmon** — File creation of suspicious scripts/binaries in temporary directories
+- **WinEventLog:Sysmon** — EventCode=11 of alarm config paths by image not in Human-Machine Interface (HMI) alarm parent allowlist
+- **WinEventLog:Sysmon** — EventCode=11 with executable/script extension from remote-sourced write operation
+- **WinEventLog:Sysmon** — EventCode=11 from removable media path to Industrial Control Systems (ICS) engineering working directory
+- **WinEventLog:Sysmon** — EventCode=11 where an unrecognized process creates a staging/output file after bulk ICS data access activity
+- **WinEventLog:Sysmon** — EventCode=11 by same process within capture to file window of the Application Programming Interface (API) call
+- **WinEventLog:Sysmon** — EventCode=11 to alarm threshold config path by image not in Human-Machine Interface (HMI) alarm parent allowlist
+
+## Analytics using this component
+
+- [AN0009 - Analytic 0009](../Analytics/AN0009.md)
+- [AN0012 - Analytic 0012](../Analytics/AN0012.md)
+- [AN0021 - Analytic 0021](../Analytics/AN0021.md)
+- [AN0034 - Analytic 0034](../Analytics/AN0034.md)
+- [AN0037 - Analytic 0037](../Analytics/AN0037.md)
+- [AN0040 - Analytic 0040](../Analytics/AN0040.md)
+- [AN0041 - Analytic 0041](../Analytics/AN0041.md)
+- [AN0051 - Analytic 0051](../Analytics/AN0051.md)
+- [AN0052 - Analytic 0052](../Analytics/AN0052.md)
+- [AN0055 - Analytic 0055](../Analytics/AN0055.md)
+- [AN0057 - Analytic 0057](../Analytics/AN0057.md)
+- [AN0065 - Analytic 0065](../Analytics/AN0065.md)
+- [AN0071 - Analytic 0071](../Analytics/AN0071.md)
+- [AN0072 - Analytic 0072](../Analytics/AN0072.md)
+- [AN0073 - Analytic 0073](../Analytics/AN0073.md)
+- [AN0074 - Analytic 0074](../Analytics/AN0074.md)
+- [AN0091 - Analytic 0091](../Analytics/AN0091.md)
+- [AN0092 - Analytic 0092](../Analytics/AN0092.md)
+- [AN0094 - Analytic 0094](../Analytics/AN0094.md)
+- [AN0108 - Analytic 0108](../Analytics/AN0108.md)
+- [AN0123 - Analytic 0123](../Analytics/AN0123.md)
+- [AN0124 - Analytic 0124](../Analytics/AN0124.md)
+- [AN0130 - Analytic 0130](../Analytics/AN0130.md)
+- [AN0137 - Analytic 0137](../Analytics/AN0137.md)
+- [AN0139 - Analytic 0139](../Analytics/AN0139.md)
+- [AN0140 - Analytic 0140](../Analytics/AN0140.md)
+- [AN0141 - Analytic 0141](../Analytics/AN0141.md)
+- [AN0162 - Analytic 0162](../Analytics/AN0162.md)
+- [AN0165 - Analytic 0165](../Analytics/AN0165.md)
+- [AN0166 - Analytic 0166](../Analytics/AN0166.md)
+- [AN0167 - Analytic 0167](../Analytics/AN0167.md)
+- [AN0168 - Analytic 0168](../Analytics/AN0168.md)
+- [AN0169 - Analytic 0169](../Analytics/AN0169.md)
+- [AN0176 - Analytic 0176](../Analytics/AN0176.md)
+- [AN0178 - Analytic 0178](../Analytics/AN0178.md)
+- [AN0179 - Analytic 0179](../Analytics/AN0179.md)
+- [AN0180 - Analytic 0180](../Analytics/AN0180.md)
+- [AN0184 - Analytic 0184](../Analytics/AN0184.md)
+- [AN0185 - Analytic 0185](../Analytics/AN0185.md)
+- [AN0188 - Analytic 0188](../Analytics/AN0188.md)
+- [AN0194 - Analytic 0194](../Analytics/AN0194.md)
+- [AN0196 - Analytic 0196](../Analytics/AN0196.md)
+- [AN0197 - Analytic 0197](../Analytics/AN0197.md)
+- [AN0212 - Analytic 0212](../Analytics/AN0212.md)
+- [AN0229 - Analytic 0229](../Analytics/AN0229.md)
+- [AN0235 - Analytic 0235](../Analytics/AN0235.md)
+- [AN0240 - Analytic 0240](../Analytics/AN0240.md)
+- [AN0247 - Analytic 0247](../Analytics/AN0247.md)
+- [AN0248 - Analytic 0248](../Analytics/AN0248.md)
+- [AN0249 - Analytic 0249](../Analytics/AN0249.md)
+- [AN0251 - Analytic 0251](../Analytics/AN0251.md)
+- [AN0252 - Analytic 0252](../Analytics/AN0252.md)
+- [AN0253 - Analytic 0253](../Analytics/AN0253.md)
+- [AN0260 - Analytic 0260](../Analytics/AN0260.md)
+- [AN0275 - Analytic 0275](../Analytics/AN0275.md)
+- [AN0278 - Analytic 0278](../Analytics/AN0278.md)
+- [AN0292 - Analytic 0292](../Analytics/AN0292.md)
+- [AN0297 - Analytic 0297](../Analytics/AN0297.md)
+- [AN0320 - Analytic 0320](../Analytics/AN0320.md)
+- [AN0327 - Analytic 0327](../Analytics/AN0327.md)
+- [AN0341 - Analytic 0341](../Analytics/AN0341.md)
+- [AN0342 - Analytic 0342](../Analytics/AN0342.md)
+- [AN0367 - Analytic 0367](../Analytics/AN0367.md)
+- [AN0369 - Analytic 0369](../Analytics/AN0369.md)
+- [AN0372 - Analytic 0372](../Analytics/AN0372.md)
+- [AN0375 - Analytic 0375](../Analytics/AN0375.md)
+- [AN0376 - Analytic 0376](../Analytics/AN0376.md)
+- [AN0377 - Analytic 0377](../Analytics/AN0377.md)
+- [AN0388 - Analytic 0388](../Analytics/AN0388.md)
+- [AN0411 - Analytic 0411](../Analytics/AN0411.md)
+- [AN0428 - Analytic 0428](../Analytics/AN0428.md)
+- [AN0430 - Analytic 0430](../Analytics/AN0430.md)
+- [AN0435 - Analytic 0435](../Analytics/AN0435.md)
+- [AN0472 - Analytic 0472](../Analytics/AN0472.md)
+- [AN0473 - Analytic 0473](../Analytics/AN0473.md)
+- [AN0484 - Analytic 0484](../Analytics/AN0484.md)
+- [AN0488 - Analytic 0488](../Analytics/AN0488.md)
+- [AN0498 - Analytic 0498](../Analytics/AN0498.md)
+- [AN0499 - Analytic 0499](../Analytics/AN0499.md)
+- [AN0500 - Analytic 0500](../Analytics/AN0500.md)
+- [AN0510 - Analytic 0510](../Analytics/AN0510.md)
+- [AN0516 - Analytic 0516](../Analytics/AN0516.md)
+- [AN0517 - Analytic 0517](../Analytics/AN0517.md)
+- [AN0518 - Analytic 0518](../Analytics/AN0518.md)
+- [AN0531 - Analytic 0531](../Analytics/AN0531.md)
+- [AN0540 - Analytic 0540](../Analytics/AN0540.md)
+- [AN0555 - Analytic 0555](../Analytics/AN0555.md)
+- [AN0556 - Analytic 0556](../Analytics/AN0556.md)
+- [AN0558 - Analytic 0558](../Analytics/AN0558.md)
+- [AN0568 - Analytic 0568](../Analytics/AN0568.md)
+- [AN0570 - Analytic 0570](../Analytics/AN0570.md)
+- [AN0576 - Analytic 0576](../Analytics/AN0576.md)
+- [AN0577 - Analytic 0577](../Analytics/AN0577.md)
+- [AN0580 - Analytic 0580](../Analytics/AN0580.md)
+- [AN0595 - Analytic 0595](../Analytics/AN0595.md)
+- [AN0599 - Analytic 0599](../Analytics/AN0599.md)
+- [AN0601 - Analytic 0601](../Analytics/AN0601.md)
+- [AN0602 - Analytic 0602](../Analytics/AN0602.md)
+- [AN0609 - Analytic 0609](../Analytics/AN0609.md)
+- [AN0614 - Analytic 0614](../Analytics/AN0614.md)
+- [AN0616 - Analytic 0616](../Analytics/AN0616.md)
+- [AN0619 - Analytic 0619](../Analytics/AN0619.md)
+- [AN0620 - Analytic 0620](../Analytics/AN0620.md)
+- [AN0621 - Analytic 0621](../Analytics/AN0621.md)
+- [AN0622 - Analytic 0622](../Analytics/AN0622.md)
+- [AN0629 - Analytic 0629](../Analytics/AN0629.md)
+- [AN0630 - Analytic 0630](../Analytics/AN0630.md)
+- [AN0645 - Analytic 0645](../Analytics/AN0645.md)
+- [AN0651 - Analytic 0651](../Analytics/AN0651.md)
+- [AN0653 - Analytic 0653](../Analytics/AN0653.md)
+- [AN0655 - Analytic 0655](../Analytics/AN0655.md)
+- [AN0657 - Analytic 0657](../Analytics/AN0657.md)
+- [AN0659 - Analytic 0659](../Analytics/AN0659.md)
+- [AN0666 - Analytic 0666](../Analytics/AN0666.md)
+- [AN0676 - Analytic 0676](../Analytics/AN0676.md)
+- [AN0677 - Analytic 0677](../Analytics/AN0677.md)
+- [AN0678 - Analytic 0678](../Analytics/AN0678.md)
+- [AN0698 - Analytic 0698](../Analytics/AN0698.md)
+- [AN0699 - Analytic 0699](../Analytics/AN0699.md)
+- [AN0701 - Analytic 0701](../Analytics/AN0701.md)
+- [AN0712 - Analytic 0712](../Analytics/AN0712.md)
+- [AN0714 - Analytic 0714](../Analytics/AN0714.md)
+- [AN0724 - Analytic 0724](../Analytics/AN0724.md)
+- [AN0747 - Analytic 0747](../Analytics/AN0747.md)
+- [AN0748 - Analytic 0748](../Analytics/AN0748.md)
+- [AN0749 - Analytic 0749](../Analytics/AN0749.md)
+- [AN0765 - Analytic 0765](../Analytics/AN0765.md)
+- [AN0767 - Analytic 0767](../Analytics/AN0767.md)
+- [AN0774 - Analytic 0774](../Analytics/AN0774.md)
+- [AN0782 - Analytic 0782](../Analytics/AN0782.md)
+- [AN0783 - Analytic 0783](../Analytics/AN0783.md)
+- [AN0784 - Analytic 0784](../Analytics/AN0784.md)
+- [AN0797 - Analytic 0797](../Analytics/AN0797.md)
+- [AN0798 - Analytic 0798](../Analytics/AN0798.md)
+- [AN0819 - Analytic 0819](../Analytics/AN0819.md)
+- [AN0820 - Analytic 0820](../Analytics/AN0820.md)
+- [AN0821 - Analytic 0821](../Analytics/AN0821.md)
+- [AN0831 - Analytic 0831](../Analytics/AN0831.md)
+- [AN0832 - Analytic 0832](../Analytics/AN0832.md)
+- [AN0833 - Analytic 0833](../Analytics/AN0833.md)
+- [AN0834 - Analytic 0834](../Analytics/AN0834.md)
+- [AN0841 - Analytic 0841](../Analytics/AN0841.md)
+- [AN0854 - Analytic 0854](../Analytics/AN0854.md)
+- [AN0856 - Analytic 0856](../Analytics/AN0856.md)
+- [AN0862 - Analytic 0862](../Analytics/AN0862.md)
+- [AN0872 - Analytic 0872](../Analytics/AN0872.md)
+- [AN0873 - Analytic 0873](../Analytics/AN0873.md)
+- [AN0874 - Analytic 0874](../Analytics/AN0874.md)
+- [AN0880 - Analytic 0880](../Analytics/AN0880.md)
+- [AN0910 - Analytic 0910](../Analytics/AN0910.md)
+- [AN0913 - Analytic 0913](../Analytics/AN0913.md)
+- [AN0914 - Analytic 0914](../Analytics/AN0914.md)
+- [AN0921 - Analytic 0921](../Analytics/AN0921.md)
+- [AN0932 - Analytic 0932](../Analytics/AN0932.md)
+- [AN0938 - Analytic 0938](../Analytics/AN0938.md)
+- [AN0939 - Analytic 0939](../Analytics/AN0939.md)
+- [AN0940 - Analytic 0940](../Analytics/AN0940.md)
+- [AN0942 - Analytic 0942](../Analytics/AN0942.md)
+- [AN0949 - Analytic 0949](../Analytics/AN0949.md)
+- [AN0962 - Analytic 0962](../Analytics/AN0962.md)
+- [AN0963 - Analytic 0963](../Analytics/AN0963.md)
+- [AN0964 - Analytic 0964](../Analytics/AN0964.md)
+- [AN0968 - Analytic 0968](../Analytics/AN0968.md)
+- [AN0974 - Analytic 0974](../Analytics/AN0974.md)
+- [AN0983 - Analytic 0983](../Analytics/AN0983.md)
+- [AN0992 - Analytic 0992](../Analytics/AN0992.md)
+- [AN0993 - Analytic 0993](../Analytics/AN0993.md)
+- [AN0994 - Analytic 0994](../Analytics/AN0994.md)
+- [AN1008 - Analytic 1008](../Analytics/AN1008.md)
+- [AN1009 - Analytic 1009](../Analytics/AN1009.md)
+- [AN1011 - Analytic 1011](../Analytics/AN1011.md)
+- [AN1028 - Analytic 1028](../Analytics/AN1028.md)
+- [AN1030 - Analytic 1030](../Analytics/AN1030.md)
+- [AN1032 - Analytic 1032](../Analytics/AN1032.md)
+- [AN1033 - Analytic 1033](../Analytics/AN1033.md)
+- [AN1040 - Analytic 1040](../Analytics/AN1040.md)
+- [AN1061 - Analytic 1061](../Analytics/AN1061.md)
+- [AN1064 - Analytic 1064](../Analytics/AN1064.md)
+- [AN1066 - Analytic 1066](../Analytics/AN1066.md)
+- [AN1070 - Analytic 1070](../Analytics/AN1070.md)
+- [AN1075 - Analytic 1075](../Analytics/AN1075.md)
+- [AN1085 - Analytic 1085](../Analytics/AN1085.md)
+- [AN1096 - Analytic 1096](../Analytics/AN1096.md)
+- [AN1097 - Analytic 1097](../Analytics/AN1097.md)
+- [AN1108 - Analytic 1108](../Analytics/AN1108.md)
+- [AN1109 - Analytic 1109](../Analytics/AN1109.md)
+- [AN1116 - Analytic 1116](../Analytics/AN1116.md)
+- [AN1126 - Analytic 1126](../Analytics/AN1126.md)
+- [AN1145 - Analytic 1145](../Analytics/AN1145.md)
+- [AN1153 - Analytic 1153](../Analytics/AN1153.md)
+- [AN1177 - Analytic 1177](../Analytics/AN1177.md)
+- [AN1196 - Analytic 1196](../Analytics/AN1196.md)
+- [AN1197 - Analytic 1197](../Analytics/AN1197.md)
+- [AN1206 - Analytic 1206](../Analytics/AN1206.md)
+- [AN1207 - Analytic 1207](../Analytics/AN1207.md)
+- [AN1208 - Analytic 1208](../Analytics/AN1208.md)
+- [AN1209 - Analytic 1209](../Analytics/AN1209.md)
+- [AN1211 - Analytic 1211](../Analytics/AN1211.md)
+- [AN1213 - Analytic 1213](../Analytics/AN1213.md)
+- [AN1214 - Analytic 1214](../Analytics/AN1214.md)
+- [AN1215 - Analytic 1215](../Analytics/AN1215.md)
+- [AN1216 - Analytic 1216](../Analytics/AN1216.md)
+- [AN1221 - Analytic 1221](../Analytics/AN1221.md)
+- [AN1243 - Analytic 1243](../Analytics/AN1243.md)
+- [AN1245 - Analytic 1245](../Analytics/AN1245.md)
+- [AN1246 - Analytic 1246](../Analytics/AN1246.md)
+- [AN1288 - Analytic 1288](../Analytics/AN1288.md)
+- [AN1298 - Analytic 1298](../Analytics/AN1298.md)
+- [AN1300 - Analytic 1300](../Analytics/AN1300.md)
+- [AN1301 - Analytic 1301](../Analytics/AN1301.md)
+- [AN1303 - Analytic 1303](../Analytics/AN1303.md)
+- [AN1308 - Analytic 1308](../Analytics/AN1308.md)
+- [AN1314 - Analytic 1314](../Analytics/AN1314.md)
+- [AN1315 - Analytic 1315](../Analytics/AN1315.md)
+- [AN1316 - Analytic 1316](../Analytics/AN1316.md)
+- [AN1319 - Analytic 1319](../Analytics/AN1319.md)
+- [AN1321 - Analytic 1321](../Analytics/AN1321.md)
+- [AN1366 - Analytic 1366](../Analytics/AN1366.md)
+- [AN1367 - Analytic 1367](../Analytics/AN1367.md)
+- [AN1368 - Analytic 1368](../Analytics/AN1368.md)
+- [AN1381 - Analytic 1381](../Analytics/AN1381.md)
+- [AN1382 - Analytic 1382](../Analytics/AN1382.md)
+- [AN1383 - Analytic 1383](../Analytics/AN1383.md)
+- [AN1384 - Analytic 1384](../Analytics/AN1384.md)
+- [AN1385 - Analytic 1385](../Analytics/AN1385.md)
+- [AN1386 - Analytic 1386](../Analytics/AN1386.md)
+- [AN1397 - Analytic 1397](../Analytics/AN1397.md)
+- [AN1407 - Analytic 1407](../Analytics/AN1407.md)
+- [AN1433 - Analytic 1433](../Analytics/AN1433.md)
+- [AN1436 - Analytic 1436](../Analytics/AN1436.md)
+- [AN1458 - Analytic 1458](../Analytics/AN1458.md)
+- [AN1459 - Analytic 1459](../Analytics/AN1459.md)
+- [AN1460 - Analytic 1460](../Analytics/AN1460.md)
+- [AN1480 - Analytic 1480](../Analytics/AN1480.md)
+- [AN1501 - Analytic 1501](../Analytics/AN1501.md)
+- [AN1511 - Analytic 1511](../Analytics/AN1511.md)
+- [AN1516 - Analytic 1516](../Analytics/AN1516.md)
+- [AN1528 - Analytic 1528](../Analytics/AN1528.md)
+- [AN1529 - Analytic 1529](../Analytics/AN1529.md)
+- [AN1530 - Analytic 1530](../Analytics/AN1530.md)
+- [AN1531 - Analytic 1531](../Analytics/AN1531.md)
+- [AN1534 - Analytic 1534](../Analytics/AN1534.md)
+- [AN1535 - Analytic 1535](../Analytics/AN1535.md)
+- [AN1548 - Analytic 1548](../Analytics/AN1548.md)
+- [AN1549 - Analytic 1549](../Analytics/AN1549.md)
+- [AN1550 - Analytic 1550](../Analytics/AN1550.md)
+- [AN1551 - Analytic 1551](../Analytics/AN1551.md)
+- [AN1560 - Analytic 1560](../Analytics/AN1560.md)
+- [AN1598 - Analytic 1598](../Analytics/AN1598.md)
+- [AN1610 - Analytic 1610](../Analytics/AN1610.md)
+- [AN1611 - Analytic 1611](../Analytics/AN1611.md)
+- [AN1625 - Analytic 1625](../Analytics/AN1625.md)
+- [AN2035 - Analytic 2035](../Analytics/AN2035.md)
+- [AN2063 - Analytic 2063](../Analytics/AN2063.md)

@@ -1,0 +1,151 @@
+# DC0055 - File Access
+
+[Mobile](../../README.md) / [Data Components](README.md)
+
+To events where a file is opened or accessed, making its contents available to the requester. This includes reading, executing, or interacting with files by authorized or unauthorized entities. Examples include logging file access events (e.g., Windows Event ID 4663), monitoring file reads, and detecting unusual file access patterns. Examples: 
+
+- File Read Operations: A user opens a sensitive document (e.g., financial_report.xlsx) on a shared drive.
+- File Execution: A script or executable file is accessed and executed (e.g., malware.exe is run from a temporary directory).
+- Unauthorized File Access: An unauthorized user attempts to access a protected configuration file (e.g., `/etc/passwd` on Linux or `System32` files on Windows).
+- File Access Patterns: Bulk access to multiple files in a short time (e.g., mass access to documents on a file server).
+- File Access via Network: Files on a network share are accessed remotely (e.g., logs of SMB file access).
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0055)
+
+## Log sources and channels
+
+- **android:logcat** — READ or COPY operations where path matches external/shared locations of other apps (e.g., /storage/emulated/0/Android/data/<otherpkg>/files/, /storage/emulated/0/Download/<app>/*)
+- **android:logcat** — KeyChain/AndroidKeyStore read of token alias
+- **android:logcat** — READ/LIST/STAT of /sdcard|/storage/emulated/0|/Android/media|/Documents with >N distinct paths in TimeWindow
+- **auditd:FILE** — /home/*/.mozilla/firefox/*/logins.json OR /home/*/.config/google-chrome/*/Login Data
+- **auditd:FILE** — /proc/*/mem read attempt
+- **auditd:FS** — read: File access to /proc/modules or /sys/module/
+- **auditd:PATH** — Read access to known backup software configuration files (e.g., /etc/rsnapshot.conf, /opt/veeam/config.ini)
+- **auditd:PATH** — open: Access to sensitive log files (/var/log/auth.log, /var/log/secure, /var/log/syslog)
+- **auditd:PATH** — PATH
+- **auditd:PATH** — file read
+- **auditd:SYSCALL** — open, read, or stat of browser config files
+- **auditd:SYSCALL** — open: File access attempt on /tmp/krb5cc_* or /tmp/krb5.ccache
+- **auditd:SYSCALL** — openat
+- **auditd:SYSCALL** — open
+- **auditd:SYSCALL** — open, read
+- **auditd:SYSCALL** — open, flock, fcntl, unlink
+- **auditd:SYSCALL** — read/open of sensitive files
+- **auditd:SYSCALL** — Unusual processes accessing or modifying cookie databases
+- **auditd:SYSCALL** — PATH records referencing /dev/video*
+- **auditd:SYSCALL** — open, read: /etc/ssl/, /etc/pki/, ~/.pki/nssdb/
+- **auditd:SYSCALL** — Processes reading credential or token cache files
+- **auditd:SYSCALL** — read/open of sensitive file directories
+- **auditd:SYSCALL** — open/read of sensitive config or secret files
+- **auditd:SYSCALL** — open/read of sensitive directories
+- **auditd:SYSCALL** — open/read: Access to /proc/self/status with focus on TracerPID field
+- **auditd:SYSCALL** — open/read access to ~/.bash_history
+- **auditd:SYSCALL** — open,read
+- **auditd:SYSCALL** — open/read system calls to ~/.bash_history or /etc/shadow
+- **auditd:SYSCALL** — read of /run/secrets or docker volumes by non-entrypoint process
+- **auditd:SYSCALL** — Reads of ~/.bash_history, ~/.mozilla, or access to /dev/input
+- **auditd:SYSCALL** — open/read
+- **auditd:SYSCALL** — open: Access to named pipes or FIFO in /tmp or /dev/shm by unexpected processes
+- **auditd:SYSCALL** — open or read to browser cookie storage
+- **auditd:SYSCALL** — open, read, mount
+- **auditd:SYSCALL** — file
+- **auditd:SYSCALL** — Access to /var/lib/sss/secrets/secrets.ldb or .secrets.mkey
+- **auditd:SYSCALL** — open/read of sensitive directories (/etc, /home/*)
+- **auditd:SYSCALL** — PATH
+- **auditd:SYSCALL** — open/read on ~/.local/share/keepassxc/* OR ~/.password-store/*
+- **auditd:SYSCALL** — attempts to read /proc/* entries at scale (openat/getdents64/readlink) or access denied for /proc traversal; correlate to app UID
+- **azure:activity** — CollectGuestLogs: Unexpected collection of guest logs by Azure VM Agent outside normal maintenance windows
+- **CloudTrail:GetObject** — sensitive credential files in buckets or local image storage
+- **desktop:file_manager** — nautilus, dolphin, or gvfs logs
+- **ebpf:syscalls** — container_file_activity
+- **ebpf:syscalls** — open/read on secret mount paths
+- **esxi:hostd** — datastore file access
+- **esxi:hostd** — read: Access to sensitive log files by non-admin users
+- **esxi:hostd** — datastore/log file access
+- **esxi:hostd** — vSphere File API Access
+- **esxi:hostd** — file copy or datastore upload via HTTPS
+- **esxi:syslog** — guest OS outbound transfer logs
+- **esxi:vmkernel** — VMFS access logs
+- **esxis:vmkernel** — Datastore Access
+- **File** — None
+- **fs:fileevents** — File system access events with kFSEventStreamEventFlagItemRemoved, kFSEventStreamEventFlagItemRenamed flags for environmental artifact collection (/System/Library, /usr/sbin, plist files)
+- **fs:fsevents** — file system events indicating access to system configuration files and environmental information sources
+- **fs:fsusage** — file
+- **fs:fsusage** — File Access Monitor
+- **fs:fsusage** — Disk Activity Tracing
+- **fs:fsusage** — filesystem activity
+- **fs:fsusage** — Filesystem Call Monitoring
+- **fs:fsusage** — read/write
+- **fs:fsusage** — file open for known browser cookie paths
+- **fs:fsusage** — file reads/writes from /Volumes/
+- **fs:quarantine** — /var/log/quarantine.log
+- **gcp:audit** — Write operations to storage
+- **iOS:unifiedlog** — READ operations from App Group containers (/var/mobile/Containers/Shared/AppGroup/...) or Files/Photos provider mountpoints, especially when group not owned by bundle
+- **iOS:unifiedlog** — readdir/stat/read of /private/var/mobile/Containers/Shared/AppGroup|/Library/Mobile Documents|/On\\ My\\ iPhone with >N distinct paths in TimeWindow
+- **kubernetes:audit** — GET or LIST requests to /var/run/secrets/kubernetes.io/serviceaccount/ followed by access to the Kubernetes API server
+- **linux:osquery** — /proc/*/maps access
+- **linux:osquery** — None
+- **linux:syslog** — auth.log or custom tool logs
+- **linux:syslog** — /var/log/syslog
+- **linux:syslog** — kernel messages related to cryptographic operations, module loading, and filesystem access patterns
+- **m365:unified** — FileAccessed, MailboxAccessed
+- **m365:unified** — Bulk downloads or API extractions from Microsoft-hosted data repositories (e.g., Dynamics 365)
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_OPEN: Open of .dylib/.so in user-writable locations
+- **macos:endpointsecurity** — open: Process opens AppleCamera/IOUSB device nodes or AVFoundation frameworks
+- **macos:endpointsecurity** — open or read syscall to ~/.bash_history
+- **macos:endpointsecurity** — es_event_open, es_event_exec
+- **macos:keychain** — Access to Keychain DB or system.keychain
+- **macos:keychain** — ~/Library/Keychains, /Library/Keychains
+- **macos:osquery** — file_events
+- **macos:osquery** — None
+- **macOS:unifiedlog** — looking for file access to scripts with abnormal encoding patterns
+- **macos:unifiedlog** — Access to ~/Library/*/Safari or Chrome directories by non-browser processes
+- **macos:unifiedlog** — file events
+- **macos:unifiedlog** — Kerberos framework calls to API:{uuid} cache outside normal process lineage
+- **macos:unifiedlog** — ~/Library/Application Support/Google/Chrome/*/Login Data OR ~/Library/Application Support/Firefox/*/logins.json
+- **macos:unifiedlog** — Read access to Time Machine plist files or CCC configurations in ~/Library/Preferences/
+- **macos:unifiedlog** — log stream - file subsystem
+- **macos:unifiedlog** — file read of sensitive directories
+- **macos:unifiedlog** — Abnormal process access to Safari or Chrome cookie storage
+- **macos:unifiedlog** — open: Access to /var/log/system.log or related security event logs
+- **macos:unifiedlog** — open/read of *.plist or .env files
+- **macos:unifiedlog** — read of user document directories
+- **macos:unifiedlog** — read access to ~/Library/Keychains/login.keychain-db
+- **macos:unifiedlog** — filesystem and process events
+- **macos:unifiedlog** — read access to ~/Library/Keychains or history files by terminal processes
+- **macos:unifiedlog** — access to /Volumes/SharePoint or network mount
+- **macos:unifiedlog** — Access to ~/Library/Safari/Bookmarks.plist or recent files
+- **macos:unifiedlog** — access to keychain database
+- **macos:unifiedlog** — log stream - file provider subsystem
+- **macos:unifiedlog** — read/write of user documents prior to upload
+- **macos:unifiedlog** — open/read access to private key files (id_rsa, *.pem, *.p12)
+- **macos:unifiedlog** — read: File access to /System/Library/Extensions/ or related kernel extension paths
+- **macos:unifiedlog** — *.opvault OR *.ldb OR *.kdbx
+- **macos:unifiedlog** — Recent download opened or executed
+- **MobileEDR:telemetry** — Application reads multiple local container files, browser-history artifacts, messaging artifacts, or local records in rapid sequence during the collection phase
+- **MobileEDR:telemetry** — Application performs burst reads across local system paths, external storage, media directories, cache locations, or local database files within a short interval as the primary collection phase
+- **MobileEDR:telemetry** — application loads executable or library from external or writable directory (e.g., /sdcard/, app cache) prior to execution
+- **WinEventLog:Microsoft-Windows-Windows Defender/Operational** — Suspicious file execution on removable media path
+- **WinEventLog:Security** — EventCode=4663, 4670, 4656
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() for read on path IN /sdcard/ OR on path with file_permissions=777
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: opendir() or File.listFiles() on path IN $ExternalStoragePaths$ called > $FileEnumThreshold$ times within $EnumWindow$ by app NOT IN $FileEnumAllowList$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: opendir('/proc/') with recursive listdir by app NOT IN $ProcessDiscoveryAllowList$ on device with android_version < $HidepidVersion$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: open() for read on /proc/cpuinfo
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App reads files across $MinDirectoryCount$+ distinct parent directories with file_read_count > $FileReadRateThreshold$ within $DataCollectionWindow$ in background or low-interaction state — bulk cross-directory read is the collection signal
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App reads multiple files from Photos library, Files provider, or iCloud Drive in background or lock-adjacent state exceeding $FileReadRateThreshold$ within $DataCollectionWindow$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App loads executable or library from writable external directory (/sdcard/, app cache, /data/local/tmp/) — writable-path library load is exploitable hijack vector
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: PATH records show sequential reads of ICS documentation/configuration files by a UID not in the authorized engineering or backup account set
+- **WinEventLog:Security** — Windows Security Event ID 4663 (requires Object Access auditing and SACL on monitored paths): repeated ReadData/ListDirectory access across ICS data paths by an unapproved process/account
+- **WinEventLog:Sysmon** — Sequential file reads across multiple Industrial Control Systems (ICS) data paths by image not in authorized ICS applications, exceeding bulk access threshold within a short window
+- **WinEventLog:Security** — Windows Security Event ID 4663 (requires Object Access auditing/SACL): engineering process reads/opens project file from unapproved repository/removable-media/network-share path
+- **WinEventLog:Security** — Windows Security Event ID 4663 (requires Object Access auditing/SACL): Siemens engineering process reads/opens project file from unapproved repository/removable-media/network-share path
+
+## Analytics using this component
+
+- [AN1683 - Analytic 1683](../Analytics/AN1683.md)
+- [AN1691 - Analytic 1691](../Analytics/AN1691.md)
+- [AN1788 - Analytic 1788](../Analytics/AN1788.md)
+- [AN1804 - Analytic 1804](../Analytics/AN1804.md)
+- [AN1807 - Analytic 1807](../Analytics/AN1807.md)
+- [AN1840 - Analytic 1840](../Analytics/AN1840.md)
+- [AN1841 - Analytic 1841](../Analytics/AN1841.md)

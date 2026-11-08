@@ -1,0 +1,157 @@
+# G0049 - OilRig
+
+[Enterprise](../../README.md) / [Groups](README.md)
+
+[OilRig](https://attack.mitre.org/groups/G0049) is a suspected Iranian threat group that has targeted Middle Eastern and international victims since at least 2014. The group has targeted a variety of sectors, including financial, government, energy, chemical, and telecommunications. It appears the group carries out supply chain attacks, leveraging the trust relationship between organizations to attack their primary targets. The group works on behalf of the Iranian government based on infrastructure details that contain references to Iran, use of Iranian infrastructure, and targeting that aligns with nation-state interests.(Citation: FireEye APT34 Dec 2017)(Citation: Palo Alto OilRig April 2017)(Citation: ClearSky OilRig Jan 2017)(Citation: Palo Alto OilRig May 2016)(Citation: Palo Alto OilRig Oct 2016)(Citation: Unit42 OilRig Playbook 2023)(Citation: Unit 42 QUADAGENT July 2018)
+
+[MITRE ATT&CK record](https://attack.mitre.org/groups/G0049)
+
+## Aliases
+
+- COBALT GYPSY
+- IRN2
+- APT34
+- Helix Kitten
+- Evasive Serpens
+- Hazel Sandstorm
+- EUROPIUM
+- ITG13
+- Earth Simnavaz
+- Crambus
+- TA452
+
+## Software used
+
+- [S0360 - BONDUPDATER](../Software/Malware/S0360%20-%20BONDUPDATER.md)
+- [S0160 - certutil](../Software/Tools/S0160%20-%20certutil.md)
+- [S0095 - ftp](../Software/Tools/S0095%20-%20ftp.md)
+- [S0170 - Helminth](../Software/Malware/S0170%20-%20Helminth.md)
+- [S0100 - ipconfig](../Software/Tools/S0100%20-%20ipconfig.md)
+- [S0189 - ISMInjector](../Software/Malware/S0189%20-%20ISMInjector.md)
+- [S0349 - LaZagne](../Software/Tools/S0349%20-%20LaZagne.md)
+- [S1169 - Mango](../Software/Malware/S1169%20-%20Mango.md)
+- [S0002 - Mimikatz](../Software/Tools/S0002%20-%20Mimikatz.md)
+- [S0039 - Net](../Software/Tools/S0039%20-%20Net.md)
+- [S0104 - netstat](../Software/Tools/S0104%20-%20netstat.md)
+- [S0508 - ngrok](../Software/Tools/S0508%20-%20ngrok.md)
+- [S1170 - ODAgent](../Software/Malware/S1170%20-%20ODAgent.md)
+- [S1172 - OilBooster](../Software/Malware/S1172%20-%20OilBooster.md)
+- [S1171 - OilCheck](../Software/Malware/S1171%20-%20OilCheck.md)
+- [S0264 - OopsIE](../Software/Malware/S0264%20-%20OopsIE.md)
+- [S1173 - PowerExchange](../Software/Malware/S1173%20-%20PowerExchange.md)
+- [S0184 - POWRUNER](../Software/Malware/S0184%20-%20POWRUNER.md)
+- [S0029 - PsExec](../Software/Tools/S0029%20-%20PsExec.md)
+- [S0269 - QUADAGENT](../Software/Malware/S0269%20-%20QUADAGENT.md)
+- [S0495 - RDAT](../Software/Malware/S0495%20-%20RDAT.md)
+- [S0075 - Reg](../Software/Tools/S0075%20-%20Reg.md)
+- [S0258 - RGDoor](../Software/Malware/S0258%20-%20RGDoor.md)
+- [S1168 - SampleCheck5000](../Software/Malware/S1168%20-%20SampleCheck5000.md)
+- [S0185 - SEASHARPEE](../Software/Malware/S0185%20-%20SEASHARPEE.md)
+- [S0610 - SideTwist](../Software/Malware/S0610%20-%20SideTwist.md)
+- [S1166 - Solar](../Software/Malware/S1166%20-%20Solar.md)
+- [S0096 - Systeminfo](../Software/Tools/S0096%20-%20Systeminfo.md)
+- [S0057 - Tasklist](../Software/Tools/S0057%20-%20Tasklist.md)
+- [S1151 - ZeroCleare](../Software/Malware/S1151%20-%20ZeroCleare.md)
+
+## Techniques used
+
+- [T1573.002 - Asymmetric Cryptography](../../Tactics/13%20TA0011%20-%20Command%20and%20Control/T1573%20-%20Encrypted%20Channel/T1573.002%20-%20Asymmetric%20Cryptography/README.md)
+- [T1119 - Automated Collection](../../Tactics/12%20TA0009%20-%20Collection/T1119%20-%20Automated%20Collection/README.md)
+- [T1110 - Brute Force](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1110%20-%20Brute%20Force/README.md)
+- [T1003.005 - Cached Domain Credentials](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1003%20-%20OS%20Credential%20Dumping/T1003.005%20-%20Cached%20Domain%20Credentials/README.md)
+- [T1115 - Clipboard Data](../../Tactics/12%20TA0009%20-%20Collection/T1115%20-%20Clipboard%20Data/README.md)
+- [T1553.002 - Code Signing](../../Tactics/08%20TA0112%20-%20Defense%20Impairment/T1553%20-%20Subvert%20Trust%20Controls/T1553.002%20-%20Code%20Signing/README.md)
+- [T1588.003 - Code Signing Certificates](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.003%20-%20Code%20Signing%20Certificates/README.md)
+- [T1059 - Command and Scripting Interpreter](../../Tactics/04%20TA0002%20-%20Execution/T1059%20-%20Command%20and%20Scripting%20Interpreter/README.md)
+- [T1218.001 - Compiled HTML File](../../Tactics/07%20TA0005%20-%20Stealth/T1218%20-%20System%20Binary%20Proxy%20Execution/T1218.001%20-%20Compiled%20HTML%20File/README.md)
+- [T1555 - Credentials from Password Stores](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1555%20-%20Credentials%20from%20Password%20Stores/README.md)
+- [T1555.003 - Credentials from Web Browsers](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1555%20-%20Credentials%20from%20Password%20Stores/T1555.003%20-%20Credentials%20from%20Web%20Browsers/README.md)
+- [T1552.001 - Credentials In Files](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1552%20-%20Unsecured%20Credentials/T1552.001%20-%20Credentials%20In%20Files/README.md)
+- [T1005 - Data from Local System](../../Tactics/12%20TA0009%20-%20Collection/T1005%20-%20Data%20from%20Local%20System/README.md)
+- [T1025 - Data from Removable Media](../../Tactics/12%20TA0009%20-%20Collection/T1025%20-%20Data%20from%20Removable%20Media/README.md)
+- [T1140 - Deobfuscate/Decode Files or Information](../../Tactics/07%20TA0005%20-%20Stealth/T1140%20-%20Deobfuscate%20-%20Decode%20Files%20or%20Information/README.md)
+- [T1071.004 - DNS](../../Tactics/13%20TA0011%20-%20Command%20and%20Control/T1071%20-%20Application%20Layer%20Protocol/T1071.004%20-%20DNS/README.md)
+- [T1087.002 - Domain Account](../../Tactics/10%20TA0007%20-%20Discovery/T1087%20-%20Account%20Discovery/T1087.002%20-%20Domain%20Account/README.md)
+- [T1078.002 - Domain Accounts](../../Tactics/03%20TA0001%20-%20Initial%20Access/T1078%20-%20Valid%20Accounts/T1078.002%20-%20Domain%20Accounts/README.md)
+- [T1069.002 - Domain Groups](../../Tactics/10%20TA0007%20-%20Discovery/T1069%20-%20Permission%20Groups%20Discovery/T1069.002%20-%20Domain%20Groups/README.md)
+- [T1583.001 - Domains](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1583%20-%20Acquire%20Infrastructure/T1583.001%20-%20Domains/README.md)
+- [T1586.002 - Email Accounts](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1586%20-%20Compromise%20Accounts/T1586.002%20-%20Email%20Accounts/README.md)
+- [T1027.013 - Encrypted/Encoded File](../../Tactics/07%20TA0005%20-%20Stealth/T1027%20-%20Obfuscated%20Files%20or%20Information/T1027.013%20-%20Encrypted%20-%20Encoded%20File/README.md)
+- [T1048.003 - Exfiltration Over Unencrypted Non-C2 Protocol](../../Tactics/14%20TA0010%20-%20Exfiltration/T1048%20-%20Exfiltration%20Over%20Alternative%20Protocol/T1048.003%20-%20Exfiltration%20Over%20Unencrypted%20Non-C2%20Protocol/README.md)
+- [T1203 - Exploitation for Client Execution](../../Tactics/04%20TA0002%20-%20Execution/T1203%20-%20Exploitation%20for%20Client%20Execution/README.md)
+- [T1068 - Exploitation for Privilege Escalation](../../Tactics/06%20TA0004%20-%20Privilege%20Escalation/T1068%20-%20Exploitation%20for%20Privilege%20Escalation/README.md)
+- [T1133 - External Remote Services](../../Tactics/03%20TA0001%20-%20Initial%20Access/T1133%20-%20External%20Remote%20Services/README.md)
+- [T1008 - Fallback Channels](../../Tactics/13%20TA0011%20-%20Command%20and%20Control/T1008%20-%20Fallback%20Channels/README.md)
+- [T1070.004 - File Deletion](../../Tactics/07%20TA0005%20-%20Stealth/T1070%20-%20Indicator%20Removal/T1070.004%20-%20File%20Deletion/README.md)
+- [T1027.005 - Indicator Removal from Tools](../../Tactics/07%20TA0005%20-%20Stealth/T1027%20-%20Obfuscated%20Files%20or%20Information/T1027.005%20-%20Indicator%20Removal%20from%20Tools/README.md)
+- [T1105 - Ingress Tool Transfer](../../Tactics/13%20TA0011%20-%20Command%20and%20Control/T1105%20-%20Ingress%20Tool%20Transfer/README.md)
+- [T1056.001 - Keylogging](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1056%20-%20Input%20Capture/T1056.001%20-%20Keylogging/README.md)
+- [T1087.001 - Local Account](../../Tactics/10%20TA0007%20-%20Discovery/T1087%20-%20Account%20Discovery/T1087.001%20-%20Local%20Account/README.md)
+- [T1069.001 - Local Groups](../../Tactics/10%20TA0007%20-%20Discovery/T1069%20-%20Permission%20Groups%20Discovery/T1069.001%20-%20Local%20Groups/README.md)
+- [T1003.004 - LSA Secrets](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1003%20-%20OS%20Credential%20Dumping/T1003.004%20-%20LSA%20Secrets/README.md)
+- [T1003.001 - LSASS Memory](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1003%20-%20OS%20Credential%20Dumping/T1003.001%20-%20LSASS%20Memory/README.md)
+- [T1204.002 - Malicious File](../../Tactics/04%20TA0002%20-%20Execution/T1204%20-%20User%20Execution/T1204.002%20-%20Malicious%20File/README.md)
+- [T1204.001 - Malicious Link](../../Tactics/04%20TA0002%20-%20Execution/T1204%20-%20User%20Execution/T1204.001%20-%20Malicious%20Link/README.md)
+- [T1587.001 - Malware](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1587%20-%20Develop%20Capabilities/T1587.001%20-%20Malware/README.md)
+- [T1036 - Masquerading](../../Tactics/07%20TA0005%20-%20Stealth/T1036%20-%20Masquerading/README.md)
+- [T1036.005 - Match Legitimate Resource Name or Location](../../Tactics/07%20TA0005%20-%20Stealth/T1036%20-%20Masquerading/T1036.005%20-%20Match%20Legitimate%20Resource%20Name%20or%20Location/README.md)
+- [T1112 - Modify Registry](../../Tactics/05%20TA0003%20-%20Persistence/T1112%20-%20Modify%20Registry/README.md)
+- [T1046 - Network Service Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1046%20-%20Network%20Service%20Discovery/README.md)
+- [T1137.004 - Outlook Home Page](../../Tactics/05%20TA0003%20-%20Persistence/T1137%20-%20Office%20Application%20Startup/T1137.004%20-%20Outlook%20Home%20Page/README.md)
+- [T1556.002 - Password Filter DLL](../../Tactics/05%20TA0003%20-%20Persistence/T1556%20-%20Modify%20Authentication%20Process/T1556.002%20-%20Password%20Filter%20DLL/README.md)
+- [T1201 - Password Policy Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1201%20-%20Password%20Policy%20Discovery/README.md)
+- [T1120 - Peripheral Device Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1120%20-%20Peripheral%20Device%20Discovery/README.md)
+- [T1059.001 - PowerShell](../../Tactics/04%20TA0002%20-%20Execution/T1059%20-%20Command%20and%20Scripting%20Interpreter/T1059.001%20-%20PowerShell/README.md)
+- [T1057 - Process Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1057%20-%20Process%20Discovery/README.md)
+- [T1572 - Protocol Tunneling](../../Tactics/13%20TA0011%20-%20Command%20and%20Control/T1572%20-%20Protocol%20Tunneling/README.md)
+- [T1012 - Query Registry](../../Tactics/10%20TA0007%20-%20Discovery/T1012%20-%20Query%20Registry/README.md)
+- [T1219 - Remote Access Tools](../../Tactics/13%20TA0011%20-%20Command%20and%20Control/T1219%20-%20Remote%20Access%20Tools/README.md)
+- [T1021.001 - Remote Desktop Protocol](../../Tactics/11%20TA0008%20-%20Lateral%20Movement/T1021%20-%20Remote%20Services/T1021.001%20-%20Remote%20Desktop%20Protocol/README.md)
+- [T1053.005 - Scheduled Task](../../Tactics/04%20TA0002%20-%20Execution/T1053%20-%20Scheduled%20Task%20-%20Job/T1053.005%20-%20Scheduled%20Task/README.md)
+- [T1113 - Screen Capture](../../Tactics/12%20TA0009%20-%20Collection/T1113%20-%20Screen%20Capture/README.md)
+- [T1566.001 - Spearphishing Attachment](../../Tactics/03%20TA0001%20-%20Initial%20Access/T1566%20-%20Phishing/T1566.001%20-%20Spearphishing%20Attachment/README.md)
+- [T1566.002 - Spearphishing Link](../../Tactics/03%20TA0001%20-%20Initial%20Access/T1566%20-%20Phishing/T1566.002%20-%20Spearphishing%20Link/README.md)
+- [T1566.003 - Spearphishing via Service](../../Tactics/03%20TA0001%20-%20Initial%20Access/T1566%20-%20Phishing/T1566.003%20-%20Spearphishing%20via%20Service/README.md)
+- [T1021.004 - SSH](../../Tactics/11%20TA0008%20-%20Lateral%20Movement/T1021%20-%20Remote%20Services/T1021.004%20-%20SSH/README.md)
+- [T1195 - Supply Chain Compromise](../../Tactics/03%20TA0001%20-%20Initial%20Access/T1195%20-%20Supply%20Chain%20Compromise/README.md)
+- [T1497.001 - System Checks](../../Tactics/07%20TA0005%20-%20Stealth/T1497%20-%20Virtualization%20-%20Sandbox%20Evasion/T1497.001%20-%20System%20Checks/README.md)
+- [T1082 - System Information Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1082%20-%20System%20Information%20Discovery/README.md)
+- [T1016 - System Network Configuration Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1016%20-%20System%20Network%20Configuration%20Discovery/README.md)
+- [T1049 - System Network Connections Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1049%20-%20System%20Network%20Connections%20Discovery/README.md)
+- [T1033 - System Owner/User Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1033%20-%20System%20Owner%20-%20User%20Discovery/README.md)
+- [T1007 - System Service Discovery](../../Tactics/10%20TA0007%20-%20Discovery/T1007%20-%20System%20Service%20Discovery/README.md)
+- [T1588.002 - Tool](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1588%20-%20Obtain%20Capabilities/T1588.002%20-%20Tool/README.md)
+- [T1608.001 - Upload Malware](../../Tactics/02%20TA0042%20-%20Resource%20Development/T1608%20-%20Stage%20Capabilities/T1608.001%20-%20Upload%20Malware/README.md)
+- [T1078 - Valid Accounts](../../Tactics/03%20TA0001%20-%20Initial%20Access/T1078%20-%20Valid%20Accounts/README.md)
+- [T1059.005 - Visual Basic](../../Tactics/04%20TA0002%20-%20Execution/T1059%20-%20Command%20and%20Scripting%20Interpreter/T1059.005%20-%20Visual%20Basic/README.md)
+- [T1071.001 - Web Protocols](../../Tactics/13%20TA0011%20-%20Command%20and%20Control/T1071%20-%20Application%20Layer%20Protocol/T1071.001%20-%20Web%20Protocols/README.md)
+- [T1505.003 - Web Shell](../../Tactics/05%20TA0003%20-%20Persistence/T1505%20-%20Server%20Software%20Component/T1505.003%20-%20Web%20Shell/README.md)
+- [T1059.003 - Windows Command Shell](../../Tactics/04%20TA0002%20-%20Execution/T1059%20-%20Command%20and%20Scripting%20Interpreter/T1059.003%20-%20Windows%20Command%20Shell/README.md)
+- [T1555.004 - Windows Credential Manager](../../Tactics/09%20TA0006%20-%20Credential%20Access/T1555%20-%20Credentials%20from%20Password%20Stores/T1555.004%20-%20Windows%20Credential%20Manager/README.md)
+- [T1686.003 - Windows Host Firewall](../../Tactics/08%20TA0112%20-%20Defense%20Impairment/T1686%20-%20Disable%20or%20Modify%20System%20Firewall/T1686.003%20-%20Windows%20Host%20Firewall/README.md)
+- [T1047 - Windows Management Instrumentation](../../Tactics/04%20TA0002%20-%20Execution/T1047%20-%20Windows%20Management%20Instrumentation/README.md)
+- [T1543.003 - Windows Service](../../Tactics/05%20TA0003%20-%20Persistence/T1543%20-%20Create%20or%20Modify%20System%20Process/T1543.003%20-%20Windows%20Service/README.md)
+
+## Attributed campaigns
+
+- [C0044 - Juicy Mix](../Campaigns/C0044%20-%20Juicy%20Mix.md)
+- [C0042 - Outer Space](../Campaigns/C0042%20-%20Outer%20Space.md)
+
+## Sources
+
+- [Check Point APT34 April 2021](https://research.checkpoint.com/2021/irans-apt34-returns-with-an-updated-arsenal/)
+- [ClearSky OilRig Jan 2017](http://www.clearskysec.com/oilrig/)
+- [Trend Micro Earth Simnavaz October 2024](https://www.trendmicro.com/en_us/research/24/j/earth-simnavaz-cyberattacks.html)
+- [Palo Alto OilRig May 2016](http://researchcenter.paloaltonetworks.com/2016/05/the-oilrig-campaign-attacks-on-saudi-arabian-organizations-deliver-helminth-backdoor/)
+- [Palo Alto OilRig April 2017](http://researchcenter.paloaltonetworks.com/2017/04/unit42-oilrig-actors-provide-glimpse-development-testing-efforts/)
+- [Palo Alto OilRig Oct 2016](http://researchcenter.paloaltonetworks.com/2016/10/unit42-oilrig-malware-campaign-updates-toolset-and-expands-targets/)
+- [IBM ZeroCleare Wiper December 2019](https://securityintelligence.com/posts/new-destructive-wiper-zerocleare-targets-energy-sector-in-the-middle-east/)
+- [Unit 42 QUADAGENT July 2018](https://researchcenter.paloaltonetworks.com/2018/07/unit42-oilrig-targets-technology-service-provider-government-agency-quadagent/)
+- [Crowdstrike Helix Kitten Nov 2018](https://www.crowdstrike.com/blog/meet-crowdstrikes-adversary-of-the-month-for-november-helix-kitten/)
+- [Microsoft Threat Actor Naming July 2023](https://learn.microsoft.com/en-us/microsoft-365/security/intelligence/microsoft-threat-actor-naming?view=o365-worldwide)
+- [Proofpoint Iranian Aligned Attacks JAN 2020](https://www.proofpoint.com/us/corporate-blog/post/iranian-state-sponsored-and-aligned-attacks-what-you-need-know-and-steps-protect)
+- [FireEye APT34 Dec 2017](https://www.fireeye.com/blog/threat-research/2017/12/targeted-attack-in-middle-east-by-apt34.html)
+- [Secureworks COBALT GYPSY Threat Profile](https://www.secureworks.com/research/threat-profiles/cobalt-gypsy)
+- [Symantec Crambus OCT 2023](https://www.security.com/threat-intelligence/crambus-middle-east-government)
+- [Unit 42 Playbook Dec 2017](https://pan-unit42.github.io/playbook_viewer/)
+- [Unit42 OilRig Playbook 2023](https://pan-unit42.github.io/playbook_viewer/?pb=evasive-serpens)

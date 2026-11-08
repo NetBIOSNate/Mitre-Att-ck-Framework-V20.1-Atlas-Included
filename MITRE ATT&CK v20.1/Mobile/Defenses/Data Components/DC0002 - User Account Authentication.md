@@ -1,0 +1,136 @@
+# DC0002 - User Account Authentication
+
+[Mobile](../../README.md) / [Data Components](README.md)
+
+An attempt (successful and failed login attempts) by a user, service, or application to gain access to a network, system, or cloud-based resource. This typically involves credentials such as passwords, tokens, multi-factor authentication (MFA), or biometric validation.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0002)
+
+## Log sources and channels
+
+- **saas:audit ** — Successful application-specific/legacy credential authentication where exposed 
+- **auditd:AUTH** — pam_unix or pam_google_authenticator invoked repeatedly within short interval
+- **auditd:SYSCALL** — pam_authenticate, sshd
+- **auditd:SYSCALL** — execution of ssh, scp, or sftp using previously unseen credentials or keys
+- **auditd:USER_LOGIN** — USER_AUTH
+- **AWS:CloudTrail** — AssumeRole or ConsoleLogin with repeated MFA failures followed by repeated MFA requests
+- **AWS:CloudTrail** — sts:GetFederationToken
+- **AWS:CloudTrail** — AssumeRoleWithWebIdentity
+- **AWS:CloudTrail** — AWS IAM: ListUsers, ListRoles
+- **AWS:CloudTrail** — eventName=ConsoleLogin | eventType=AwsConsoleSignIn
+- **AWS:CloudTrail** — ConsoleLogin or AssumeRole
+- **AWS:CloudTrail** — ConsoleLogin, AssumeRole, ListAccessKeys, CreateUser
+- **azure:signinlogs** — Successful account authentication with authentication/client properties inconsistent with normal MFA-backed access 
+- **azure:signinlogs** — Success logs from high-risk accounts
+- **azure:signinlogs** — Multiple MFA challenge requests without successful primary login
+- **azure:signinlogs** — TokenIssued, TokenRenewed: Unexpected or anomalous token issuance events
+- **azure:signinlogs** — SignIn: Sign-ins flagged as atypical (new geographic region, unfamiliar device id) shortly after correlated endpoint/browser compromise times
+- **azure:signinlogs** — Operation=UserLogin
+- **azure:signinlogs** — Unusual Token Usage or Application Consent
+- **azure:signinlogs** — OperationName=SetDomainAuthentication OR Set-FederatedDomain
+- **azure:signinlogs** — Sign-in with unfamiliar location/device + portal navigation
+- **azure:signinlogs** — Login from newly created account
+- **azure:signinlogs** — Interactive/Non-Interactive Sign-In
+- **azure:signinlogs** — Reset password or download key from portal
+- **azure:signinlogs** — status = failure
+- **azure:signinlogs** — Sign-in logs
+- **azure:signinlogs** — SigninSuccess
+- **azure:signinlogs** — Failure Reason + UserPrincipalName
+- **azure:signinlogs** — Sign-in activity
+- **azure:signinlogs** — Sign-in logs / audit events
+- **esxi:auth** — interactive shell or SSH access preceding storage enumeration
+- **esxi:auth** — /var/log/auth.log
+- **esxi:auth** — SSH session/login
+- **esxi:vpxa** — user login from unexpected IP or non-admin user role
+- **esxi:vpxd** — /var/log/vmware/vpxd.log
+- **ESXiLogs:authlog** — Unexpected login followed by encoding commands
+- **gcp:audit** — drive.activity
+- **gcp:audit** — login.event
+- **gcp:audit** — Sign-in logs / audit events
+- **gcp:workspaceaudit** — Token Generation via Domain Delegation
+- **GCPAuditLogs:login.googleapis.com** — Failed sign-in events
+- **idp:authentication ** — Successful authentication associated with legacy/application-specific credential flow 
+- **kubernetes:apiserver** — get/list requests to /api/v1/secrets or /api/v1/namespaces/*/serviceaccounts
+- **kubernetes:apiserver** — authentication.k8s.io/v1beta1
+- **kubernetes:audit** — Failed login
+- **kubernetes:audit** — authentication.k8s.io
+- **linux:auth** — sshd login
+- **linux:syslog** — sudo/date/timedatectl execution by non-standard users
+- **linux:syslog** — SSH failed login
+- **linux:syslog** — Failed password for invalid user
+- **linux:syslog** — sshd[pid]: Failed password
+- **linux:syslog** — authentication and authorization events during environmental validation phase
+- **m365:exchange** — Logon failure
+- **m365:exchange** — FailedLogin
+- **m365:signinlogs** — Sign-in from anomalous location or impossible travel condition
+- **m365:signinlogs** — UserLoginSuccess
+- **m365:signinlogs** — Unusual sign-in from service principal to user mailbox
+- **m365:unified** — Delegated permission grants without user login event
+- **m365:unified** — login using refresh_token with no preceding authentication context
+- **m365:unified** — Sign-in logs
+- **macos:unifiedlog** — successful sudo or authentication for account not normally associated with admin actions
+- **macos:unifiedlog** — Login success without MFA step
+- **macos:unifiedlog** — log show --predicate 'eventMessage contains "Authentication"'
+- **macos:unifiedlog** — User credential prompt events without associated trusted installer package
+- **macos:unifiedlog** — Login failure / authorization denied
+- **macos:unifiedlog** — auth
+- **macos:unifiedlog** — Login Window and Authd errors
+- **macos:unifiedlog** — authd
+- **network:auth** — repeated successful authentications with previously unknown accounts or anomalous password acceptance
+- **networkdevice:syslog** — config access, authentication logs
+- **networkdevice:syslog** — User privilege escalation to level 15/root prior to destructive commands
+- **networkdevice:syslog** — authorization/accounting logs
+- **networkdevice:syslog** — Failed and successful logins to network devices outside approved admin IP ranges
+- **networkdevice:syslog** — Privileged login followed by destructive format command
+- **networkdevice:syslog** — admin login events
+- **networkdevice:syslog** — Privileged login followed by destructive command sequence
+- **networkdevice:syslog** — AAA, RADIUS, or TACACS authentication
+- **networkdevice:syslog** — authentication logs
+- **networkdevice:syslog** — AAA or TACACS authentication failures
+- **networkdevice:syslog** — authentication & authorization
+- **networkdevice:syslog** — login failed
+- **NSM:Connections** — Accepted password or publickey for user from remote IP
+- **NSM:Connections** — Repeated failed authentication attempts or replay patterns
+- **NSM:Connections** — Successful login without expected MFA challenge
+- **NSM:Connections** — sshd or PAM logins
+- **NSM:Flow** — TGS-REQ and AS-REQ seen for new user shortly after domain-modifying process
+- **Okta:authn** — authentication_failure
+- **Okta:SystemLog** — eventType: user.authentication.sso, app.oauth2.token.grant
+- **saas-app:auth** — login_failure
+- **saas:audit** — Repeated requests to SMS-generating endpoints using anomalous or new user agents, IP ranges, or geographies.
+- **saas:auth** — signin_failed
+- **saas:googleworkspace** — API access without user login
+- **saas:googleworkspace** — Accessed third-party credential management service
+- **saas:googleworkspace** — login with reused session token and mismatched user agent or IP
+- **saas:googleworkspace** — Access via OAuth credentials with unusual scopes or from anomalous IPs
+- **saas:MDM** — Authentication events to device management or enterprise mobility management consoles
+- **saas:MDM** — Authentication events to Apple iCloud or enterprise device management services
+- **saas:okta** — session.impersonation.start
+- **saas:okta** — Unusual OAuth app requesting message-read scopes for Slack/Teams/Jira
+- **saas:okta** — authentication_failure
+- **saas:okta** — Sign-in logs / audit events
+- **saas:okta** — user.account.reset_password; user.mfa.factor.activate; app.oauth2.authorize
+- **saas:salesforce** — API login using access_token without login history
+- **saas:salesforce** — Login
+- **User Account** — None
+- **WinEventLog:Security** — EventCode=4625
+- **WinEventLog:Security** — EventCode=4769, 1200, 1202
+- **WinEventLog:Security** — EventCode=4768, 4769, 4770
+- **WinEventLog:Security** — EventCode=4769
+- **WinEventLog:Security** — EventCode=4776, 4625
+- **WinEventLog:Security** — EventCode=4625, 4771, 4648
+- **WinEventLog:Security** — EventCode=4648
+- **idp:AuditLog** — App authentication flow instrumentation or IdP sign-in/audit events
+- **syslog:auth** — sshd Accepted publickey/password for Industrial Control Systems (ICS)-role account from source not in approved admin CIDR
+- **networkdevice:aaa** — TACACS+/RADIUS authentication success for Industrial Control Systems (ICS) network admin account from source not in approved Network Management System (NMS) Classless Inter-Domain Routing (CIDR) subnet
+- **networkdevice:syslog** — Device authentication/audit log: successful authentication using a vendor-default or prohibited account from a non-approved management source
+- **networkdevice:syslog** — Device authentication/audit log: successful authentication using a default/hardcoded/prohibited account from a non-approved management source
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4648 for Industrial Control Systems (ICS)-role account from process outside approved ICS vendor process list
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4723, 4724 for Industrial Control Systems (ICS) service/operator account by account not in authorized credential admins outside credential rotation schedule
+
+## Analytics using this component
+
+- [AN1747 - Analytic 1747](../Analytics/AN1747.md)
+- [AN1748 - Analytic 1748](../Analytics/AN1748.md)
+- [AN1820 - Analytic 1820](../Analytics/AN1820.md)
+- [AN1821 - Analytic 1821](../Analytics/AN1821.md)

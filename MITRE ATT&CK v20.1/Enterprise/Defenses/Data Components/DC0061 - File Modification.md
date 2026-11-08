@@ -1,0 +1,363 @@
+# DC0061 - File Modification
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+Changes made to a file, including updates to its contents, metadata, access permissions, or attributes. These modifications may indicate legitimate activity (e.g., software updates) or unauthorized changes (e.g., tampering, ransomware, or adversarial modifications). Examples: 
+
+- Content Modifications: Changes to the content of a configuration file, such as modifying `/etc/ssh/sshd_config` on Linux or `C:\Windows\System32\drivers\etc\hosts` on Windows.
+- Permission Changes: Altering file permissions to allow broader access, such as changing a file from `644` to `777` on Linux or modifying NTFS permissions on Windows.
+- Attribute Modifications: Changing a file's attributes to hidden, read-only, or system on Windows.
+- Timestamp Manipulation: Adjusting a file's creation or modification timestamp using tools like `touch` in Linux or timestomping tools on Windows.
+- Software or System File Changes: Modifying system files such as `boot.ini`, kernel modules, or application binaries.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0061)
+
+## Log sources and channels
+
+- **android:logcat** — INSERT or UPDATE of image/*, audio/*, video/* via ContentResolver with same URI re-written within short window; abnormal MIME/container change
+- **AndroidLogs:FileSystem** — Modification to /system/etc/init/ or /vendor/etc/init/ boot-time scripts
+- **auditd:FILE** — Modification or deletion of /etc/audit/audit.rules or /etc/audit/audit.conf
+- **auditd:FILE** — Modification of Display Manager configuration files (/etc/gdm3/*, /etc/lightdm/*)
+- **auditd:PATH** — /etc/passwd or /etc/group file write
+- **auditd:PATH** — write: Modification of /boot/grub/*, /boot/efi/EFI/*, or initramfs images
+- **auditd:PATH** — write or create events on *.pth, sitecustomize.py, usercustomize.py in site-packages or dist-packages
+- **auditd:PATH** — write: File modifications to /etc/systemd/sleep.conf or related power configuration files
+- **auditd:PATH** — odification of ~/.ssh/authorized_keys or credential files
+- **auditd:SYSCALL** — open/write calls modifying ~/.bashrc, ~/.profile, or /etc/paths.d
+- **auditd:SYSCALL** — open, write
+- **auditd:SYSCALL** — AUDIT_SYSCALL (open, write, rename, unlink)
+- **auditd:SYSCALL** — PATH
+- **auditd:SYSCALL** — execve call for modification of /etc/sudoers or writing to /var/db/sudo
+- **auditd:SYSCALL** — open, write: File modifications under /etc/ssl/certs, /usr/local/share/ca-certificates, or /etc/pki/ca-trust/source/anchors
+- **auditd:SYSCALL** — open, unlink, rename: Suspicious file access, deletion, or modification of sensitive paths
+- **auditd:SYSCALL** — open/write of .service unit files
+- **auditd:SYSCALL** — open/write/unlink
+- **auditd:SYSCALL** — write, rename
+- **auditd:SYSCALL** — write
+- **auditd:SYSCALL** — write | PATH=/home/*/.ssh/authorized_keys
+- **auditd:SYSCALL** — open, write: Write operations targeting /dev/sda, /dev/nvme0n1, or EFI partition mounts
+- **auditd:SYSCALL** — open/write to /etc/pam.d/*
+- **auditd:SYSCALL** — write: Modification of structured stored data by suspicious processes
+- **auditd:SYSCALL** — openat, write, rename, unlink
+- **auditd:SYSCALL** — open/write syscalls targeting /etc/ld.so.preload or binaries in /usr/bin
+- **auditd:SYSCALL** — modification of existing .service file
+- **auditd:SYSCALL** — open, write: Modification of /boot/grub/* or /boot/efi/*
+- **auditd:SYSCALL** — chmod
+- **auditd:SYSCALL** — rename,chmod
+- **auditd:SYSCALL** — Modification of user shell profile or trap registration via echo/redirection (e.g., echo "trap 'malicious_cmd' INT" >> ~/.bashrc)
+- **auditd:SYSCALL** — chmod, write, create, open
+- **auditd:SYSCALL** — open, write: File writes to application binaries or libraries at runtime
+- **auditd:SYSCALL** — file write operations in /Library/WebServer/Documents
+- **auditd:SYSCALL** — write operation on /etc/passwd or /etc/shadow
+- **auditd:SYSCALL** — mount or losetup commands creating hidden or encrypted FS
+- **auditd:SYSCALL** — open/write to /proc/*/mem or /proc/*/maps
+- **auditd:SYSCALL** — write or rename to /etc/systemd/system or /etc/init.d
+- **auditd:SYSCALL** — modification of entrypoint scripts or init containers
+- **auditd:SYSCALL** — chmod/chown to /etc/passwd or /etc/shadow
+- **auditd:SYSCALL** — open/write syscalls targeting web directory files
+- **azure:resource** — PATCH vm/authorized_keys
+- **containerd:runtime** — file change monitoring within /etc/cron.*, /tmp, or mounted volumes
+- **ebpf:syscalls** — file_write
+- **esxi:cron** — manual edits to /etc/rc.local.d/local.sh or cron.d
+- **esxi:hostd** — boot
+- **esxi:hostd** — modification of crontab or local.sh entries
+- **esxi:hostd** — binary or module replacement event
+- **esxi:shell** — file write or edit
+- **esxi:shell** — admin command usage
+- **esxi:vmkernel** — rename .vmdk to .*.locked|datastore write spike
+- **esxi:vmkernel** — Unauthorized file modifications within datastore volumes via shell access or vCLI
+- **esxi:vmkernel** — /var/log/vmkernel.log
+- **ESXiLogs:messages** — changes to /etc/motd or /etc/vmware/welcome
+- **File** — None
+- **FileIntegrity:ImageValidation** — Hash/checksum mismatch against baseline vendor-provided OS image versions
+- **firmware:update** — Unexpected or unscheduled firmware updates, image overwrites, or failed signature validation
+- **FirmwareLogs:Update** — Unexpected firmware or image updates modifying cryptographic modules
+- **FirmwareLogs:Update** — Unexpected firmware updates that alter encryption libraries or disable hardware crypto modules
+- **fs:fileevents** — /var/log/quarantine.log
+- **fs:fileevents** — /var/log/install.log
+- **fs:filesystem** — Modification or creation of files matching 'com.apple.loginwindow.*.plist' in ~/Library/Preferences/ByHost
+- **fs:fsevents** — create/write/rename under user-writable paths
+- **fs:fsevents** — file system events indicating permission, ownership, or extended attribute changes on critical paths. File system modification events with kFSEventStreamEventFlagItemChangeOwner, kFSEventStreamEventFlagItemXattrMod flags
+- **fs:fsevents** — Extensions
+- **fs:fsusage** — unlink, write
+- **fs:fsusage** — file access to /usr/lib/cron/tabs/ and cron output files
+- **fs:fsusage** — file access to /usr/lib/cron/at and job execution path
+- **fs:fsusage** — modification of existing LaunchAgents plist
+- **fs:fsusage** — Filesystem Access Logging
+- **fs:fsusage** — truncate, unlink, write
+- **fs:fsusage** — file write to launchd plist paths
+- **fs:launchdaemons** — file_modify
+- **fs:plist** — /var/root/Library/Preferences/com.apple.loginwindow.plist
+- **fs:plist_monitoring** — /Users/*/Library/Mail/V*/MailData/RulesActiveState.plist
+- **gcp:audit** — compute.instances.setMetadata
+- **IntegrityCheck:ImageValidation** — Checksum or hash mismatch between running image and known-good vendor-provided image
+- **iOS:unifiedlog** — Creation or modification of LaunchDaemon or LaunchAgent plist in /System/Library/LaunchDaemons, /Library/LaunchDaemons, or /Library/LaunchAgents
+- **linux:fim** — Changes to /etc/rc.local.d/local.sh or creation of unexpected startup files in persistent partitions (/etc/init.d, /store, /locker)
+- **linux:osquery** — file_events
+- **linux:osquery** — New or modified kernel object files (.ko) within /lib/modules directory
+- **linux:syslog** — rename
+- **linux:syslog** — Unexpected log entries or malformed SQL operations in databases
+- **m365:defender** — OfficeTelemetry or DLP
+- **m365:office** — Anomalous editing of invoice or payment document templates
+- **macos:auth** — ~/.ssh/authorized_keys
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_WRITE, targeting .zshrc, .zlogin, .zprofile
+- **macos:endpointsecurity** — write, rename
+- **macos:osquery** — file_events
+- **macos:osquery** — query: Enumeration of root certificates showing unexpected additions
+- **macos:osquery** — File modifications in ~/Library/Preferences/
+- **macos:osquery** — Changes to LSFileQuarantineEnabled field in Info.plist
+- **macos:osquery** — CALCULATE: Mismatch in file integrity of critical macOS applications
+- **macos:osquery** — Modifications to /var/db/SystemPolicyConfiguration/KextPolicy or kext_policy table
+- **macos:osquery** — write
+- **macos:unifiedlog** — File modification in /etc/paths.d or user shell rc files
+- **macos:unifiedlog** — Modification of ~/Library/LaunchAgents or /Library/LaunchDaemons plist
+- **macos:unifiedlog** — Anomalous plist modifications or sensitive file overwrites by non-standard processes
+- **macos:unifiedlog** — loginwindow or desktopservices modified settings or files
+- **macos:unifiedlog** — SecurityAgentPlugins modification
+- **macos:unifiedlog** — write: File modifications to *.plist within LaunchAgents, LaunchDaemons, Application Support, or Preferences directories
+- **macos:unifiedlog** — Modification of backgrounditems.btm or creation of LoginItems subdirectory in .app bundle
+- **macos:unifiedlog** — Modification of plist with apple.awt.UIElement set to TRUE
+- **macos:unifiedlog** — replace existing dylibs
+- **macos:unifiedlog** — Modification of /Library/Security/SecurityAgentPlugins
+- **macos:unifiedlog** — Modifications to Mail.app plist files controlling message rules
+- **macos:unifiedlog** — Unexpected creation or modification of stored data files in protected directories
+- **macos:unifiedlog** — file encrypted|new file with .encrypted extension|disk write burst
+- **macos:unifiedlog** — Mach-O binary modified or LC_LOAD_DYLIB segment inserted
+- **macos:unifiedlog** — Modified application plist or binary replacement in /Applications
+- **macos:unifiedlog** — File creation or overwrite in common web-hosting folders
+- **macos:unifiedlog** — write of plist files in /Library/LaunchAgents or /Library/LaunchDaemons
+- **macos:unifiedlog** — write
+- **macos:unifiedlog** — Modification of /System/Library/CoreServices/boot.efi
+- **macos:unifiedlog** — Modification of LaunchAgents or LaunchDaemons plist files
+- **macos:unifiedlog** — Plist modifications containing virtualization run configurations
+- **macos:unifiedlog** — binary modified or replaced
+- **macos:unifiedlog** — Modification of /Library/Preferences/com.apple.loginwindow plist
+- **macos:unifiedlog** — File write or append to .zshrc, .bash_profile, .zprofile, etc.
+- **macos:unifiedlog** — write: File modification to com.apple.PowerManagement.plist or related system preference files
+- **macos:unifiedlog** — create/modify dylib in monitored directories
+- **macos:unifiedlog** — modification to /var/db/dslocal/nodes/Default/users/
+- **macos:unifiedlog** — Hidden volume attachment or modification events
+- **macos:unifiedlog** — Suspicious plist edits for volume mounting behavior
+- **macos:unifiedlog** — file writes
+- **macos:unifiedlog** — Modification or replacement of /Library/Application Support/com.apple.TCC/TCC.db or ~/Library/Application Support/com.apple.TCC/TCC.db
+- **macos:unifiedlog** — rule definitions written to emond rule plists
+- **macos:unifiedlog** — Terminal/Editor processes modifying web folder
+- **MobileEDR:telemetry** — Application inserts, updates, deletes, hides, or marks message records in SMS store or messaging database immediately after SMS receive or send event
+- **MobileEDR:telemetry** — Application inserts, updates, deletes, or rewrites call-log records immediately after call-control action to conceal, alter, or synthesize call history
+- **network:runtime** — checksum or runtime memory verification failures
+- **networkconfig** — unexpected OS image file upload or modification events
+- **networkdevice:audit** — SNMP configuration changes, such as enabling read/write access or modifying community strings
+- **networkdevice:config** — config-change: timezone or ntp server configuration change after a time query command
+- **networkdevice:config** — Configuration changes to boot variables, startup image paths, or checksum verification failures
+- **networkdevice:config** — Configuration changes referencing 'crypto', 'key length', 'cipher', or downgrade of encryption settings
+- **networkdevice:config** — Configuration file modified or replaced on network device
+- **networkdevice:config** — Configuration change events referencing encryption, TLS/SSL, or IPSec settings
+- **networkdevice:config** — Configuration changes to startup image paths, boot loader parameters, or debug flags
+- **networkdevice:config** — Configuration changes referencing cryptographic hardware modules or disabling hardware acceleration
+- **networkdevice:config** — Configuration changes referencing older image versions or unexpected boot parameters
+- **networkdevice:firmware** — Unexpected firmware update or image modification affecting crypto modules
+- **networkdevice:syslog** — config
+- **networkdevice:syslog** — startup-config
+- **networkdevice:syslog** — Checksum/hash mismatch between device OS image and baseline known-good version
+- **sysdig:file** — evt.type=write
+- **WinEventLog:CodeIntegrity** — EventCode=3033
+- **WinEventLog:Security** — EventCode=4663, 4670, 4656
+- **WinEventLog:Sysmon** — EventCode=2
+- **WinEventLog:System** — Unexpected modification to lsass.exe or cryptdll.dll
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: write() to /sdcard/ path
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: ContentResolver.update() or write() to path owned by target_app IN $HighValueAppList$ by writer_app != target_app — cross-app data modification
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: write() to path IN $SystemBinaryPaths$ by process NOT IN $TrustedUpdateSources$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app version change detected in MDM inventory for app_package — update is the binary modification event
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app version change in MDM inventory for bundle_id
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: App inserts, updates, or deletes call log records via CallLog.Calls ContentProvider immediately after call-control action — call log tampering to conceal interception
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to Industrial Control Systems (ICS) alarm configuration file by User Identifier (UID) not in authorized alarm admin UIDs
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to /etc/ld.so.preload by User Identifier (UID) outside authorized admin list
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: PATH record shows modification of udev/autofs configuration that references an executable or script outside the authorized ICS software inventory
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: modification of bash_history file by uid not normally performing interactive shell sessions
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to alarm threshold config file by uid not in authorized alarm admin User Identifiers (UIDs)
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: PATH record shows modification of a serial-device configuration file by a UID not in the authorized serial-administration set
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to Siemens project file path by User Identifier (UID) not in authorized Siemens engineering UIDs
+- **networkdevice:syslog** — write erase or factory-reset command from source not in approved Network Management System (NMS) Classless Inter-Domain Routing (CIDR) subnet
+- **WinEventLog:Sysmon** — Siemens engineering tool opens project file from path not in approved project repository
+
+## Analytics using this component
+
+- [AN0010 - Analytic 0010](../Analytics/AN0010.md)
+- [AN0011 - Analytic 0011](../Analytics/AN0011.md)
+- [AN0013 - Analytic 0013](../Analytics/AN0013.md)
+- [AN0026 - Analytic 0026](../Analytics/AN0026.md)
+- [AN0056 - Analytic 0056](../Analytics/AN0056.md)
+- [AN0059 - Analytic 0059](../Analytics/AN0059.md)
+- [AN0060 - Analytic 0060](../Analytics/AN0060.md)
+- [AN0065 - Analytic 0065](../Analytics/AN0065.md)
+- [AN0090 - Analytic 0090](../Analytics/AN0090.md)
+- [AN0134 - Analytic 0134](../Analytics/AN0134.md)
+- [AN0135 - Analytic 0135](../Analytics/AN0135.md)
+- [AN0137 - Analytic 0137](../Analytics/AN0137.md)
+- [AN0142 - Analytic 0142](../Analytics/AN0142.md)
+- [AN0154 - Analytic 0154](../Analytics/AN0154.md)
+- [AN0155 - Analytic 0155](../Analytics/AN0155.md)
+- [AN0162 - Analytic 0162](../Analytics/AN0162.md)
+- [AN0163 - Analytic 0163](../Analytics/AN0163.md)
+- [AN0164 - Analytic 0164](../Analytics/AN0164.md)
+- [AN0171 - Analytic 0171](../Analytics/AN0171.md)
+- [AN0184 - Analytic 0184](../Analytics/AN0184.md)
+- [AN0200 - Analytic 0200](../Analytics/AN0200.md)
+- [AN0229 - Analytic 0229](../Analytics/AN0229.md)
+- [AN0230 - Analytic 0230](../Analytics/AN0230.md)
+- [AN0231 - Analytic 0231](../Analytics/AN0231.md)
+- [AN0232 - Analytic 0232](../Analytics/AN0232.md)
+- [AN0235 - Analytic 0235](../Analytics/AN0235.md)
+- [AN0258 - Analytic 0258](../Analytics/AN0258.md)
+- [AN0259 - Analytic 0259](../Analytics/AN0259.md)
+- [AN0261 - Analytic 0261](../Analytics/AN0261.md)
+- [AN0262 - Analytic 0262](../Analytics/AN0262.md)
+- [AN0266 - Analytic 0266](../Analytics/AN0266.md)
+- [AN0283 - Analytic 0283](../Analytics/AN0283.md)
+- [AN0288 - Analytic 0288](../Analytics/AN0288.md)
+- [AN0289 - Analytic 0289](../Analytics/AN0289.md)
+- [AN0306 - Analytic 0306](../Analytics/AN0306.md)
+- [AN0312 - Analytic 0312](../Analytics/AN0312.md)
+- [AN0314 - Analytic 0314](../Analytics/AN0314.md)
+- [AN0315 - Analytic 0315](../Analytics/AN0315.md)
+- [AN0340 - Analytic 0340](../Analytics/AN0340.md)
+- [AN0349 - Analytic 0349](../Analytics/AN0349.md)
+- [AN0350 - Analytic 0350](../Analytics/AN0350.md)
+- [AN0351 - Analytic 0351](../Analytics/AN0351.md)
+- [AN0352 - Analytic 0352](../Analytics/AN0352.md)
+- [AN0353 - Analytic 0353](../Analytics/AN0353.md)
+- [AN0356 - Analytic 0356](../Analytics/AN0356.md)
+- [AN0358 - Analytic 0358](../Analytics/AN0358.md)
+- [AN0362 - Analytic 0362](../Analytics/AN0362.md)
+- [AN0368 - Analytic 0368](../Analytics/AN0368.md)
+- [AN0394 - Analytic 0394](../Analytics/AN0394.md)
+- [AN0429 - Analytic 0429](../Analytics/AN0429.md)
+- [AN0434 - Analytic 0434](../Analytics/AN0434.md)
+- [AN0435 - Analytic 0435](../Analytics/AN0435.md)
+- [AN0468 - Analytic 0468](../Analytics/AN0468.md)
+- [AN0469 - Analytic 0469](../Analytics/AN0469.md)
+- [AN0473 - Analytic 0473](../Analytics/AN0473.md)
+- [AN0482 - Analytic 0482](../Analytics/AN0482.md)
+- [AN0510 - Analytic 0510](../Analytics/AN0510.md)
+- [AN0522 - Analytic 0522](../Analytics/AN0522.md)
+- [AN0546 - Analytic 0546](../Analytics/AN0546.md)
+- [AN0547 - Analytic 0547](../Analytics/AN0547.md)
+- [AN0552 - Analytic 0552](../Analytics/AN0552.md)
+- [AN0555 - Analytic 0555](../Analytics/AN0555.md)
+- [AN0556 - Analytic 0556](../Analytics/AN0556.md)
+- [AN0557 - Analytic 0557](../Analytics/AN0557.md)
+- [AN0600 - Analytic 0600](../Analytics/AN0600.md)
+- [AN0602 - Analytic 0602](../Analytics/AN0602.md)
+- [AN0603 - Analytic 0603](../Analytics/AN0603.md)
+- [AN0604 - Analytic 0604](../Analytics/AN0604.md)
+- [AN0605 - Analytic 0605](../Analytics/AN0605.md)
+- [AN0607 - Analytic 0607](../Analytics/AN0607.md)
+- [AN0610 - Analytic 0610](../Analytics/AN0610.md)
+- [AN0611 - Analytic 0611](../Analytics/AN0611.md)
+- [AN0629 - Analytic 0629](../Analytics/AN0629.md)
+- [AN0660 - Analytic 0660](../Analytics/AN0660.md)
+- [AN0661 - Analytic 0661](../Analytics/AN0661.md)
+- [AN0662 - Analytic 0662](../Analytics/AN0662.md)
+- [AN0663 - Analytic 0663](../Analytics/AN0663.md)
+- [AN0664 - Analytic 0664](../Analytics/AN0664.md)
+- [AN0665 - Analytic 0665](../Analytics/AN0665.md)
+- [AN0681 - Analytic 0681](../Analytics/AN0681.md)
+- [AN0682 - Analytic 0682](../Analytics/AN0682.md)
+- [AN0701 - Analytic 0701](../Analytics/AN0701.md)
+- [AN0713 - Analytic 0713](../Analytics/AN0713.md)
+- [AN0736 - Analytic 0736](../Analytics/AN0736.md)
+- [AN0737 - Analytic 0737](../Analytics/AN0737.md)
+- [AN0755 - Analytic 0755](../Analytics/AN0755.md)
+- [AN0757 - Analytic 0757](../Analytics/AN0757.md)
+- [AN0758 - Analytic 0758](../Analytics/AN0758.md)
+- [AN0765 - Analytic 0765](../Analytics/AN0765.md)
+- [AN0766 - Analytic 0766](../Analytics/AN0766.md)
+- [AN0775 - Analytic 0775](../Analytics/AN0775.md)
+- [AN0776 - Analytic 0776](../Analytics/AN0776.md)
+- [AN0779 - Analytic 0779](../Analytics/AN0779.md)
+- [AN0780 - Analytic 0780](../Analytics/AN0780.md)
+- [AN0783 - Analytic 0783](../Analytics/AN0783.md)
+- [AN0798 - Analytic 0798](../Analytics/AN0798.md)
+- [AN0799 - Analytic 0799](../Analytics/AN0799.md)
+- [AN0800 - Analytic 0800](../Analytics/AN0800.md)
+- [AN0805 - Analytic 0805](../Analytics/AN0805.md)
+- [AN0806 - Analytic 0806](../Analytics/AN0806.md)
+- [AN0807 - Analytic 0807](../Analytics/AN0807.md)
+- [AN0824 - Analytic 0824](../Analytics/AN0824.md)
+- [AN0826 - Analytic 0826](../Analytics/AN0826.md)
+- [AN0854 - Analytic 0854](../Analytics/AN0854.md)
+- [AN0911 - Analytic 0911](../Analytics/AN0911.md)
+- [AN0920 - Analytic 0920](../Analytics/AN0920.md)
+- [AN0944 - Analytic 0944](../Analytics/AN0944.md)
+- [AN0945 - Analytic 0945](../Analytics/AN0945.md)
+- [AN0949 - Analytic 0949](../Analytics/AN0949.md)
+- [AN0950 - Analytic 0950](../Analytics/AN0950.md)
+- [AN0951 - Analytic 0951](../Analytics/AN0951.md)
+- [AN0952 - Analytic 0952](../Analytics/AN0952.md)
+- [AN0961 - Analytic 0961](../Analytics/AN0961.md)
+- [AN0999 - Analytic 0999](../Analytics/AN0999.md)
+- [AN1002 - Analytic 1002](../Analytics/AN1002.md)
+- [AN1003 - Analytic 1003](../Analytics/AN1003.md)
+- [AN1038 - Analytic 1038](../Analytics/AN1038.md)
+- [AN1039 - Analytic 1039](../Analytics/AN1039.md)
+- [AN1056 - Analytic 1056](../Analytics/AN1056.md)
+- [AN1062 - Analytic 1062](../Analytics/AN1062.md)
+- [AN1063 - Analytic 1063](../Analytics/AN1063.md)
+- [AN1065 - Analytic 1065](../Analytics/AN1065.md)
+- [AN1098 - Analytic 1098](../Analytics/AN1098.md)
+- [AN1099 - Analytic 1099](../Analytics/AN1099.md)
+- [AN1110 - Analytic 1110](../Analytics/AN1110.md)
+- [AN1126 - Analytic 1126](../Analytics/AN1126.md)
+- [AN1175 - Analytic 1175](../Analytics/AN1175.md)
+- [AN1176 - Analytic 1176](../Analytics/AN1176.md)
+- [AN1208 - Analytic 1208](../Analytics/AN1208.md)
+- [AN1210 - Analytic 1210](../Analytics/AN1210.md)
+- [AN1212 - Analytic 1212](../Analytics/AN1212.md)
+- [AN1217 - Analytic 1217](../Analytics/AN1217.md)
+- [AN1218 - Analytic 1218](../Analytics/AN1218.md)
+- [AN1222 - Analytic 1222](../Analytics/AN1222.md)
+- [AN1236 - Analytic 1236](../Analytics/AN1236.md)
+- [AN1237 - Analytic 1237](../Analytics/AN1237.md)
+- [AN1243 - Analytic 1243](../Analytics/AN1243.md)
+- [AN1244 - Analytic 1244](../Analytics/AN1244.md)
+- [AN1245 - Analytic 1245](../Analytics/AN1245.md)
+- [AN1249 - Analytic 1249](../Analytics/AN1249.md)
+- [AN1250 - Analytic 1250](../Analytics/AN1250.md)
+- [AN1251 - Analytic 1251](../Analytics/AN1251.md)
+- [AN1271 - Analytic 1271](../Analytics/AN1271.md)
+- [AN1272 - Analytic 1272](../Analytics/AN1272.md)
+- [AN1273 - Analytic 1273](../Analytics/AN1273.md)
+- [AN1293 - Analytic 1293](../Analytics/AN1293.md)
+- [AN1299 - Analytic 1299](../Analytics/AN1299.md)
+- [AN1300 - Analytic 1300](../Analytics/AN1300.md)
+- [AN1302 - Analytic 1302](../Analytics/AN1302.md)
+- [AN1315 - Analytic 1315](../Analytics/AN1315.md)
+- [AN1320 - Analytic 1320](../Analytics/AN1320.md)
+- [AN1322 - Analytic 1322](../Analytics/AN1322.md)
+- [AN1360 - Analytic 1360](../Analytics/AN1360.md)
+- [AN1365 - Analytic 1365](../Analytics/AN1365.md)
+- [AN1402 - Analytic 1402](../Analytics/AN1402.md)
+- [AN1405 - Analytic 1405](../Analytics/AN1405.md)
+- [AN1408 - Analytic 1408](../Analytics/AN1408.md)
+- [AN1439 - Analytic 1439](../Analytics/AN1439.md)
+- [AN1474 - Analytic 1474](../Analytics/AN1474.md)
+- [AN1475 - Analytic 1475](../Analytics/AN1475.md)
+- [AN1482 - Analytic 1482](../Analytics/AN1482.md)
+- [AN1494 - Analytic 1494](../Analytics/AN1494.md)
+- [AN1534 - Analytic 1534](../Analytics/AN1534.md)
+- [AN1570 - Analytic 1570](../Analytics/AN1570.md)
+- [AN1576 - Analytic 1576](../Analytics/AN1576.md)
+- [AN1577 - Analytic 1577](../Analytics/AN1577.md)
+- [AN1578 - Analytic 1578](../Analytics/AN1578.md)
+- [AN1590 - Analytic 1590](../Analytics/AN1590.md)
+- [AN1592 - Analytic 1592](../Analytics/AN1592.md)
+- [AN1605 - Analytic 1605](../Analytics/AN1605.md)
+- [AN1606 - Analytic 1606](../Analytics/AN1606.md)
+- [AN1611 - Analytic 1611](../Analytics/AN1611.md)
+- [AN1622 - Analytic 1622](../Analytics/AN1622.md)
+- [AN1623 - Analytic 1623](../Analytics/AN1623.md)
+- [AN1624 - Analytic 1624](../Analytics/AN1624.md)
+- [AN1629 - Analytic 1629](../Analytics/AN1629.md)
+- [AN1631 - Analytic 1631](../Analytics/AN1631.md)
+- [AN2030 - Analytic 2030](../Analytics/AN2030.md)
+- [AN2037 - Analytic 2037](../Analytics/AN2037.md)

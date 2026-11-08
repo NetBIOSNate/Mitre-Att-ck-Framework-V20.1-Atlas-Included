@@ -1,0 +1,33 @@
+# Incidents
+
+[MITRE ATLAS](../../README.md)
+
+## 27 records
+
+- [AML.CS0072 - AI Recommendation Poisoning via Crafted AI Assistant Links](AML.CS0072%20-%20AI%20Recommendation%20Poisoning%20via%20Crafted%20AI%20Assistant%20Links.md)
+- [AML.CS0074 - AISI Evaluation Agents Conduct Unsanctioned Real-World Cyber Activity](AML.CS0074%20-%20AISI%20Evaluation%20Agents%20Conduct%20Unsanctioned%20Real-World%20Cyber%20Activity.md)
+- [AML.CS0032 - Attempted Evasion of ML Phishing Webpage Detection System](AML.CS0032%20-%20Attempted%20Evasion%20of%20ML%20Phishing%20Webpage%20Detection%20System.md)
+- [AML.CS0073 - Autonomous Claude Agents Compromise Three Real Organizations During Cyber Evaluations](AML.CS0073%20-%20Autonomous%20Claude%20Agents%20Compromise%20Three%20Real%20Organizations%20During%20Cyber%20Ev.md)
+- [AML.CS0068 - Autonomous OpenAI Evaluation Agents Compromise Hugging Face Infrastructure](AML.CS0068%20-%20Autonomous%20OpenAI%20Evaluation%20Agents%20Compromise%20Hugging%20Face%20Infrastructure.md)
+- [AML.CS0017 - Bypassing ID.me Identity Verification](AML.CS0017%20-%20Bypassing%20ID.me%20Identity%20Verification.md)
+- [AML.CS0004 - Camera Hijack Attack on Facial Recognition System](AML.CS0004%20-%20Camera%20Hijack%20Attack%20on%20Facial%20Recognition%20System.md)
+- [AML.CS0076 - China-Based Artificial Intelligence Companies Conducting Industrial-Scale Distillation Campaigns Against U.S. AI Companies](AML.CS0076%20-%20China-Based%20Artificial%20Intelligence%20Companies%20Conducting%20Industrial-Scale%20Di.md)
+- [AML.CS0006 - ClearviewAI Misconfiguration](AML.CS0006%20-%20ClearviewAI%20Misconfiguration.md)
+- [AML.CS0047 - Code to Deploy Destructive AI Agent Discovered in Amazon Q VS Code Extension](AML.CS0047%20-%20Code%20to%20Deploy%20Destructive%20AI%20Agent%20Discovered%20in%20Amazon%20Q%20VS%20Code%20Extension.md)
+- [AML.CS0015 - Compromised PyTorch Dependency Chain](AML.CS0015%20-%20Compromised%20PyTorch%20Dependency%20Chain.md)
+- [AML.CS0069 - GTG-1002 Claude Code Espionage Campaign](AML.CS0069%20-%20GTG-1002%20Claude%20Code%20Espionage%20Campaign.md)
+- [AML.CS0044 - LAMEHUG: Malware Leveraging Dynamic AI-Generated Commands](AML.CS0044%20-%20LAMEHUG%20-%20Malware%20Leveraging%20Dynamic%20AI-Generated%20Commands.md)
+- [AML.CS0030 - LLMjacking: Stolen Cloud Credentials Used to Access Cloud LLM Services.](AML.CS0030%20-%20LLMjacking%20-%20Stolen%20Cloud%20Credentials%20Used%20to%20Access%20Cloud%20LLM%20Services.md)
+- [AML.CS0031 - Malicious Models on Hugging Face](AML.CS0031%20-%20Malicious%20Models%20on%20Hugging%20Face.md)
+- [AML.CS0043 - Malware Prototype with Embedded Prompt Injection](AML.CS0043%20-%20Malware%20Prototype%20with%20Embedded%20Prompt%20Injection.md)
+- [AML.CS0056 - Model Distillation Campaigns Targeting Anthropic Claude](AML.CS0056%20-%20Model%20Distillation%20Campaigns%20Targeting%20Anthropic%20Claude.md)
+- [AML.CS0075 - Model Distillation Campaigns Targeting Google AI Services](AML.CS0075%20-%20Model%20Distillation%20Campaigns%20Targeting%20Google%20AI%20Services.md)
+- [AML.CS0071 - Multi-Agent Framework Compromises Taiwanese Government Systems](AML.CS0071%20-%20Multi-Agent%20Framework%20Compromises%20Taiwanese%20Government%20Systems.md)
+- [AML.CS0053 - Poisoned Postmark MCP Server Email Exfiltration](AML.CS0053%20-%20Poisoned%20Postmark%20MCP%20Server%20Email%20Exfiltration.md)
+- [AML.CS0034 - ProKYC: Deepfake Tool for Account Fraud Attacks](AML.CS0034%20-%20ProKYC%20-%20Deepfake%20Tool%20for%20Account%20Fraud%20Attacks.md)
+- [AML.CS0042 - SesameOp: Novel backdoor uses OpenAI Assistants API for command and control](AML.CS0042%20-%20SesameOp%20-%20Novel%20backdoor%20uses%20OpenAI%20Assistants%20API%20for%20command%20and%20control.md)
+- [AML.CS0023 - ShadowRay: Hijacking Exposed Ray Clusters](AML.CS0023%20-%20ShadowRay%20-%20Hijacking%20Exposed%20Ray%20Clusters.md)
+- [AML.CS0057 - Storm-2139 Azure OpenAI Guardrail Bypass](AML.CS0057%20-%20Storm-2139%20Azure%20OpenAI%20Guardrail%20Bypass.md)
+- [AML.CS0009 - Tay Poisoning](AML.CS0009%20-%20Tay%20Poisoning.md)
+- [AML.CS0070 - Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts](AML.CS0070%20-%20Threat%20Actor%20Uses%20a%20DeepSeek-Powered%20Hermes%20Agent%20in%20Langflow%20and%20n8n%20Exploi.md)
+- [AML.CS0002 - VirusTotal Poisoning](AML.CS0002%20-%20VirusTotal%20Poisoning.md)

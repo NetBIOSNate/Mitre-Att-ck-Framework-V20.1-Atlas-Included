@@ -1,0 +1,55 @@
+# T1417.001 - Keylogging
+
+[Mobile](../../../../README.md) / [Credential Access](../../README.md) / [T1417 - Input Capture](../README.md)
+
+Adversaries may log user keystrokes to intercept credentials or other information from the user as the user types them.
+
+Some methods of keylogging include:
+
+* Masquerading as a legitimate third-party keyboard to record user keystrokes.(Citation: Zeltser-Keyboard) On both Android and iOS, users must explicitly authorize the use of third-party keyboard apps. Users should be advised to use extreme caution before granting this authorization when it is requested.
+* Abusing accessibility features. On Android, adversaries may abuse accessibility features to record keystrokes by registering an `AccessibilityService` class, overriding the `onAccessibilityEvent` method, and listening for the `AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED` event type. The event object passed into the function will contain the data that the user typed. 
+*Additional methods of keylogging may be possible if root access is available.
+
+[MITRE ATT&CK record](https://attack.mitre.org/techniques/T1417/001)
+
+**Tactics**  [Credential Access](../../README.md), [Collection](../../../09%20TA0035%20-%20Collection/README.md)
+
+**Platforms**  [Android](../../../../Platforms/Android.md), [iOS](../../../../Platforms/iOS.md)
+
+## Procedure examples
+
+- [S0422 - Anubis](../../../../Threat%20Intelligence/Software/Malware/S0422%20-%20Anubis.md) — [Anubis](https://attack.mitre.org/software/S0422) has a keylogger that works in every application installed on the device.(Citation: Cofense Anubis) [Cofense Anubis](https://web.archive.org/web/20231222134431/https://cofense.com/blog/infostealer-keylogger-ransomware-one-anubis-targets-250-android-applications/)
+- [S1079 - BOULDSPY](../../../../Threat%20Intelligence/Software/Malware/S1079%20-%20BOULDSPY.md) — [BOULDSPY](https://attack.mitre.org/software/S1079) can capture keystrokes.(Citation: lookout_bouldspy_0423) [lookout_bouldspy_0423](https://www.lookout.com/blog/iranian-spyware-bouldspy)
+- [S1094 - BRATA](../../../../Threat%20Intelligence/Software/Malware/S1094%20-%20BRATA.md) — [BRATA](https://attack.mitre.org/software/S1094) can log device keystrokes.(Citation: securelist_brata_0819)(Citation: cleafy_brata_0122)(Citation: mcafee_brata_0421) [cleafy_brata_0122](https://www.cleafy.com/cleafy-labs/how-brata-is-monitoring-your-bank-account) · [mcafee_brata_0421](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/brata-keeps-sneaking-into-google-play-now-targeting-usa-and-spain/) · [securelist_brata_0819](https://securelist.com/spying-android-rat-from-brazil-brata/92775/)
+- [S0655 - BusyGasper](../../../../Threat%20Intelligence/Software/Malware/S0655%20-%20BusyGasper.md) — [BusyGasper](https://attack.mitre.org/software/S0655) can collect every user screen tap and compare the input to a hardcoded list of coordinates to translate the input to a character.(Citation: SecureList BusyGasper) [SecureList BusyGasper](https://securelist.com/busygasper-the-unfriendly-spy/87627/)
+- [S0480 - Cerberus](../../../../Threat%20Intelligence/Software/Malware/S0480%20-%20Cerberus.md) — [Cerberus](https://attack.mitre.org/software/S0480) can record keystrokes.(Citation: Threat Fabric Cerberus) [Threat Fabric Cerberus](https://www.threatfabric.com/blogs/cerberus-a-new-banking-trojan-from-the-underworld.html)
+- [S1083 - Chameleon](../../../../Threat%20Intelligence/Software/Malware/S1083%20-%20Chameleon.md) — [Chameleon](https://attack.mitre.org/software/S1083) has logged keystrokes of an infected device.(Citation: cyble_chameleon_0423) Additionally, [Chameleon](https://attack.mitre.org/software/S1083) has stolen PINs, passwords and graphical keys through keylogging functionalities.(Citation: ThreatFabric_Chameleon_Dec2023) [cyble_chameleon_0423](https://cyble.com/blog/chameleon-a-new-android-malware-spotted-in-the-wild/) · [ThreatFabric_Chameleon_Dec2023](https://www.threatfabric.com/blogs/android-banking-trojan-chameleon-is-back-in-action)
+- [S9004 - Crocodilus](../../../../Threat%20Intelligence/Software/Malware/S9004%20-%20Crocodilus.md) — [Crocodilus](https://attack.mitre.org/software/S9004) has the ability to enable or disable keylogging.(Citation: ThreatFabric_Crocodilus_March2025) [ThreatFabric_Crocodilus_March2025](https://www.threatfabric.com/blogs/exposing-crocodilus-new-device-takeover-malware-targeting-android-devices)
+- [S9005 - DocSwap](../../../../Threat%20Intelligence/Software/Malware/S9005%20-%20DocSwap.md) — When an accessibility event occurs, [DocSwap](https://attack.mitre.org/software/S9005) has used a keylogger to record the target application’s icon, package name, event text, and timestamp.(Citation: EnkiWhiteHat_KimsukyDOCSWAP_Dec2025)(Citation: S2W_DocSwap_Mar2025) [EnkiWhiteHat_KimsukyDOCSWAP_Dec2025](https://www.enki.co.kr/en/media-center/blog/kimsuky-distributing-malicious-mobile-app-via-qr-code) · [S2W_DocSwap_Mar2025](https://medium.com/s2wblog/detailed-analysis-of-docswap-malware-disguised-as-security-document-viewer-218a728c36ff)
+- [S1054 - Drinik](../../../../Threat%20Intelligence/Software/Malware/S1054%20-%20Drinik.md) — [Drinik](https://attack.mitre.org/software/S1054) can use keylogging to steal user banking credentials.(Citation: cyble_drinik_1022) [cyble_drinik_1022](https://web.archive.org/web/20221114031945/https://blog.cyble.com/2022/10/27/drinik-malware-returns-with-advanced-capabilities-targeting-indian-taxpayers/)
+- [S1092 - Escobar](../../../../Threat%20Intelligence/Software/Malware/S1092%20-%20Escobar.md) — [Escobar](https://attack.mitre.org/software/S1092) can collect application keylogs.(Citation: Bleeipng Computer Escobar) [Bleeipng Computer Escobar](https://www.bleepingcomputer.com/news/security/android-malware-escobar-steals-your-google-authenticator-mfa-codes/)
+- [S0478 - EventBot](../../../../Threat%20Intelligence/Software/Malware/S0478%20-%20EventBot.md) — [EventBot](https://attack.mitre.org/software/S0478) can abuse Android’s accessibility service to record the screen PIN.(Citation: Cybereason EventBot) [Cybereason EventBot](https://www.cybereason.com/blog/eventbot-a-new-mobile-banking-trojan-is-born)
+- [S0522 - Exobot](../../../../Threat%20Intelligence/Software/Malware/S0522%20-%20Exobot.md) — [Exobot](https://attack.mitre.org/software/S0522) has used web injects to capture users’ credentials.(Citation: Threat Fabric Exobot) [Threat Fabric Exobot](https://www.threatfabric.com/blogs/exobot_android_banking_trojan_on_the_rise.html)
+- [S0408 - FlexiSpy](../../../../Threat%20Intelligence/Software/Tools/S0408%20-%20FlexiSpy.md) — [FlexiSpy](https://attack.mitre.org/software/S0408) can record keystrokes and analyze them for keywords.(Citation: FlexiSpy-Features) [FlexiSpy-Features](https://www.flexispy.com/en/features-overview.htm)
+- [S1231 - GodFather](../../../../Threat%20Intelligence/Software/Malware/S1231%20-%20GodFather.md) — [GodFather](https://attack.mitre.org/software/S1231) has intercepted and recorded sensitive information from the application to include user credentials. [GodFather](https://attack.mitre.org/software/S1231) has also leveraged a deceptive overlay that tricks users into submitting their device lock credentials which are captured.(Citation: ZimperiumOrtegaPratapagiri_GodFather_Jun2025) [ZimperiumOrtegaPratapagiri_GodFather_Jun2025](https://zimperium.com/blog/your-mobile-app-their-playground-the-dark-side-of-the-virtualization)
+- [S0406 - Gustuff](../../../../Threat%20Intelligence/Software/Malware/S0406%20-%20Gustuff.md) — [Gustuff](https://attack.mitre.org/software/S0406) abuses accessibility features to intercept all interactions between a user and the device.(Citation: Talos Gustuff Apr 2019) [Talos Gustuff Apr 2019](https://blog.talosintelligence.com/2019/04/gustuff-targets-australia.html)
+- [S9048 - KoSpy](../../../../Threat%20Intelligence/Software/Malware/S9048%20-%20KoSpy.md) — [KoSpy](https://attack.mitre.org/software/S9048) has recorded keystrokes by abusing accessibility features.(Citation: Lookout_KoSpy_March2025) [Lookout_KoSpy_March2025](https://security.lookout.com/threat-intelligence/article/lookout-discovers-new-spyware-by-north-korean-apt37)
+- [S0407 - Monokle](../../../../Threat%20Intelligence/Software/Malware/S0407%20-%20Monokle.md) — [Monokle](https://attack.mitre.org/software/S0407) can record the user's keystrokes.(Citation: Lookout-Monokle) [Lookout-Monokle](https://www.lookout.com/documents/threat-reports/lookout-discovers-monokle-threat-report.pdf)
+- [S1062 - S.O.V.A.](../../../../Threat%20Intelligence/Software/Malware/S1062%20-%20S.O.V.A.md) — [S.O.V.A.](https://attack.mitre.org/software/S1062) can use keylogging to capture user input.(Citation: threatfabric_sova_0921) [threatfabric_sova_0921](https://www.threatfabric.com/blogs/sova-new-trojan-with-fowl-intentions.html)
+- [S1055 - SharkBot](../../../../Threat%20Intelligence/Software/Malware/S1055%20-%20SharkBot.md) — [SharkBot](https://attack.mitre.org/software/S1055) can use accessibility event logging to steal data in text fields.(Citation: nccgroup_sharkbot_0322) [nccgroup_sharkbot_0322](https://research.nccgroup.com/2022/03/03/sharkbot-a-new-generation-android-banking-trojan-being-distributed-on-google-play-store/)
+- [S9006 - VajraSpy](../../../../Threat%20Intelligence/Software/Malware/S9006%20-%20VajraSpy.md) — [VajraSpy](https://attack.mitre.org/software/S9006) has logged keystrokes of an infected device.(Citation: ESET_VajraSpy_Feb2024) [ESET_VajraSpy_Feb2024](https://www.welivesecurity.com/en/eset-research/vajraspy-patchwork-espionage-apps/)
+- [G0112 - Windshift](../../../../Threat%20Intelligence/Groups/G0112%20-%20Windshift.md) — [Windshift](https://attack.mitre.org/groups/G0112) has included keylogging capabilities as part of Operation ROCK.(Citation: BlackBerry Bahamut) [BlackBerry Bahamut](https://www.blackberry.com/us/en/pdfviewer?file=/content/dam/blackberry-com/asset/enterprise/pdf/direct/report-spark-bahamut.pdf)
+
+## Mitigations
+
+- [M1012 - Enterprise Policy](../../../../Defenses/Mitigations/M1012%20-%20Enterprise%20Policy.md) — When using Samsung Knox, third-party keyboards must be explicitly added to an allow list in order to be available to the end-user.(Citation: Samsung Keyboards) [Samsung Keyboards](https://web.archive.org/web/20201112021547/https://support.samsungknox.com/hc/en-us/articles/360001485027-3rd-party-keyboards-must-be-whitelisted-)
+- [M1011 - User Guidance](../../../../Defenses/Mitigations/M1011%20-%20User%20Guidance.md) — Users should be wary of granting applications dangerous or privacy-intrusive permissions, such as keyboard registration or accessibility service access.
+
+## Detection strategies
+
+- [DET0661 - Detection of Keylogging](../../../../Defenses/Detection%20Strategies/DET0661%20-%20Detection%20of%20Keylogging.md)
+
+## Sources
+
+- [Zeltser-Keyboard](https://zeltser.com/third-party-keyboards-security/)
+- [NIST Mobile Threat Catalogue](https://pages.nist.gov/mobile-threat-catalogue/authentication-threats/AUT-13.html)

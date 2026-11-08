@@ -1,0 +1,51 @@
+# T1056.002 - GUI Input Capture
+
+[Enterprise](../../../../README.md) / [Credential Access](../../README.md) / [T1056 - Input Capture](../README.md)
+
+Adversaries may mimic common operating system GUI components to prompt users for credentials with a seemingly legitimate prompt. When programs are executed that need additional privileges than are present in the current user context, it is common for the operating system to prompt the user for proper credentials to authorize the elevated privileges for the task (ex: [Bypass User Account Control](https://attack.mitre.org/techniques/T1548/002)).
+
+Adversaries may mimic this functionality to prompt users for credentials with a seemingly legitimate prompt for a number of reasons that mimic normal usage, such as a fake installer requiring additional access or a fake malware removal suite.(Citation: OSX Malware Exploits MacKeeper) This type of prompt can be used to collect credentials via various languages such as [AppleScript](https://attack.mitre.org/techniques/T1059/002)(Citation: LogRhythm Do You Trust Oct 2014)(Citation: OSX Keydnap malware)(Citation: Spoofing credential dialogs) and [PowerShell](https://attack.mitre.org/techniques/T1059/001).(Citation: LogRhythm Do You Trust Oct 2014)(Citation: Enigma Phishing for Credentials Jan 2015)(Citation: Spoofing credential dialogs) On Linux systems adversaries may launch dialog boxes prompting users for credentials from malicious shell scripts or the command line (i.e. [Unix Shell](https://attack.mitre.org/techniques/T1059/004)).(Citation: Spoofing credential dialogs)
+
+Adversaries may also mimic common software authentication requests, such as those from browsers or email clients. This may also be paired with user activity monitoring (i.e., [Browser Information Discovery](https://attack.mitre.org/techniques/T1217) and/or [Application Window Discovery](https://attack.mitre.org/techniques/T1010)) to spoof prompts when users are naturally accessing sensitive sites/data.
+
+[MITRE ATT&CK record](https://attack.mitre.org/techniques/T1056/002)
+
+**Tactics**  [Credential Access](../../README.md), [Collection](../../../12%20TA0009%20-%20Collection/README.md)
+
+**Platforms**  [Linux](../../../../Platforms/Linux.md), [macOS](../../../../Platforms/macOS.md), [Windows](../../../../Platforms/Windows.md)
+
+## Procedure examples
+
+- [G0082 - APT38](../../../../Threat%20Intelligence/Groups/G0082%20-%20APT38.md) — [APT38](https://attack.mitre.org/groups/G0082) has leveraged a fictitious native macOS password dialog prompt to entice victims to enter credentials.(Citation: MIcrosoft Mastra npm Compromise JUN 2026) [MIcrosoft Mastra npm Compromise JUN 2026](https://www.microsoft.com/en-us/security/blog/2026/06/17/postinstall-payload-inside-mastra-npm-supply-chain-compromise/)
+- [S0482 - Bundlore](../../../../Threat%20Intelligence/Software/Malware/S0482%20-%20Bundlore.md) — [Bundlore](https://attack.mitre.org/software/S0482) prompts the user for their credentials.(Citation: MacKeeper Bundlore Apr 2019) [MacKeeper Bundlore Apr 2019](https://mackeeper.com/blog/post/610-macos-bundlore-adware-analysis/)
+- [S0274 - Calisto](../../../../Threat%20Intelligence/Software/Malware/S0274%20-%20Calisto.md) — [Calisto](https://attack.mitre.org/software/S0274) presents an input prompt asking for the user's login and password.(Citation: Symantec Calisto July 2018) [Symantec Calisto July 2018](https://web.archive.org/web/20190111082249/https://www.symantec.com/security-center/writeup/2018-073014-2512-99?om_rssid=sr-latestthreats30days)
+- [S1153 - Cuckoo Stealer](../../../../Threat%20Intelligence/Software/Malware/S1153%20-%20Cuckoo%20Stealer.md) — [Cuckoo Stealer](https://attack.mitre.org/software/S1153) has captured passwords by prompting victims with a “macOS needs to access System Settings” GUI window.(Citation: Kandji Cuckoo April 2024) [Kandji Cuckoo April 2024](https://www.kandji.io/blog/malware-cuckoo-infostealer-spyware)
+- [S0281 - Dok](../../../../Threat%20Intelligence/Software/Malware/S0281%20-%20Dok.md) — [Dok](https://attack.mitre.org/software/S0281) prompts the user for credentials.(Citation: objsee mac malware 2017) [objsee mac malware 2017](https://objective-see.com/blog/blog_0x25.html)
+- [G0085 - FIN4](../../../../Threat%20Intelligence/Groups/G0085%20-%20FIN4.md) — [FIN4](https://attack.mitre.org/groups/G0085) has presented victims with spoofed Windows Authentication prompts to collect their credentials.(Citation: FireEye Hacking FIN4 Dec 2014)(Citation: FireEye Hacking FIN4 Video Dec 2014) [FireEye Hacking FIN4 Video Dec 2014](https://www2.fireeye.com/WBNR-14Q4NAMFIN4.html) · [FireEye Hacking FIN4 Dec 2014](https://web.archive.org/web/20220313062515/https://www.mandiant.com/sites/default/files/2021-09/rpt-fin4.pdf)
+- [S0278 - iKitten](../../../../Threat%20Intelligence/Software/Malware/S0278%20-%20iKitten.md) — [iKitten](https://attack.mitre.org/software/S0278) prompts the user for their credentials.(Citation: objsee mac malware 2017) [objsee mac malware 2017](https://objective-see.com/blog/blog_0x25.html)
+- [S0276 - Keydnap](../../../../Threat%20Intelligence/Software/Malware/S0276%20-%20Keydnap.md) — [Keydnap](https://attack.mitre.org/software/S0276) prompts the users for credentials.(Citation: synack 2016 review) [synack 2016 review](https://objective-see.org/blog/blog_0x16.html)
+- [S9036 - LP-Notes](../../../../Threat%20Intelligence/Software/Malware/S9036%20-%20LP-Notes.md) — [LP-Notes](https://attack.mitre.org/software/S9036) has displayed a fake Windows Security dialog box to prompt for Windows credentials.(Citation: ESET_MuddyWater_Dec2025) [ESET_MuddyWater_Dec2025](https://www.welivesecurity.com/en/eset-research/muddywater-snakes-riverbank/)
+- [S0455 - Metamorfo](../../../../Threat%20Intelligence/Software/Malware/S0455%20-%20Metamorfo.md) — [Metamorfo](https://attack.mitre.org/software/S0455) has displayed fake forms on top of banking sites to intercept credentials from victims.(Citation: FireEye Metamorfo Apr 2018) [FireEye Metamorfo Apr 2018](https://www.fireeye.com/blog/threat-research/2018/04/metamorfo-campaign-targeting-brazilian-users.html)
+- [S1122 - Mispadu](../../../../Threat%20Intelligence/Software/Malware/S1122%20-%20Mispadu.md) — [Mispadu](https://attack.mitre.org/software/S1122) can monitor browser activity for online banking actions and display full-screen overlay images to block user access to the intended site or present additional data fields.(Citation: Segurança Informática URSA Sophisticated Loader 2020)(Citation: SCILabs Malteiro 2021) [Segurança Informática URSA Sophisticated Loader 2020](https://seguranca-informatica.pt/threat-analysis-the-emergent-ursa-trojan-impacts-many-countries-using-a-sophisticated-loader/) · [SCILabs Malteiro 2021](https://blog.scilabs.mx/en/cyber-threat-profile-malteiro/)
+- [S9032 - MuddyViper](../../../../Threat%20Intelligence/Software/Malware/S9032%20-%20MuddyViper.md) — [MuddyViper](https://attack.mitre.org/software/S9032) has displayed a fake Windows Security dialog to gather credentials.(Citation: ESET_MuddyWater_Dec2025) [ESET_MuddyWater_Dec2025](https://www.welivesecurity.com/en/eset-research/muddywater-snakes-riverbank/)
+- [S0279 - Proton](../../../../Threat%20Intelligence/Software/Malware/S0279%20-%20Proton.md) — [Proton](https://attack.mitre.org/software/S0279) prompts users for their credentials.(Citation: objsee mac malware 2017) [objsee mac malware 2017](https://objective-see.com/blog/blog_0x25.html)
+- [G1039 - RedCurl](../../../../Threat%20Intelligence/Groups/G1039%20-%20RedCurl.md) — [RedCurl](https://attack.mitre.org/groups/G1039) prompts the user for credentials through a Microsoft Outlook pop-up.(Citation: group-ib_redcurl1)(Citation: group-ib_redcurl2) [group-ib_redcurl1](https://www.group-ib.com/resources/research-hub/red-curl/) · [group-ib_redcurl2](https://www.group-ib.com/resources/research-hub/red-curl-2/)
+- [S0692 - SILENTTRINITY](../../../../Threat%20Intelligence/Software/Tools/S0692%20-%20SILENTTRINITY.md) — [SILENTTRINITY](https://attack.mitre.org/software/S0692)'s `credphisher.py` module can prompt a current user for their credentials.(Citation: GitHub SILENTTRINITY Modules July 2019) [GitHub SILENTTRINITY Modules July 2019](https://github.com/byt3bl33d3r/SILENTTRINITY/tree/master/silenttrinity/core/teamserver/modules/boo)
+- [S9064 - TRUSTTRAP](../../../../Threat%20Intelligence/Software/Malware/S9064%20-%20TRUSTTRAP.md) — [TRUSTTRAP](https://attack.mitre.org/software/S9064) has captured victims’ credentials using fake login popup and stores captured data in a file.(Citation: Mandiant_UNC1549_Nov2025) [Mandiant_UNC1549_Nov2025](https://cloud.google.com/blog/topics/threat-intelligence/analysis-of-unc1549-ttps-targeting-aerospace-defense)
+- [S0658 - XCSSET](../../../../Threat%20Intelligence/Software/Malware/S0658%20-%20XCSSET.md) — [XCSSET](https://attack.mitre.org/software/S0658) prompts the user to input credentials using a native macOS dialog box leveraging the system process <code>/Applications/Safari.app/Contents/MacOS/SafariForWebKitDevelopment</code>.(Citation: trendmicro xcsset xcode project 2020) [trendmicro xcsset xcode project 2020](https://documents.trendmicro.com/assets/pdf/XCSSET_Technical_Brief.pdf)
+
+## Detection strategies
+
+- [DET0521 - Behavioral Detection of Spoofed GUI Credential Prompts](../../../../Defenses/Detection%20Strategies/DET0521%20-%20Behavioral%20Detection%20of%20Spoofed%20GUI%20Credential%20Prompts.md)
+
+## Mitigations
+
+- [M1017 - User Training](../../../../Defenses/Mitigations/M1017%20-%20User%20Training.md) — Use user training as a way to bring awareness and raise suspicion for potentially malicious events and dialog boxes (ex: Office documents prompting for credentials).
+
+## Sources
+
+- [LogRhythm Do You Trust Oct 2014](https://logrhythm.com/blog/do-you-trust-your-computer/)
+- [Spoofing credential dialogs](https://embracethered.com/blog/posts/2021/spoofing-credential-dialogs/)
+- [OSX Keydnap malware](https://www.welivesecurity.com/2016/07/06/new-osxkeydnap-malware-hungry-credentials/)
+- [Enigma Phishing for Credentials Jan 2015](https://enigma0x3.net/2015/01/21/phishing-for-credentials-if-you-want-it-just-ask/)
+- [OSX Malware Exploits MacKeeper](https://baesystemsai.blogspot.com/2015/06/new-mac-os-malware-exploits-mackeeper.html)

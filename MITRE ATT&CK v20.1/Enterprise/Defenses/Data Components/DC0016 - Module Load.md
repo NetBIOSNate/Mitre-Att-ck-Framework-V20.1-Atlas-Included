@@ -1,0 +1,198 @@
+# DC0016 - Module Load
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+When a process or program dynamically attaches a shared library, module, or plugin into its memory space. This action is typically performed to extend the functionality of an application, access shared system resources, or interact with kernel-mode components.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0016)
+
+## Log sources and channels
+
+- **android:logcat** — DexClassLoader/PathClassLoader load attempt from non-standard path or recently created file
+- **android:logcat** — Short burst of file I/O followed by JNI/dlopen of a newly created .so
+- **android:logcat** — DexClassLoader/PathClassLoader loading from app-writable path OR reflective defineClass on byte[] payload
+- **android:logcat** — DexClassLoader|PathClassLoader load from app-writable path OR dlopen of a freshly created .so
+- **auditd:file-events** — open of suspicious .so from non-standard paths
+- **auditd:MMAP** — load: Loading of libzip.so, libz.so, or libbz2.so by processes not normally associated with archiving
+- **auditd:SYSCALL** — openat/read/mmap: Open/mmap .so files from non-standard paths
+- **auditd:SYSCALL** — LD_PRELOAD Logging
+- **auditd:SYSCALL** — mmap
+- **auditd:SYSCALL** — dmesg
+- **auditd:SYSCALL** — module load or memory map path
+- **esxi:vmkernel** — unexpected module load
+- **esxi:vmkernel** — module load
+- **ETW:LoadImage** — provider: ETW LoadImage events for images from user-writable/UNC paths
+- **etw:Microsoft-Windows-Kernel-ImageLoad** — provider: Unsigned/user-writable image loads into msbuild.exe
+- **iOS:unifiedlog** — dyld: dlopen/dyld_cache load from non-standard app-writable path
+- **iOS:unifiedlog** — dlopen/image load from app-writable path (tmp, Caches) outside bundled resources
+- **linux:osquery** — select: Open files path LIKE '/tmp/%.so' OR '/dev/shm/%.so'
+- **linux:osquery** — Dynamic Linking State
+- **linux:osquery** — Process linked with libcrypto.so making external connections
+- **linux:osquery** — Processes linked with libssl/libcrypto performing network activity
+- **linux:syslog** — kmod
+- **linux:Sysmon** — EventCode=7
+- **m365:unified** — Non-standard Office startup component detected (e.g., unexpected DLL path)
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_KEXTLOAD
+- **macos:osquery** — select: path LIKE '%/Library/%/*.dylib' OR '/tmp/*.dylib'
+- **macos:syslog** — DYLD_INSERT_LIBRARIES anomalies
+- **macos:unifiedlog** — dyld/unified log entries indicating image load from non-system paths
+- **macos:unifiedlog** — dynamic loading of sleep-related functions or sandbox detection libraries
+- **macos:unifiedlog** — DYLD event subsystem
+- **macos:unifiedlog** — process execution events with dylib load activity
+- **macos:unifiedlog** — Process memory maps new dylib (dylib_load event)
+- **macos:unifiedlog** — Dylib loaded from abnormal location
+- **macos:unifiedlog** — Loading of libz.dylib, libarchive.dylib by non-standard applications
+- **macos:unifiedlog** — suspicious dlopen/dlsym usage in non-development processes
+- **macos:unifiedlog** — delay/sleep library usage in user context
+- **macos:unifiedlog** — subsystem=com.apple.kextd
+- **macos:unifiedlog** — loading of unexpected dylibs compared to historical baselines
+- **macos:unifiedlog** — launch and dylib load
+- **Module** — None
+- **snmp:status** — Status change in cryptographic hardware modules (enabled -> disabled)
+- **WinEventLog:Application** — CLR Assembly creation, loading, or modification logs via MSSQL CLR integration
+- **WinEventLog:Security** — EventCode=3033
+- **WinEventLog:Security** — EventCode=3063
+- **WinEventLog:Sysmon** — EventCode=7; scripting-engine module loads when useful 
+- **WinEventLog:Sysmon** — EventCode=7; System.Management.Automation or unusual PowerShell-related modules
+- **WinEventLog:Sysmon** — EventCode=7
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: DexClassLoader() or dlopen() called with path argument matching file written in preceding $DecryptExecWindow$
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: DexClassLoader() or dlopen() on path written within $StegoExecWindow$ of media download event — download-write-load chain confirms steganographic payload delivery
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: DexClassLoader() called at runtime with path NOT matching any file in original APK manifest within $PackerExecWindow$ of app launch
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: DexClassLoader() or System.load() or WebView.loadUrl(javascript:) called with content_source='network_download' within $CodeDownloadWindow$ of download event
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=init_module/finit_module; kernel module loaded from a path or hash not in the authorized ICS host module baseline
+- **WinEventLog:Sysmon** — EventCode=7 of Industrial Control Systems (ICS) vendor communication Dynamic Link Library (DLL) with hash not in signed baseline
+- **WinEventLog:Sysmon** — EventCode=7 where an ICS/vendor DLL is loaded by an image outside the authorized ICS application baseline
+- **WinEventLog:Sysmon** — EventCode=7 of GDI32.dll/User32.dll by process not in authorized screen capture tools on Human-Machine Interface (HMI)-classified host
+
+## Analytics using this component
+
+- [AN0016 - Analytic 0016](../Analytics/AN0016.md)
+- [AN0021 - Analytic 0021](../Analytics/AN0021.md)
+- [AN0048 - Analytic 0048](../Analytics/AN0048.md)
+- [AN0051 - Analytic 0051](../Analytics/AN0051.md)
+- [AN0052 - Analytic 0052](../Analytics/AN0052.md)
+- [AN0053 - Analytic 0053](../Analytics/AN0053.md)
+- [AN0054 - Analytic 0054](../Analytics/AN0054.md)
+- [AN0071 - Analytic 0071](../Analytics/AN0071.md)
+- [AN0074 - Analytic 0074](../Analytics/AN0074.md)
+- [AN0085 - Analytic 0085](../Analytics/AN0085.md)
+- [AN0108 - Analytic 0108](../Analytics/AN0108.md)
+- [AN0118 - Analytic 0118](../Analytics/AN0118.md)
+- [AN0127 - Analytic 0127](../Analytics/AN0127.md)
+- [AN0129 - Analytic 0129](../Analytics/AN0129.md)
+- [AN0184 - Analytic 0184](../Analytics/AN0184.md)
+- [AN0185 - Analytic 0185](../Analytics/AN0185.md)
+- [AN0209 - Analytic 0209](../Analytics/AN0209.md)
+- [AN0219 - Analytic 0219](../Analytics/AN0219.md)
+- [AN0226 - Analytic 0226](../Analytics/AN0226.md)
+- [AN0236 - Analytic 0236](../Analytics/AN0236.md)
+- [AN0237 - Analytic 0237](../Analytics/AN0237.md)
+- [AN0250 - Analytic 0250](../Analytics/AN0250.md)
+- [AN0263 - Analytic 0263](../Analytics/AN0263.md)
+- [AN0287 - Analytic 0287](../Analytics/AN0287.md)
+- [AN0327 - Analytic 0327](../Analytics/AN0327.md)
+- [AN0341 - Analytic 0341](../Analytics/AN0341.md)
+- [AN0388 - Analytic 0388](../Analytics/AN0388.md)
+- [AN0389 - Analytic 0389](../Analytics/AN0389.md)
+- [AN0390 - Analytic 0390](../Analytics/AN0390.md)
+- [AN0391 - Analytic 0391](../Analytics/AN0391.md)
+- [AN0396 - Analytic 0396](../Analytics/AN0396.md)
+- [AN0400 - Analytic 0400](../Analytics/AN0400.md)
+- [AN0401 - Analytic 0401](../Analytics/AN0401.md)
+- [AN0430 - Analytic 0430](../Analytics/AN0430.md)
+- [AN0435 - Analytic 0435](../Analytics/AN0435.md)
+- [AN0445 - Analytic 0445](../Analytics/AN0445.md)
+- [AN0462 - Analytic 0462](../Analytics/AN0462.md)
+- [AN0472 - Analytic 0472](../Analytics/AN0472.md)
+- [AN0473 - Analytic 0473](../Analytics/AN0473.md)
+- [AN0478 - Analytic 0478](../Analytics/AN0478.md)
+- [AN0488 - Analytic 0488](../Analytics/AN0488.md)
+- [AN0502 - Analytic 0502](../Analytics/AN0502.md)
+- [AN0511 - Analytic 0511](../Analytics/AN0511.md)
+- [AN0550 - Analytic 0550](../Analytics/AN0550.md)
+- [AN0558 - Analytic 0558](../Analytics/AN0558.md)
+- [AN0568 - Analytic 0568](../Analytics/AN0568.md)
+- [AN0577 - Analytic 0577](../Analytics/AN0577.md)
+- [AN0578 - Analytic 0578](../Analytics/AN0578.md)
+- [AN0580 - Analytic 0580](../Analytics/AN0580.md)
+- [AN0581 - Analytic 0581](../Analytics/AN0581.md)
+- [AN0583 - Analytic 0583](../Analytics/AN0583.md)
+- [AN0595 - Analytic 0595](../Analytics/AN0595.md)
+- [AN0607 - Analytic 0607](../Analytics/AN0607.md)
+- [AN0609 - Analytic 0609](../Analytics/AN0609.md)
+- [AN0611 - Analytic 0611](../Analytics/AN0611.md)
+- [AN0622 - Analytic 0622](../Analytics/AN0622.md)
+- [AN0628 - Analytic 0628](../Analytics/AN0628.md)
+- [AN0629 - Analytic 0629](../Analytics/AN0629.md)
+- [AN0643 - Analytic 0643](../Analytics/AN0643.md)
+- [AN0733 - Analytic 0733](../Analytics/AN0733.md)
+- [AN0747 - Analytic 0747](../Analytics/AN0747.md)
+- [AN0748 - Analytic 0748](../Analytics/AN0748.md)
+- [AN0749 - Analytic 0749](../Analytics/AN0749.md)
+- [AN0757 - Analytic 0757](../Analytics/AN0757.md)
+- [AN0759 - Analytic 0759](../Analytics/AN0759.md)
+- [AN0785 - Analytic 0785](../Analytics/AN0785.md)
+- [AN0791 - Analytic 0791](../Analytics/AN0791.md)
+- [AN0814 - Analytic 0814](../Analytics/AN0814.md)
+- [AN0831 - Analytic 0831](../Analytics/AN0831.md)
+- [AN0838 - Analytic 0838](../Analytics/AN0838.md)
+- [AN0840 - Analytic 0840](../Analytics/AN0840.md)
+- [AN0862 - Analytic 0862](../Analytics/AN0862.md)
+- [AN0880 - Analytic 0880](../Analytics/AN0880.md)
+- [AN0881 - Analytic 0881](../Analytics/AN0881.md)
+- [AN0919 - Analytic 0919](../Analytics/AN0919.md)
+- [AN0920 - Analytic 0920](../Analytics/AN0920.md)
+- [AN0952 - Analytic 0952](../Analytics/AN0952.md)
+- [AN0961 - Analytic 0961](../Analytics/AN0961.md)
+- [AN0968 - Analytic 0968](../Analytics/AN0968.md)
+- [AN0980 - Analytic 0980](../Analytics/AN0980.md)
+- [AN0987 - Analytic 0987](../Analytics/AN0987.md)
+- [AN1000 - Analytic 1000](../Analytics/AN1000.md)
+- [AN1028 - Analytic 1028](../Analytics/AN1028.md)
+- [AN1029 - Analytic 1029](../Analytics/AN1029.md)
+- [AN1035 - Analytic 1035](../Analytics/AN1035.md)
+- [AN1048 - Analytic 1048](../Analytics/AN1048.md)
+- [AN1050 - Analytic 1050](../Analytics/AN1050.md)
+- [AN1062 - Analytic 1062](../Analytics/AN1062.md)
+- [AN1063 - Analytic 1063](../Analytics/AN1063.md)
+- [AN1094 - Analytic 1094](../Analytics/AN1094.md)
+- [AN1095 - Analytic 1095](../Analytics/AN1095.md)
+- [AN1133 - Analytic 1133](../Analytics/AN1133.md)
+- [AN1207 - Analytic 1207](../Analytics/AN1207.md)
+- [AN1210 - Analytic 1210](../Analytics/AN1210.md)
+- [AN1212 - Analytic 1212](../Analytics/AN1212.md)
+- [AN1220 - Analytic 1220](../Analytics/AN1220.md)
+- [AN1222 - Analytic 1222](../Analytics/AN1222.md)
+- [AN1241 - Analytic 1241](../Analytics/AN1241.md)
+- [AN1252 - Analytic 1252](../Analytics/AN1252.md)
+- [AN1288 - Analytic 1288](../Analytics/AN1288.md)
+- [AN1289 - Analytic 1289](../Analytics/AN1289.md)
+- [AN1303 - Analytic 1303](../Analytics/AN1303.md)
+- [AN1305 - Analytic 1305](../Analytics/AN1305.md)
+- [AN1308 - Analytic 1308](../Analytics/AN1308.md)
+- [AN1319 - Analytic 1319](../Analytics/AN1319.md)
+- [AN1323 - Analytic 1323](../Analytics/AN1323.md)
+- [AN1335 - Analytic 1335](../Analytics/AN1335.md)
+- [AN1393 - Analytic 1393](../Analytics/AN1393.md)
+- [AN1398 - Analytic 1398](../Analytics/AN1398.md)
+- [AN1399 - Analytic 1399](../Analytics/AN1399.md)
+- [AN1401 - Analytic 1401](../Analytics/AN1401.md)
+- [AN1420 - Analytic 1420](../Analytics/AN1420.md)
+- [AN1421 - Analytic 1421](../Analytics/AN1421.md)
+- [AN1433 - Analytic 1433](../Analytics/AN1433.md)
+- [AN1458 - Analytic 1458](../Analytics/AN1458.md)
+- [AN1464 - Analytic 1464](../Analytics/AN1464.md)
+- [AN1465 - Analytic 1465](../Analytics/AN1465.md)
+- [AN1466 - Analytic 1466](../Analytics/AN1466.md)
+- [AN1467 - Analytic 1467](../Analytics/AN1467.md)
+- [AN1480 - Analytic 1480](../Analytics/AN1480.md)
+- [AN1495 - Analytic 1495](../Analytics/AN1495.md)
+- [AN1496 - Analytic 1496](../Analytics/AN1496.md)
+- [AN1497 - Analytic 1497](../Analytics/AN1497.md)
+- [AN1535 - Analytic 1535](../Analytics/AN1535.md)
+- [AN1536 - Analytic 1536](../Analytics/AN1536.md)
+- [AN1551 - Analytic 1551](../Analytics/AN1551.md)
+- [AN1588 - Analytic 1588](../Analytics/AN1588.md)
+- [AN1598 - Analytic 1598](../Analytics/AN1598.md)
+- [AN1633 - Analytic 1633](../Analytics/AN1633.md)
+- [AN2063 - Analytic 2063](../Analytics/AN2063.md)

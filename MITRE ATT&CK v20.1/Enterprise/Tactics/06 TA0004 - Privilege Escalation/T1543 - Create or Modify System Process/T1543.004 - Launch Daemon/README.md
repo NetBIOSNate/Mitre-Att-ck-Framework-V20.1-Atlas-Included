@@ -1,0 +1,49 @@
+# T1543.004 - Launch Daemon
+
+[Enterprise](../../../../README.md) / [Privilege Escalation](../../README.md) / [T1543 - Create or Modify System Process](../README.md)
+
+Adversaries may create or modify Launch Daemons to execute malicious payloads as part of persistence. Launch Daemons are plist files used to interact with Launchd, the service management framework used by macOS. Launch Daemons require elevated privileges to install, are executed for every user on a system prior to login, and run in the background without the need for user interaction. During the macOS initialization startup, the launchd process loads the parameters for launch-on-demand system-level daemons from plist files found in <code>/System/Library/LaunchDaemons/</code> and <code>/Library/LaunchDaemons/</code>. Required Launch Daemons parameters include a <code>Label</code> to identify the task, <code>Program</code> to provide a path to the executable, and <code>RunAtLoad</code> to specify when the task is run. Launch Daemons are often used to provide access to shared resources, updates to software, or conduct automation tasks.(Citation: AppleDocs Launch Agent Daemons)(Citation: Methods of Mac Malware Persistence)(Citation: launchd Keywords for plists)
+
+Adversaries may install a Launch Daemon configured to execute at startup by using the <code>RunAtLoad</code> parameter set to <code>true</code> and the <code>Program</code> parameter set to the malicious executable path. The daemon name may be disguised by using a name from a related operating system or benign software (i.e. [Masquerading](https://attack.mitre.org/techniques/T1036)). When the Launch Daemon is executed, the program inherits administrative permissions.(Citation: WireLurker)(Citation: OSX Malware Detection)
+
+Additionally, system configuration changes (such as the installation of third party package managing software) may cause folders such as <code>usr/local/bin</code> to become globally writeable. So, it is possible for poor configurations to allow an adversary to modify executables referenced by current Launch Daemon's plist files.(Citation: LaunchDaemon Hijacking)(Citation: sentinelone macos persist Jun 2019)
+
+[MITRE ATT&CK record](https://attack.mitre.org/techniques/T1543/004)
+
+**Tactics**  [Persistence](../../../05%20TA0003%20-%20Persistence/README.md), [Privilege Escalation](../../README.md)
+
+**Platforms**  [macOS](../../../../Platforms/macOS.md)
+
+## Procedure examples
+
+- [C0057 - 3CX Supply Chain Attack](../../../../Threat%20Intelligence/Campaigns/C0057%20-%203CX%20Supply%20Chain%20Attack.md) — During the [3CX Supply Chain Attack](https://attack.mitre.org/campaigns/C0057), [AppleJeus](https://attack.mitre.org/groups/G1049) installs a Launch Daemon to execute the POOLRAT macOS backdoor software.(Citation: Mandiant 3cx UNC4736 2023) [Mandiant 3cx UNC4736 2023](https://cloud.google.com/blog/topics/threat-intelligence/3cx-software-supply-chain-compromise/)
+- [S0584 - AppleJeus](../../../../Threat%20Intelligence/Software/Malware/S0584%20-%20AppleJeus.md) — [AppleJeus](https://attack.mitre.org/software/S0584) has placed a plist file within the <code>LaunchDaemons</code> folder and launched it manually.(Citation: CISA AppleJeus Feb 2021)(Citation: ObjectiveSee AppleJeus 2019) [CISA AppleJeus Feb 2021](https://us-cert.cisa.gov/ncas/alerts/aa21-048a) · [ObjectiveSee AppleJeus 2019](https://objective-see.org/blog/blog_0x49.html)
+- [G0082 - APT38](../../../../Threat%20Intelligence/Groups/G0082%20-%20APT38.md) — [APT38](https://attack.mitre.org/groups/G0082) has established persistence through storing the malicious plist files in `/Library/LaunchDaemons`.(Citation: Microsoft Sapphire Sleet APR 2026) [Microsoft Sapphire Sleet APR 2026](https://www.microsoft.com/en-us/security/blog/2026/04/16/dissecting-sapphire-sleets-macos-intrusion-from-lure-to-compromise/)
+- [S0482 - Bundlore](../../../../Threat%20Intelligence/Software/Malware/S0482%20-%20Bundlore.md) — [Bundlore](https://attack.mitre.org/software/S0482) can persist via a LaunchDaemon.(Citation: MacKeeper Bundlore Apr 2019) [MacKeeper Bundlore Apr 2019](https://mackeeper.com/blog/post/610-macos-bundlore-adware-analysis/)
+- [S1105 - COATHANGER](../../../../Threat%20Intelligence/Software/Malware/S1105%20-%20COATHANGER.md) — [COATHANGER](https://attack.mitre.org/software/S1105) will create a daemon for timed check-ins with command and control infrastructure.(Citation: NCSC-NL COATHANGER Feb 2024) [NCSC-NL COATHANGER Feb 2024](https://www.ncsc.nl/binaries/ncsc/documenten/publicaties/2024/februari/6/mivd-aivd-advisory-coathanger-tlp-clear/TLP-CLEAR+MIVD+AIVD+Advisory+COATHANGER.pdf)
+- [S0497 - Dacls](../../../../Threat%20Intelligence/Software/Malware/S0497%20-%20Dacls.md) — [Dacls](https://attack.mitre.org/software/S0497) can establish persistence via a Launch Daemon.(Citation: SentinelOne Lazarus macOS July 2020)(Citation: TrendMicro macOS Dacls May 2020) [SentinelOne Lazarus macOS July 2020](https://www.sentinelone.com/blog/four-distinct-families-of-lazarus-malware-target-apples-macos-platform/) · [TrendMicro macOS Dacls May 2020](https://blog.trendmicro.com/trendlabs-security-intelligence/new-macos-dacls-rat-backdoor-show-lazarus-multi-platform-attack-capability/)
+- [S0690 - Green Lambert](../../../../Threat%20Intelligence/Software/Malware/S0690%20-%20Green%20Lambert.md) — [Green Lambert](https://attack.mitre.org/software/S0690) can add a plist file in the `Library/LaunchDaemons` to establish persistence.(Citation: Objective See Green Lambert for OSX Oct 2021)(Citation: Glitch-Cat Green Lambert ATTCK Oct 2021) [Objective See Green Lambert for OSX Oct 2021](https://objective-see.com/blog/blog_0x68.html) · [Glitch-Cat Green Lambert ATTCK Oct 2021](https://web.archive.org/web/20211018145402/https://www.glitch-cat.com/blog/green-lambert-and-attack)
+- [S0451 - LoudMiner](../../../../Threat%20Intelligence/Software/Malware/S0451%20-%20LoudMiner.md) — [LoudMiner](https://attack.mitre.org/software/S0451) adds plist files with the naming format <code>com.[random_name].plist</code> in the <code>/Library/LaunchDaemons</code> folder with the RunAtLoad and KeepAlive keys set to <code>true</code>.(Citation: ESET LoudMiner June 2019) [ESET LoudMiner June 2019](https://www.welivesecurity.com/2019/06/20/loudminer-mining-cracked-vst-software/)
+- [S0352 - OSX_OCEANLOTUS.D](../../../../Threat%20Intelligence/Software/Malware/S0352%20-%20OSX_OCEANLOTUS.D.md) — If running with <code>root</code> permissions, [OSX_OCEANLOTUS.D](https://attack.mitre.org/software/S0352) can create a persistence file in the folder <code>/Library/LaunchDaemons</code>.(Citation: TrendMicro MacOS April 2018)(Citation: sentinelone apt32 macOS backdoor 2020) [TrendMicro MacOS April 2018](https://blog.trendmicro.com/trendlabs-security-intelligence/new-macos-backdoor-linked-to-oceanlotus-found/) · [sentinelone apt32 macOS backdoor 2020](https://www.sentinelone.com/labs/apt32-multi-stage-macos-trojan-innovates-on-crimeware-scripting-technique/)
+- [S1219 - REPTILE](../../../../Threat%20Intelligence/Software/Malware/S1219%20-%20REPTILE.md) — The [REPTILE](https://attack.mitre.org/software/S1219) launcher can daemonize a process.(Citation: Google Cloud Mandiant UNC3886 2024) [Google Cloud Mandiant UNC3886 2024](https://cloud.google.com/blog/topics/threat-intelligence/uncovering-unc3886-espionage-operations)
+- [S0595 - ThiefQuest](../../../../Threat%20Intelligence/Software/Malware/S0595%20-%20ThiefQuest.md) — When running with root privileges after a [Launch Agent](https://attack.mitre.org/techniques/T1543/001) is installed, [ThiefQuest](https://attack.mitre.org/software/S0595) installs a plist file to the <code>/Library/LaunchDaemons/</code> folder with the <code>RunAtLoad</code> key set to <code>true</code> establishing persistence as a Launch Daemon. (Citation: wardle evilquest parti) [wardle evilquest parti](https://objective-see.com/blog/blog_0x59.html)
+- [S0658 - XCSSET](../../../../Threat%20Intelligence/Software/Malware/S0658%20-%20XCSSET.md) — [XCSSET](https://attack.mitre.org/software/S0658) uses the ssh launchdaemon to elevate privileges, bypass system controls, and enable remote access to the victim.(Citation: trendmicro xcsset xcode project 2020) [trendmicro xcsset xcode project 2020](https://documents.trendmicro.com/assets/pdf/XCSSET_Technical_Brief.pdf)
+
+## Mitigations
+
+- [M1047 - Audit](../../../../Defenses/Mitigations/M1047%20-%20Audit.md) — Use auditing tools capable of detecting folder permissions abuse opportunities on systems, especially reviewing changes made to folders by third-party software.
+- [M1018 - User Account Management](../../../../Defenses/Mitigations/M1018%20-%20User%20Account%20Management.md) — Limit privileges of user accounts and remediate Privilege Escalation vectors so only authorized administrators can create new Launch Daemons.
+
+## Detection strategies
+
+- [DET0401 - Detection Strategy for Launch Daemon Creation or Modification (macOS)](../../../../Defenses/Detection%20Strategies/DET0401%20-%20Detection%20Strategy%20for%20Launch%20Daemon%20Creation%20or%20Modification%20%28macOS%29.md)
+
+## Sources
+
+- [AppleDocs Launch Agent Daemons](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html)
+- [LaunchDaemon Hijacking](https://bradleyjkemp.dev/post/launchdaemon-hijacking/)
+- [WireLurker](https://www.paloaltonetworks.com/content/dam/pan/en_US/assets/pdf/reports/Unit_42/unit42-wirelurker.pdf)
+- [launchd Keywords for plists](https://www.real-world-systems.com/docs/launchdPlist.1.html)
+- [Methods of Mac Malware Persistence](https://www.virusbulletin.com/uploads/pdf/conference/vb2014/VB2014-Wardle.pdf)
+- [OSX Malware Detection](https://papers.put.as/papers/macosx/2016/RSA_OSX_Malware.pdf)
+- [sentinelone macos persist Jun 2019](https://www.sentinelone.com/blog/how-malware-persists-on-macos/)

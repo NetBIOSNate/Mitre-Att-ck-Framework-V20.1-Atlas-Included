@@ -1,0 +1,220 @@
+# DC0067 - Logon Session Creation
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+The successful establishment of a new user session following a successful authentication attempt. This typically signifies that a user has provided valid credentials or authentication tokens, and the system has initiated a session associated with that user account. This data is crucial for tracking authentication events and identifying potential unauthorized access. Examples: 
+
+- Windows Systems
+    - Event ID: 4624
+        - Logon Type: 2 (Interactive) or 10 (Remote Interactive via RDP).
+        - Account Name: JohnDoe
+        - Source Network Address: 192.168.1.100
+        - Authentication Package: NTLM
+- Linux Systems
+    - /var/log/utmp or /var/log/wtmp:
+        - Log format: login user [tty] from [source_ip]
+        - User: jane
+        - IP: 10.0.0.5
+        - Timestamp: 2024-12-28 08:30:00
+- macOS Systems
+    - /var/log/asl.log or unified logging framework:
+        - Log: com.apple.securityd: Authentication succeeded for user 'admin'
+- Cloud Environments
+    - Azure Sign-In Logs:
+        - Activity: Sign-in successful
+        - Client App: Browser
+        - Location: Unknown (Country: X)
+- Google Workspace
+    - Activity: Login
+        - Event Type: successful_login
+        - Source IP: 203.0.113.55
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0067)
+
+## Log sources and channels
+
+- **device:auth** — SSH/Telnet/console or vendor remote-management session 
+- **auditd:SYSCALL** — capset or setns
+- **AWS:CloudTrail** — ConsoleLogin, AssumeRole, ListResources
+- **AWS:CloudTrail** — ConsoleLogin
+- **AWS:CloudTrail** — Web console logins using session cookies without corresponding MFA event
+- **AWS:CloudTrail** — ConsoleLogin: If IdP backed by cloud provider, Console login from new IP/agent after correlated endpoint compromise
+- **AWS:CloudTrail** — SendSSHPublicKey, StartSession (SSM), EC2InstanceConnect
+- **AWS:CloudTrail** — Temporary security credentials used to authenticate into management console or APIs
+- **AWS:CloudTrail** — AWS ConsoleLogin, StartSession
+- **AWS:CloudTrail** — GetConsoleOutput
+- **AWS:CloudTrail** — sudden role assumption after credential file access
+- **AWS:CloudTrail** — AssumeRole,AssumeRoleWithSAML,AssumeRoleWithWebIdentity
+- **azure:ad** — SignInEvents
+- **azure:signin** — UserLoginSuccess, TokenIssued
+- **azure:signin** — Microsoft.Compute/virtualMachines/serialConsole/connect/action
+- **azure:signinlogs** — Abnormal sign-in from scripting tools (PowerShell, AADInternals)
+- **azure:signinlogs** — Suspicious login to cloud mailbox system
+- **azure:signinlogs** — Failed MFA attempts, unusual conditional access triggers, login attempts from unexpected IP ranges
+- **azure:signinlogs** — InteractiveUserLogin: Discovery behavior linked to privileged logins from atypical IP ranges
+- **azure:signinlogs** — InteractiveUser, ServicePrincipalSignIn
+- **azure:signinlogs** — InteractiveUser, NonInteractiveUser
+- **azure:signinlogs** — UserLogin, ConditionalAccessPolicyEvaluated
+- **CloudTrail:Signin** — SAML login without corresponding IdP authentication log
+- **esxi:auth** — Shell login or escalation
+- **esxi:vmkernel** — vim.fault.*, DCUI login, SSH shell
+- **gcp:audit** — LoginAudit, DriveAudit
+- **gcp:audit** — cloud.ssh.publicKey.inserted, compute.instances.osLogin
+- **gcp:audit** — admin.googleapis.com
+- **idp:session ** — New session established from source/device inconsistent with account baseline 
+- **linux:auth** — User login event followed by unexpected process tree
+- **linux:syslog** — auth.log/secure.log; SSH or console session context 
+- **linux:syslog** — sshd: Accepted password/publickey
+- **linux:syslog** — authentication success after file access
+- **linux:syslog** — auth.log / secure.log
+- **linux:syslog** — Accepted publickey/password for * from * port * ssh2
+- **linux:syslog** — None
+- **Logon Session** — None
+- **m365:sharepoint** — File access with forged or anomalous SAML claims
+- **m365:signinlogs** — SignInSuccess, RoleAssignmentRead
+- **m365:signinlogs** — Token usage events with device/user mismatch
+- **m365:signinlogs** — UserLogin: Discovery operations shortly after account logins from new geolocations
+- **m365:signinlogs** — UserLoggedIn
+- **m365:unified** — UserLoggedIn
+- **m365:unified** — ViewAdminReport
+- **macos:unifiedlog** — UserLoggedIn
+- **macos:unifiedlog** — Authentication inconsistencies where commands are executed without corresponding login events
+- **macos:unifiedlog** — authentication
+- **macos:unifiedlog** — Session reuse without new auth event
+- **macos:unifiedlog** — Access to Keychain items or browser credential stores
+- **macos:unifiedlog** — eventMessage CONTAINS 'screensharingd' or 'AuthorizationRefCreate'
+- **macos:unifiedlog** — Keychain or user login post-access
+- **macos:unifiedlog** — authentication plugin load or modification events
+- **macos:unifiedlog** — loginwindow or sshd successful login events
+- **networkdevice:auth** — SSH/Telnet/console authentication and session creation
+- **networkdevice:Firewall** — Login from untrusted IP, or new admin account accessing firewall console/API
+- **NSM:Connections** — Mismatch between recorded user logon and active sessions (e.g., wtmp/utmp entries without corresponding authentication in auth.log)
+- **NSM:Connections** — Missing new login event but session activity continues
+- **NSM:Connections** — Accepted publickey for user from unusual IP or without tty
+- **NSM:Connections** — simultaneous or anomalous logon sessions across multiple systems
+- **Okta:SystemLog** — user.authentication.sso, app.oauth.grant
+- **saas:access** — Multiple concurrent logins using same cookie from different locations
+- **saas:auth** — LoginSuccess, APIKeyUse, AdminAction
+- **saas:auth** — Login, TokenGranted: Discovery actions tied to anomalous login sessions or tokens
+- **saas:confluence** — logon
+- **saas:github** — Login from unusual IP, device fingerprint, or location; access token creation from new client
+- **saas:okta** — user.session.start
+- **saas:okta** — session.token.reuse
+- **saas:session ** — New authenticated session associated with changed source/client context 
+- **saas:zoom** — Zoom Admin Dashboard accessed from unfamiliar IP/device
+- **WinEventLog:Security** — EventCode=4624, 4648
+- **WinEventLog:Security** — Anomalous logon without MFA enforcement
+- **WinEventLog:Security** — EventCode=4624
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): sudo/su success for Industrial Control Systems (ICS) service account UID without the expected automated invocation pattern
+- **syslog:auth** — Secure Shell (SSH) session between Industrial Control Systems (ICS) hosts not in approved lateral movement pairs
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624 by account not in authorized engineer accounts
+- **wireless:radius** — Extensible Authentication Protocol (EAP) authentication success for device Media Access Control (MAC)/certificate not in approved wireless device inventory
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624 from a device Media Access Control (MAC) address/hardware-ID first observed on the network, not in approved device inventory
+- **syslog:auth** — sshd Accepted for username matching default vendor credential list from source not in approved admin Classless Inter-Domain Routing (CIDR) subnet
+- **syslog:auth** — sshd Accepted for username matching default or hardcoded credential patterns from source not in approved admin Classless Inter-Domain Routing (CIDR) subnet
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624 for Industrial Control Systems (ICS)-role account from workstation not in approved host list or outside office hours window
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624 for account matching default vendor credential list from source not in approved host list
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624, Type 2/10 to Industrial Control Systems (ICS) host from source not in approved operator workstations or account not in approved operator list
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624 for Industrial Control Systems (ICS)-role account from Virtual Private Network (VPN)-assigned Internet Protocol (IP) address correlated with remote access authentication anomaly
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624, Type 3/10 between Industrial Control Systems (ICS) hosts not in approved lateral movement pairs
+- **WinEventLog:Security** — Windows Security Event ID 4624/4625: EventCode=4624 for account matching default or hardcoded credential patterns from source not in approved host list
+
+## Analytics using this component
+
+- [AN0008 - Analytic 0008](../Analytics/AN0008.md)
+- [AN0017 - Analytic 0017](../Analytics/AN0017.md)
+- [AN0018 - Analytic 0018](../Analytics/AN0018.md)
+- [AN0019 - Analytic 0019](../Analytics/AN0019.md)
+- [AN0020 - Analytic 0020](../Analytics/AN0020.md)
+- [AN0131 - Analytic 0131](../Analytics/AN0131.md)
+- [AN0132 - Analytic 0132](../Analytics/AN0132.md)
+- [AN0147 - Analytic 0147](../Analytics/AN0147.md)
+- [AN0192 - Analytic 0192](../Analytics/AN0192.md)
+- [AN0199 - Analytic 0199](../Analytics/AN0199.md)
+- [AN0201 - Analytic 0201](../Analytics/AN0201.md)
+- [AN0203 - Analytic 0203](../Analytics/AN0203.md)
+- [AN0216 - Analytic 0216](../Analytics/AN0216.md)
+- [AN0217 - Analytic 0217](../Analytics/AN0217.md)
+- [AN0218 - Analytic 0218](../Analytics/AN0218.md)
+- [AN0286 - Analytic 0286](../Analytics/AN0286.md)
+- [AN0419 - Analytic 0419](../Analytics/AN0419.md)
+- [AN0420 - Analytic 0420](../Analytics/AN0420.md)
+- [AN0422 - Analytic 0422](../Analytics/AN0422.md)
+- [AN0444 - Analytic 0444](../Analytics/AN0444.md)
+- [AN0483 - Analytic 0483](../Analytics/AN0483.md)
+- [AN0484 - Analytic 0484](../Analytics/AN0484.md)
+- [AN0487 - Analytic 0487](../Analytics/AN0487.md)
+- [AN0498 - Analytic 0498](../Analytics/AN0498.md)
+- [AN0501 - Analytic 0501](../Analytics/AN0501.md)
+- [AN0504 - Analytic 0504](../Analytics/AN0504.md)
+- [AN0506 - Analytic 0506](../Analytics/AN0506.md)
+- [AN0594 - Analytic 0594](../Analytics/AN0594.md)
+- [AN0687 - Analytic 0687](../Analytics/AN0687.md)
+- [AN0710 - Analytic 0710](../Analytics/AN0710.md)
+- [AN0711 - Analytic 0711](../Analytics/AN0711.md)
+- [AN0717 - Analytic 0717](../Analytics/AN0717.md)
+- [AN0719 - Analytic 0719](../Analytics/AN0719.md)
+- [AN0721 - Analytic 0721](../Analytics/AN0721.md)
+- [AN0723 - Analytic 0723](../Analytics/AN0723.md)
+- [AN0732 - Analytic 0732](../Analytics/AN0732.md)
+- [AN0750 - Analytic 0750](../Analytics/AN0750.md)
+- [AN0751 - Analytic 0751](../Analytics/AN0751.md)
+- [AN0752 - Analytic 0752](../Analytics/AN0752.md)
+- [AN0753 - Analytic 0753](../Analytics/AN0753.md)
+- [AN0754 - Analytic 0754](../Analytics/AN0754.md)
+- [AN0757 - Analytic 0757](../Analytics/AN0757.md)
+- [AN0791 - Analytic 0791](../Analytics/AN0791.md)
+- [AN0792 - Analytic 0792](../Analytics/AN0792.md)
+- [AN0808 - Analytic 0808](../Analytics/AN0808.md)
+- [AN0809 - Analytic 0809](../Analytics/AN0809.md)
+- [AN0810 - Analytic 0810](../Analytics/AN0810.md)
+- [AN0811 - Analytic 0811](../Analytics/AN0811.md)
+- [AN0814 - Analytic 0814](../Analytics/AN0814.md)
+- [AN0855 - Analytic 0855](../Analytics/AN0855.md)
+- [AN0856 - Analytic 0856](../Analytics/AN0856.md)
+- [AN0857 - Analytic 0857](../Analytics/AN0857.md)
+- [AN0858 - Analytic 0858](../Analytics/AN0858.md)
+- [AN0860 - Analytic 0860](../Analytics/AN0860.md)
+- [AN0931 - Analytic 0931](../Analytics/AN0931.md)
+- [AN0954 - Analytic 0954](../Analytics/AN0954.md)
+- [AN0955 - Analytic 0955](../Analytics/AN0955.md)
+- [AN1000 - Analytic 1000](../Analytics/AN1000.md)
+- [AN1019 - Analytic 1019](../Analytics/AN1019.md)
+- [AN1081 - Analytic 1081](../Analytics/AN1081.md)
+- [AN1083 - Analytic 1083](../Analytics/AN1083.md)
+- [AN1096 - Analytic 1096](../Analytics/AN1096.md)
+- [AN1108 - Analytic 1108](../Analytics/AN1108.md)
+- [AN1128 - Analytic 1128](../Analytics/AN1128.md)
+- [AN1129 - Analytic 1129](../Analytics/AN1129.md)
+- [AN1130 - Analytic 1130](../Analytics/AN1130.md)
+- [AN1137 - Analytic 1137](../Analytics/AN1137.md)
+- [AN1144 - Analytic 1144](../Analytics/AN1144.md)
+- [AN1250 - Analytic 1250](../Analytics/AN1250.md)
+- [AN1251 - Analytic 1251](../Analytics/AN1251.md)
+- [AN1283 - Analytic 1283](../Analytics/AN1283.md)
+- [AN1305 - Analytic 1305](../Analytics/AN1305.md)
+- [AN1312 - Analytic 1312](../Analytics/AN1312.md)
+- [AN1313 - Analytic 1313](../Analytics/AN1313.md)
+- [AN1344 - Analytic 1344](../Analytics/AN1344.md)
+- [AN1345 - Analytic 1345](../Analytics/AN1345.md)
+- [AN1346 - Analytic 1346](../Analytics/AN1346.md)
+- [AN1347 - Analytic 1347](../Analytics/AN1347.md)
+- [AN1348 - Analytic 1348](../Analytics/AN1348.md)
+- [AN1350 - Analytic 1350](../Analytics/AN1350.md)
+- [AN1361 - Analytic 1361](../Analytics/AN1361.md)
+- [AN1380 - Analytic 1380](../Analytics/AN1380.md)
+- [AN1398 - Analytic 1398](../Analytics/AN1398.md)
+- [AN1406 - Analytic 1406](../Analytics/AN1406.md)
+- [AN1422 - Analytic 1422](../Analytics/AN1422.md)
+- [AN1468 - Analytic 1468](../Analytics/AN1468.md)
+- [AN1504 - Analytic 1504](../Analytics/AN1504.md)
+- [AN1520 - Analytic 1520](../Analytics/AN1520.md)
+- [AN1543 - Analytic 1543](../Analytics/AN1543.md)
+- [AN1551 - Analytic 1551](../Analytics/AN1551.md)
+- [AN1565 - Analytic 1565](../Analytics/AN1565.md)
+- [AN1566 - Analytic 1566](../Analytics/AN1566.md)
+- [AN1620 - Analytic 1620](../Analytics/AN1620.md)
+- [AN1638 - Analytic 1638](../Analytics/AN1638.md)
+- [AN2035 - Analytic 2035](../Analytics/AN2035.md)
+- [AN2075 - Analytic 2075](../Analytics/AN2075.md)
+- [AN2077 - Analytic 2077](../Analytics/AN2077.md)

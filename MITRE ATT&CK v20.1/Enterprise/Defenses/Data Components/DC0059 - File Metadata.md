@@ -1,0 +1,222 @@
+# DC0059 - File Metadata
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+contextual information about a file, including attributes such as the file's name, size, type, content (e.g., signatures, headers, media), user/owner, permissions, timestamps, and other related properties. File metadata provides insights into a file's characteristics and can be used to detect malicious activity, unauthorized modifications, or other anomalies. Examples: 
+
+- File Ownership and Permissions: Checking the owner and permissions of a critical configuration file like /etc/passwd on Linux or C:\Windows\System32\config\SAM on Windows.
+- Timestamps: Analyzing the creation, modification, and access timestamps of a file.
+- File Content and Signatures: Extracting the headers of an executable file to verify its signature or detect packing/obfuscation.
+- File Attributes: Analyzing attributes like hidden, system, or read-only flags in Windows.
+- File Hashes: Generating MD5, SHA-1, or SHA-256 hashes of files to compare against threat intelligence feeds.
+- File Location: Monitoring files located in unusual directories or paths, such as temporary or user folders.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0059)
+
+## Log sources and channels
+
+- **auditd:SYSCALL** — stat and lstat syscall results on files, including inode and permission info
+- **AndroidLogs:Framework** — BroadcastReceiver registration for android.intent.action.BOOT_COMPLETED by previously unseen or recently installed apps
+- **auditd:CONFIG_CHANGE** — chmod or chown of hook files indicating privilege escalation or execution permission change
+- **auditd:PATH** — file path matches exclusion directories
+- **auditd:PATH** — PATH
+- **auditd:PATH** — file path modifications on critical system directories (/etc, /usr/bin, /usr/sbin, /var, /opt)
+- **auditd:SYSCALL** — Inotify watch creation or auditctl changes on /etc/cron* or /lib/systemd/system/
+- **auditd:SYSCALL** — PATH
+- **auditd:SYSCALL** — file write after sleep delay
+- **auditd:SYSCALL** — syscall in (chmod, fchmod, fchmodat, chown, fchown, fchownat, setxattr, lsetxattr, fsetxattr)
+- **auditd:SYSCALL** — setuid or setgid bit changes
+- **auditd:SYSCALL** — syscall in (chmod, fchmod, fchmodat, chown, fchown, fchownat, lchown, setxattr, lsetxattr, fsetxattr, removexattr, lremovexattr, fremovexattr)
+- **auditd:SYSCALL** — setxattr or getxattr system call
+- **auditd:SYSCALL** — chmod, chown, setxattr, or file writes to /etc/ssl/* or /usr/local/share/ca-certificates/*
+- **ebpf:syscalls** — Unexpected container volume unmount + file deletion
+- **EDR:detection** — App reputation telemetry
+- **EDR:file** — File Metadata Inspection (Low String Entropy, Missing PDB)
+- **EDR:file** — File Metadata Analysis (PE overlays, entropy)
+- **esxi:hostd** — host daemon events related to file or VM permission changes
+- **esxi:syslog** — Datastore file hidden or renamed unexpectedly
+- **esxi:vmkernel** — Upload of file to datastore
+- **esxi:vmkernel** — Storage access and file ops
+- **esxi:vmkernel** — VMware kernel events for file system permission modifications
+- **esxi:vmkernel** — Datastore modification events
+- **File** — None
+- **fs:fileevents** — /var/log/install.log
+- **fs:filesystem** — Binary file hash changes outside of update/patch cycles
+- **fs:fsevents** — file system events indicating permission or attribute changes
+- **fs:fsusage** — filesystem monitoring of exec/open
+- **fwupd:logs** — Firmware updates applied or failed
+- **gatekeeper/quarantine database** — LaunchServices quarantine
+- **journald:package** — dpkg/apt or yum/dnf transaction logs (install/update of build tools)
+- **journald:package** — dpkg/apt/yum/dnf transaction logs; vendor updaters in systemd journals
+- **journald:package** — dpkg/apt install, remove, upgrade events
+- **journald:package** — yum/dnf install or update transactions
+- **linux:osquery** — event-based
+- **linux:osquery** — file_events, hash
+- **linux:osquery** — hash, elf_info, file_metadata
+- **linux:osquery** — file_events
+- **linux:osquery** — elf_info, hash, yara_matches
+- **linux:osquery** — Read headers and detect MIME type mismatch
+- **linux:osquery** — file_events.path
+- **linux:osquery** — Filesystem modifications to trusted paths
+- **linux:osquery** — Write or modify .desktop file in XDG autostart path
+- **linux:osquery** — hash, rpm_packages, deb_packages, file_events
+- **linux:syslog** — Discrepancies in _VBA_PROJECT p-code vs source code extracted with oletools/pcodedmp
+- **linux:syslog** — application or system execution logs
+- **linux:syslog** — file permission modification events in kernel messages
+- **linux:syslog** — kernel messages related to file system permission changes and security violations
+- **macos:endpointsecurity** — es_event_file_rename_t or es_event_file_write_t
+- **macos:endpointsecurity** — es_event_authentication
+- **macos:osquery** — code_signing, file_metadata
+- **macos:osquery** — file_events
+- **macos:osquery** — mach_o_info, file_metadata
+- **macos:unifiedlog** — softwareupdated/homebrew/install logs, pkginstalld events
+- **macos:unifiedlog** — AMFI or Gatekeeper signature/notarization failures for newly installed dev components
+- **macos:unifiedlog** — Detection of altered _VBA_PROJECT or PerformanceCache streams
+- **macos:unifiedlog** — subsystem:syspolicyd
+- **macos:unifiedlog** — File metadata updated with UF_HIDDEN flag
+- **macos:unifiedlog** — Code signature validation fails or is absent post-binary modification
+- **macos:unifiedlog** — Code signing verification failures or bypassed trust decisions
+- **macos:unifiedlog** — Creation of new LaunchAgent or LoginItem plist files in ~/Library/LaunchAgents/
+- **macos:unifiedlog** — filesystem events
+- **macos:unifiedlog** — xattr -d com.apple.quarantine or similar attribute removal commands
+- **macos:unifiedlog** — Gatekeeper quarantine policy decision anomalies recorded in com.apple.LaunchServices.QuarantineEventsV2
+- **macos:unifiedlog** — pkginstalld/softwareupdated/Homebrew install transactions
+- **macos:unifiedlog** — AMFI/Gatekeeper code signature or notarization failures
+- **macos:unifiedlog** — kernel extension and system extension logs related to file system security violations or SIP bypass attempts
+- **macos:unifiedlog** — Unexpected application binary modifications or altered signing status
+- **macos:unifiedlog** — extended attribute write or modification
+- **macos:unifiedlog** — New certificate trust settings added by unexpected process
+- **macos:unifiedlog** — subsystem=com.apple.lsd
+- **macos:unifiedlog** — installer or system_installd 'PackageKit: install succeeded/failed' with non-notarized or unknown signer
+- **macos:unifiedlog** — Gatekeeper/AMFI 'code signature invalid' / 'not notarized' messages
+- **macos:unifiedlog** — File creation or modification with com.apple.ResourceFork extended attribute
+- **networkdevice:syslog** — OS version query results inconsistent with expected or approved version list
+- **NSM:Flow** — Observed File Transfers
+- **OpenBSM:AuditTrail** — BSM audit events for file permission modifications
+- **OpenBSM:AuditTrail** — BSM audit events for file permission, ownership, and attribute modifications with user context
+- **saas:RepoEvents** — New file added or modified in PR targeting CI/CD or build config (e.g., `gitlab-ci.yml`, `build.gradle`, `pom.xml`, `.github/workflows/*.yml`)
+- **WinEventLog:Microsoft-Windows-CodeIntegrity/Operational** — Invalid/Unsigned image when developer tool launches newly installed binaries
+- **WinEventLog:Microsoft-Windows-CodeIntegrity/Operational** — Unsigned or invalid image for newly installed/updated binaries
+- **WinEventLog:Microsoft-Windows-CodeIntegrity/Operational** — Code integrity violations in boot-start drivers or firmware
+- **WinEventLog:Microsoft-Windows-CodeIntegrity/Operational** — CodeIntegrity reports 'Invalid image hash' or 'Unsigned image' for new/updated binaries
+- **WinEventLog:Microsoft-Windows-Windows Defender/Operational** — SmartScreen or ASR blocks on newly downloaded installer/updater
+- **WinEventLog:Security** — EventCode=4663, 4670, 4656
+- **WinEventLog:Security** — EventCode=4663, 4656, 4658
+- **WinEventLog:Setup** — MSI/Product install, repair or update events
+- **WinEventLog:Sysmon** — EventCode=15
+- **WinEventLog:Windows Defender** — Operational log
+- **WinEventLog:Windows Defender** — Operational
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: DEX file entropy > $PackerEntropyThreshold$ at install time for app NOT IN $MDMApprovedCatalog$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app_version in MDM == prior_version while dynamic code load from network is observed — confirms this is not a legitimate update
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: binary with file_permissions including setuid bit (mode & 04000) at path NOT IN $KnownSystemBinPaths$ — setuid outside system bin directories is the renamed-root-binary indicator
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: file hash changes for binary at $SystemBinaryPaths$ relative to known-good baseline — hash deviation confirms modification
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: MDM supervised integrity_check=fail following jailbreak detection — integrity check failure on supervised Jamf/Intune enrolled device indicates filesystem modifications beyond passive jailbreak presence
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: installed app package_name Levenshtein distance <= $NameDistanceThreshold$ to entry in $KnownAppCatalog$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: bundle_id LIKE $KnownSystemNamespace$
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: app package_name distance <= $NameDistanceThreshold$ from $KnownAppCatalog$ entry
+- **mobile:ForensicArtifacts** — Dynamic filesystem trace or acquired app-container/filesystem artifacts: display_name Levenshtein distance <= $NameDistanceThreshold$ from $KnownIOSAppCatalog$ entry
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: package installation creates files outside the documented package manifest
+- **auditd:SYSCALL+PATH** — Linux Audit SYSCALL+PATH records: write to Industrial Control Systems (ICS) project file path by uid not in authorized engineering User Identifiers (UIDs) or from path not in approved project sources
+- **linux:pkgintegrity** — rpm -V/dpkg --verify checksum mismatch for installed Industrial Control Systems (ICS) package binary
+- **fim:hashcompare** — installed binary hash does not match vendor-published checksum for claimed version
+- **WinEventLog:Sysmon** — Microsoft-Windows-Sysmon/Operational Event ID 11 FileCreate/overwrite or Event ID 2 FileCreateTime, as applicable: Process creation and file creation correlation: vendor installer creates files outside vendor install manifest or spawns undocumented child process
+- **WinEventLog:Sysmon** — EventCode=11 matching Industrial Control Systems (ICS) vendor binary name in a path outside vendor install paths
+- **WinEventLog:Sysmon** — Microsoft-Windows-Sysmon/Operational Event ID 11 FileCreate/overwrite or Event ID 2 FileCreateTime, as applicable: Engineering tool process opens project file from path not in approved project repository (removable media, email attachment cache, untrusted network share)
+
+## Analytics using this component
+
+- [AN0014 - Analytic 0014](../Analytics/AN0014.md)
+- [AN0021 - Analytic 0021](../Analytics/AN0021.md)
+- [AN0022 - Analytic 0022](../Analytics/AN0022.md)
+- [AN0023 - Analytic 0023](../Analytics/AN0023.md)
+- [AN0025 - Analytic 0025](../Analytics/AN0025.md)
+- [AN0035 - Analytic 0035](../Analytics/AN0035.md)
+- [AN0036 - Analytic 0036](../Analytics/AN0036.md)
+- [AN0055 - Analytic 0055](../Analytics/AN0055.md)
+- [AN0056 - Analytic 0056](../Analytics/AN0056.md)
+- [AN0057 - Analytic 0057](../Analytics/AN0057.md)
+- [AN0089 - Analytic 0089](../Analytics/AN0089.md)
+- [AN0090 - Analytic 0090](../Analytics/AN0090.md)
+- [AN0093 - Analytic 0093](../Analytics/AN0093.md)
+- [AN0094 - Analytic 0094](../Analytics/AN0094.md)
+- [AN0108 - Analytic 0108](../Analytics/AN0108.md)
+- [AN0140 - Analytic 0140](../Analytics/AN0140.md)
+- [AN0162 - Analytic 0162](../Analytics/AN0162.md)
+- [AN0176 - Analytic 0176](../Analytics/AN0176.md)
+- [AN0279 - Analytic 0279](../Analytics/AN0279.md)
+- [AN0312 - Analytic 0312](../Analytics/AN0312.md)
+- [AN0349 - Analytic 0349](../Analytics/AN0349.md)
+- [AN0356 - Analytic 0356](../Analytics/AN0356.md)
+- [AN0357 - Analytic 0357](../Analytics/AN0357.md)
+- [AN0378 - Analytic 0378](../Analytics/AN0378.md)
+- [AN0397 - Analytic 0397](../Analytics/AN0397.md)
+- [AN0510 - Analytic 0510](../Analytics/AN0510.md)
+- [AN0519 - Analytic 0519](../Analytics/AN0519.md)
+- [AN0523 - Analytic 0523](../Analytics/AN0523.md)
+- [AN0541 - Analytic 0541](../Analytics/AN0541.md)
+- [AN0542 - Analytic 0542](../Analytics/AN0542.md)
+- [AN0555 - Analytic 0555](../Analytics/AN0555.md)
+- [AN0577 - Analytic 0577](../Analytics/AN0577.md)
+- [AN0599 - Analytic 0599](../Analytics/AN0599.md)
+- [AN0600 - Analytic 0600](../Analytics/AN0600.md)
+- [AN0601 - Analytic 0601](../Analytics/AN0601.md)
+- [AN0607 - Analytic 0607](../Analytics/AN0607.md)
+- [AN0631 - Analytic 0631](../Analytics/AN0631.md)
+- [AN0644 - Analytic 0644](../Analytics/AN0644.md)
+- [AN0652 - Analytic 0652](../Analytics/AN0652.md)
+- [AN0654 - Analytic 0654](../Analytics/AN0654.md)
+- [AN0700 - Analytic 0700](../Analytics/AN0700.md)
+- [AN0702 - Analytic 0702](../Analytics/AN0702.md)
+- [AN0712 - Analytic 0712](../Analytics/AN0712.md)
+- [AN0713 - Analytic 0713](../Analytics/AN0713.md)
+- [AN0784 - Analytic 0784](../Analytics/AN0784.md)
+- [AN0800 - Analytic 0800](../Analytics/AN0800.md)
+- [AN0812 - Analytic 0812](../Analytics/AN0812.md)
+- [AN0819 - Analytic 0819](../Analytics/AN0819.md)
+- [AN0834 - Analytic 0834](../Analytics/AN0834.md)
+- [AN0835 - Analytic 0835](../Analytics/AN0835.md)
+- [AN0836 - Analytic 0836](../Analytics/AN0836.md)
+- [AN0837 - Analytic 0837](../Analytics/AN0837.md)
+- [AN0862 - Analytic 0862](../Analytics/AN0862.md)
+- [AN0863 - Analytic 0863](../Analytics/AN0863.md)
+- [AN0864 - Analytic 0864](../Analytics/AN0864.md)
+- [AN0872 - Analytic 0872](../Analytics/AN0872.md)
+- [AN0874 - Analytic 0874](../Analytics/AN0874.md)
+- [AN0974 - Analytic 0974](../Analytics/AN0974.md)
+- [AN0976 - Analytic 0976](../Analytics/AN0976.md)
+- [AN0984 - Analytic 0984](../Analytics/AN0984.md)
+- [AN0985 - Analytic 0985](../Analytics/AN0985.md)
+- [AN0998 - Analytic 0998](../Analytics/AN0998.md)
+- [AN0999 - Analytic 0999](../Analytics/AN0999.md)
+- [AN1035 - Analytic 1035](../Analytics/AN1035.md)
+- [AN1036 - Analytic 1036](../Analytics/AN1036.md)
+- [AN1037 - Analytic 1037](../Analytics/AN1037.md)
+- [AN1068 - Analytic 1068](../Analytics/AN1068.md)
+- [AN1096 - Analytic 1096](../Analytics/AN1096.md)
+- [AN1097 - Analytic 1097](../Analytics/AN1097.md)
+- [AN1099 - Analytic 1099](../Analytics/AN1099.md)
+- [AN1134 - Analytic 1134](../Analytics/AN1134.md)
+- [AN1135 - Analytic 1135](../Analytics/AN1135.md)
+- [AN1136 - Analytic 1136](../Analytics/AN1136.md)
+- [AN1177 - Analytic 1177](../Analytics/AN1177.md)
+- [AN1206 - Analytic 1206](../Analytics/AN1206.md)
+- [AN1211 - Analytic 1211](../Analytics/AN1211.md)
+- [AN1247 - Analytic 1247](../Analytics/AN1247.md)
+- [AN1248 - Analytic 1248](../Analytics/AN1248.md)
+- [AN1387 - Analytic 1387](../Analytics/AN1387.md)
+- [AN1436 - Analytic 1436](../Analytics/AN1436.md)
+- [AN1461 - Analytic 1461](../Analytics/AN1461.md)
+- [AN1462 - Analytic 1462](../Analytics/AN1462.md)
+- [AN1463 - Analytic 1463](../Analytics/AN1463.md)
+- [AN1473 - Analytic 1473](../Analytics/AN1473.md)
+- [AN1480 - Analytic 1480](../Analytics/AN1480.md)
+- [AN1481 - Analytic 1481](../Analytics/AN1481.md)
+- [AN1482 - Analytic 1482](../Analytics/AN1482.md)
+- [AN1560 - Analytic 1560](../Analytics/AN1560.md)
+- [AN1570 - Analytic 1570](../Analytics/AN1570.md)
+- [AN1609 - Analytic 1609](../Analytics/AN1609.md)
+- [AN1626 - Analytic 1626](../Analytics/AN1626.md)
+- [AN1627 - Analytic 1627](../Analytics/AN1627.md)
+- [AN1628 - Analytic 1628](../Analytics/AN1628.md)
+- [AN1641 - Analytic 1641](../Analytics/AN1641.md)
+- [AN2064 - Analytic 2064](../Analytics/AN2064.md)

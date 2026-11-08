@@ -1,0 +1,169 @@
+# DC0035 - Process Access
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+Refers to an event where one process attempts to open another process, typically to inspect or manipulate its memory, access handles, or modify execution flow. Monitoring these access attempts can provide valuable insight into both benign and malicious behaviors, such as debugging, inter-process communication (IPC), or process injection.
+
+*Data Collection Measures:*
+
+- Endpoint Detection and Response (EDR) Tools:
+    -  EDR solutions that provide telemetry on inter-process access and memory manipulation.
+- Sysmon (Windows):
+    - Event ID 10: Captures process access attempts, including:
+        - Source process (initiator)
+        - Target process (victim)
+        - Access rights requested
+        - Process ID correlation
+- Windows Event Logs:
+    - Event ID 4656 (Audit Handle to an Object): Logs access attempts to system objects.
+    - Event ID 4690 (Attempted Process Modification): Can help identify unauthorized process changes.
+- Linux/macOS Monitoring:
+    - AuditD: Monitors process access through syscall tracing (e.g., `ptrace`, `open`, `read`, `write`).
+    - eBPF/XDP: Used for low-level monitoring of kernel process access.
+    - OSQuery: Query process access behavior via structured SQL-like logging.
+- Procmon (Process Monitor) and Debugging Tools:
+    - Windows Procmon: Captures real-time process interactions.
+    - Linux strace / ptrace: Useful for tracking process behavior at the system call level.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0035)
+
+## Log sources and channels
+
+- **android:logcat** — Runtime grant or manifest presence for MANAGE_EXTERNAL_STORAGE/READ_EXTERNAL_STORAGE/READ_MEDIA_*; legacy external storage mode detection
+- **android:logcat** — Activity/Process state change (mFocusedApp, onResume/onPause) identifying <pkg> as foreground
+- **android:logcat** — Grant/activation of BIND_ACCESSIBILITY_SERVICE, BIND_INPUT_METHOD, SYSTEM_ALERT_WINDOW, POST_NOTIFICATIONS for <pkg>
+- **android:logcat** — Grant/enablement for BIND_ACCESSIBILITY_SERVICE or BIND_INPUT_METHOD for <pkg>
+- **android:logcat** — Grant/enablement of SYSTEM_ALERT_WINDOW, BIND_ACCESSIBILITY_SERVICE, POST_NOTIFICATIONS for <pkg>
+- **android:logcat** — Reads/queries ops for PACKAGE_USAGE_STATS, QUERY_ALL_PACKAGES, BIND_DEVICE_ADMIN, BIND_VPN_SERVICE
+- **Apple TCC Logs** — Microphone Access Events
+- **auditd:SYSCALL** — ptrace attach
+- **auditd:SYSCALL** — High frequency of accept(), read(), or SSL_read() syscalls tied to nginx/apache processes
+- **auditd:SYSCALL** — ptrace
+- **auditd:SYSCALL** — ptrace syscall or access to /proc/*/mem
+- **auditd:SYSCALL** — ACCESS
+- **auditd:SYSCALL** — execve, fork, mmap, ptrace
+- **auditd:SYSCALL** — ptrace or process_vm_readv
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): syscall=ptrace/process_vm_readv; process accesses an ICS service process PID from an image or UID not in the debugger/diagnostic allowlist
+- **EDR:telemetry** — Sustained or high-frequency location sensor access, including background location usage
+- **iOS:unifiedlog** — Code signing validation events referencing newly written local Mach-O/bundle prior to exec or dlopen
+- **iOS:unifiedlog** — Privacy (TCC) prompts/grants for Photos/Files or access changes indicating new visibility into user/app data
+- **iOS:unifiedlog** — Foreground/background transition for <bundle_id> to contextualize access timing
+- **iOS:unifiedlog** — Keyboard extension Full Access change; privacy grant touching input/keyboard categories for <bundle_id>
+- **iOS:unifiedlog** — Keyboard extension Full Access change or related privacy grant for <bundle_id>
+- **iOS:unifiedlog** — Scene/foreground transitions for <bundle_id> to contextualize timing
+- **linux:osquery** — Process State
+- **linux:osquery** — process_events
+- **linux:syslog** — syscalls (open, read, ioctl) on /dev/input or /proc/*/fd/*
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_OPEN
+- **macos:osquery** — process_open
+- **macos:osquery** — unexpected memory inspection
+- **macos:unifiedlog** — ptrace or task_for_pid
+- **macos:unifiedlog** — Unexpected NSXPCConnection calls by non-Apple-signed or abnormal binaries
+- **macos:unifiedlog** — Unusual Mach port registration or access attempts between unrelated processes
+- **macos:unifiedlog** — subsystem=com.apple.security, library=libsystem_kernel.dylib
+- **macos:unifiedlog** — vm_read, task_for_pid, or file open to cookie databases
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: accessibility_service or notification_listener appears attributed to a bundle IN $LegitimateSystemProcesses$ within $InjectionWindow$ of root detection — injected code requesting special permissions under a legitimate system process identit
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: kernel log entry at level=fault referencing task_for_pid or get-task-allow violation on SUPERVISED device with Unified Log forwarding — kernel records entitlement violations at fault level; requires supervised MDM with Unified Log export
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: process in $TargetProcessList$ shows unexpected behavior change (new network destinations, new permission accesses) within $InjectionWindow$ of root status change — behavioral delta in target process post-injection is the anomaly indicator
+- **mobile:DynamicAnalysis** — Dynamic API/runtime trace: kernel log at level=fault referencing task_for_pid, mach_vm_write, or get-task-allow outside developer build on SUPERVISED device — Apple Unified Log kernel subsystem records these violations at fault level; supervised MDM with Unified Log
+- **WinEventLog:Security** — EventCode=4663, 4670, 4656
+- **WinEventLog:Sysmon** — EventCode=10
+- **WinEventLog:Sysmon** — EventCode=25
+- **WinEventLog:Sysmon** — EventCode=10 where SourceImage outside the approved ICS vendor/process baseline accesses TargetImage associated with an ICS application or service
+- **WinEventLog:Sysmon** — EventCode=10 cross-process memory access into Industrial Control Systems (ICS) vendor process from image not in trusted security tool list, followed by unexpected termination within exploit crash correlation window
+
+## Analytics using this component
+
+- [AN0016 - Analytic 0016](../Analytics/AN0016.md)
+- [AN0030 - Analytic 0030](../Analytics/AN0030.md)
+- [AN0066 - Analytic 0066](../Analytics/AN0066.md)
+- [AN0074 - Analytic 0074](../Analytics/AN0074.md)
+- [AN0095 - Analytic 0095](../Analytics/AN0095.md)
+- [AN0096 - Analytic 0096](../Analytics/AN0096.md)
+- [AN0105 - Analytic 0105](../Analytics/AN0105.md)
+- [AN0106 - Analytic 0106](../Analytics/AN0106.md)
+- [AN0126 - Analytic 0126](../Analytics/AN0126.md)
+- [AN0156 - Analytic 0156](../Analytics/AN0156.md)
+- [AN0157 - Analytic 0157](../Analytics/AN0157.md)
+- [AN0237 - Analytic 0237](../Analytics/AN0237.md)
+- [AN0243 - Analytic 0243](../Analytics/AN0243.md)
+- [AN0271 - Analytic 0271](../Analytics/AN0271.md)
+- [AN0277 - Analytic 0277](../Analytics/AN0277.md)
+- [AN0282 - Analytic 0282](../Analytics/AN0282.md)
+- [AN0287 - Analytic 0287](../Analytics/AN0287.md)
+- [AN0289 - Analytic 0289](../Analytics/AN0289.md)
+- [AN0292 - Analytic 0292](../Analytics/AN0292.md)
+- [AN0297 - Analytic 0297](../Analytics/AN0297.md)
+- [AN0327 - Analytic 0327](../Analytics/AN0327.md)
+- [AN0378 - Analytic 0378](../Analytics/AN0378.md)
+- [AN0389 - Analytic 0389](../Analytics/AN0389.md)
+- [AN0405 - Analytic 0405](../Analytics/AN0405.md)
+- [AN0430 - Analytic 0430](../Analytics/AN0430.md)
+- [AN0444 - Analytic 0444](../Analytics/AN0444.md)
+- [AN0478 - Analytic 0478](../Analytics/AN0478.md)
+- [AN0490 - Analytic 0490](../Analytics/AN0490.md)
+- [AN0493 - Analytic 0493](../Analytics/AN0493.md)
+- [AN0608 - Analytic 0608](../Analytics/AN0608.md)
+- [AN0619 - Analytic 0619](../Analytics/AN0619.md)
+- [AN0621 - Analytic 0621](../Analytics/AN0621.md)
+- [AN0648 - Analytic 0648](../Analytics/AN0648.md)
+- [AN0649 - Analytic 0649](../Analytics/AN0649.md)
+- [AN0675 - Analytic 0675](../Analytics/AN0675.md)
+- [AN0687 - Analytic 0687](../Analytics/AN0687.md)
+- [AN0688 - Analytic 0688](../Analytics/AN0688.md)
+- [AN0719 - Analytic 0719](../Analytics/AN0719.md)
+- [AN0757 - Analytic 0757](../Analytics/AN0757.md)
+- [AN0767 - Analytic 0767](../Analytics/AN0767.md)
+- [AN0786 - Analytic 0786](../Analytics/AN0786.md)
+- [AN0822 - Analytic 0822](../Analytics/AN0822.md)
+- [AN0838 - Analytic 0838](../Analytics/AN0838.md)
+- [AN0913 - Analytic 0913](../Analytics/AN0913.md)
+- [AN0915 - Analytic 0915](../Analytics/AN0915.md)
+- [AN0919 - Analytic 0919](../Analytics/AN0919.md)
+- [AN0932 - Analytic 0932](../Analytics/AN0932.md)
+- [AN0941 - Analytic 0941](../Analytics/AN0941.md)
+- [AN0942 - Analytic 0942](../Analytics/AN0942.md)
+- [AN0948 - Analytic 0948](../Analytics/AN0948.md)
+- [AN0965 - Analytic 0965](../Analytics/AN0965.md)
+- [AN1000 - Analytic 1000](../Analytics/AN1000.md)
+- [AN1030 - Analytic 1030](../Analytics/AN1030.md)
+- [AN1035 - Analytic 1035](../Analytics/AN1035.md)
+- [AN1076 - Analytic 1076](../Analytics/AN1076.md)
+- [AN1094 - Analytic 1094](../Analytics/AN1094.md)
+- [AN1095 - Analytic 1095](../Analytics/AN1095.md)
+- [AN1182 - Analytic 1182](../Analytics/AN1182.md)
+- [AN1186 - Analytic 1186](../Analytics/AN1186.md)
+- [AN1193 - Analytic 1193](../Analytics/AN1193.md)
+- [AN1198 - Analytic 1198](../Analytics/AN1198.md)
+- [AN1207 - Analytic 1207](../Analytics/AN1207.md)
+- [AN1212 - Analytic 1212](../Analytics/AN1212.md)
+- [AN1213 - Analytic 1213](../Analytics/AN1213.md)
+- [AN1220 - Analytic 1220](../Analytics/AN1220.md)
+- [AN1253 - Analytic 1253](../Analytics/AN1253.md)
+- [AN1288 - Analytic 1288](../Analytics/AN1288.md)
+- [AN1289 - Analytic 1289](../Analytics/AN1289.md)
+- [AN1305 - Analytic 1305](../Analytics/AN1305.md)
+- [AN1324 - Analytic 1324](../Analytics/AN1324.md)
+- [AN1353 - Analytic 1353](../Analytics/AN1353.md)
+- [AN1357 - Analytic 1357](../Analytics/AN1357.md)
+- [AN1359 - Analytic 1359](../Analytics/AN1359.md)
+- [AN1398 - Analytic 1398](../Analytics/AN1398.md)
+- [AN1399 - Analytic 1399](../Analytics/AN1399.md)
+- [AN1401 - Analytic 1401](../Analytics/AN1401.md)
+- [AN1402 - Analytic 1402](../Analytics/AN1402.md)
+- [AN1403 - Analytic 1403](../Analytics/AN1403.md)
+- [AN1404 - Analytic 1404](../Analytics/AN1404.md)
+- [AN1417 - Analytic 1417](../Analytics/AN1417.md)
+- [AN1418 - Analytic 1418](../Analytics/AN1418.md)
+- [AN1420 - Analytic 1420](../Analytics/AN1420.md)
+- [AN1443 - Analytic 1443](../Analytics/AN1443.md)
+- [AN1465 - Analytic 1465](../Analytics/AN1465.md)
+- [AN1466 - Analytic 1466](../Analytics/AN1466.md)
+- [AN1501 - Analytic 1501](../Analytics/AN1501.md)
+- [AN1535 - Analytic 1535](../Analytics/AN1535.md)
+- [AN1593 - Analytic 1593](../Analytics/AN1593.md)
+- [AN1598 - Analytic 1598](../Analytics/AN1598.md)
+- [AN1631 - Analytic 1631](../Analytics/AN1631.md)
+- [AN1641 - Analytic 1641](../Analytics/AN1641.md)
+- [AN1642 - Analytic 1642](../Analytics/AN1642.md)
+- [AN1643 - Analytic 1643](../Analytics/AN1643.md)

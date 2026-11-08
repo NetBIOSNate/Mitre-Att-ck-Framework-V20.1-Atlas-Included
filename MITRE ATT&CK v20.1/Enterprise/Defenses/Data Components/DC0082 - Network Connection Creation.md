@@ -1,0 +1,408 @@
+# DC0082 - Network Connection Creation
+
+[Enterprise](../../README.md) / [Data Components](README.md)
+
+The initial establishment of a network session, where a system or process initiates a connection to a local or remote endpoint. This typically involves capturing socket information (source/destination IP, ports, protocol) and tracking session metadata. Monitoring these events helps detect lateral movement, exfiltration, and command-and-control (C2) activities.
+
+*Data Collection Measures:*
+
+- Windows:
+    - Event ID 5156 – Filtering Platform Connection - Logs network connections permitted by Windows Filtering Platform (WFP).
+    - Sysmon Event ID 3 – Network Connection Initiated - Captures process, source/destination IP, ports, and parent process.
+- Linux/macOS:
+    - Netfilter (iptables), nftables logs - Tracks incoming and outgoing network connections.
+    - AuditD (`connect` syscall) - Logs TCP, UDP, and ICMP connections.
+    - Zeek (`conn.log`) - Captures protocol, duration, and bytes transferred.
+- Cloud & Network Infrastructure:
+    - AWS VPC Flow Logs / Azure NSG Flow Logs - Logs IP traffic at the network level in cloud environments.
+    - Zeek (conn.log) or Suricata (network events) - Captures packet metadata for detection and correlation.
+- Endpoint Detection & Response (EDR):
+    - Detect anomalous network activity such as new C2 connections or data exfiltration attempts.
+
+[MITRE ATT&CK record](https://attack.mitre.org/datacomponents/DC0082)
+
+## Log sources and channels
+
+- **auditd:SYSCALL** — connect
+- **auditd:SYSCALL** — execve: Execs of chromium, google-chrome, firefox, libreoffice with http(s) in cmdline
+- **auditd:SYSCALL** — connect/sendto
+- **auditd:SYSCALL** — open or connect syscalls on /tmp/ssh-* or $SSH_AUTH_SOCK
+- **auditd:SYSCALL** — socket/connect with TLS context by unexpected process
+- **auditd:SYSCALL** — socket/bind: New bind() to a previously closed port shortly after the sequence.
+- **auditd:SYSCALL** — sendto/connect
+- **auditd:SYSCALL** — outbound connections
+- **auditd:SYSCALL** — socket/bind: Process binds to a new local port shortly after knock
+- **auditd:SYSCALL** — socket/connect calls showing SSH processes forwarding arbitrary ports
+- **auditd:SYSCALL** — openat,connect -k discovery
+- **AWS:VPCFlowLogs** — Outbound connection to 169.254.169.254 from EC2 workload
+- **AWS:VPCFlowLogs** — Large transfer volume (>20MB) from RDS IP range to external public IPs
+- **AWS:VPCFlowLogs** — High outbound traffic from new region resource
+- **AWS:VPCFlowLogs** — Outbound connections to port 22, 3389
+- **AWS:VPCFlowLogs** — Traffic observed on mirror destination instance
+- **cni:netflow** — outbound connection to internal or external APIs
+- **ebpf:syscalls** — socket connect
+- **esxi:esxupdate** — /var/log/esxupdate.log or /var/log/vmksummary.log
+- **esxi:hostd** — System service interactions
+- **esxi:hostd** — Service initiated connections
+- **esxi:hostd** — Service-Based Network Connection
+- **esxi:vmkernel** — protocol egress
+- **esxi:vmkernel** — network activity
+- **esxi:vmkernel** — None
+- **esxi:vmkernel** — network session initiation with external HTTPS services
+- **linux:osquery** — socket_events to broker/service, where deployed
+- **linux:osquery** — socket_events to DNS/DoH/DoT destinations, where deployed
+- **linux:osquery** — socket_events for Python-originated connections, where deployed
+- **linux:osquery** — socket_events for runtime-originated connections, where deployed 
+- **linux:osquery** — family=AF_PACKET or protocol raw; process name not in allowlist.
+- **linux:syslog** — network
+- **linux:syslog** — postfix/smtpd
+- **linux:syslog** — New Wi-Fi connection established or repeated association failures
+- **linux:syslog** — None
+- **linux:Sysmon** — EventCode=3, 22
+- **macos:endpointsecurity** — ES_EVENT_TYPE_NOTIFY_CONNECT
+- **macos:osquery** — process_events/socket_events
+- **macos:osquery** — execution of trusted tools interacting with external endpoints
+- **macos:osquery** — launchd or network_events
+- **macos:osquery** — process_events + launchd
+- **macos:osquery** — process_events, socket_events
+- **macos:osquery** — CONNECT: Long-lived connections from remote-control parents to external IPs/domains
+- **macos:osquery** — None
+- **macos:unifiedlog** — connection attempts
+- **macos:unifiedlog** — connection open
+- **macos:unifiedlog** — network connection events
+- **macos:unifiedlog** — First outbound connection from the same PID/user shortly after an inbound trigger.
+- **macos:unifiedlog** — network sessions initiated by remote desktop apps
+- **macos:unifiedlog** — Inbound connections to VNC/SSH ports
+- **macos:unifiedlog** — network
+- **macos:unifiedlog** — Outbound Traffic
+- **macos:unifiedlog** — None
+- **macos:unifiedlog** — networkd or socket
+- **macos:unifiedlog** — log stream network activity
+- **macos:unifiedlog** — Association and authentication events including failures and new SSIDs
+- **Network** — None
+- **Network Traffic** — None
+- **networkdevice:Flow** — Traffic from mirrored interface to mirror target IP
+- **NetworkDevice:Syslog** — Permitted/denied connection creation where network devices record it
+- **networkdevice:syslog** — Dynamic route changes
+- **NSM:Connections** — New device-to-broker relationship outside documented profile
+- **NSM:Connections** — web domain alerts
+- **NSM:Connections** — New outbound connection from Safari/Chrome/Firefox/Word
+- **NSM:Connections** — Outbound connections from newly spawned child processes or from the browser to uncommon endpoints or on anomalous ports
+- **NSM:Connections** — Outbound connection after script or installer launch
+- **NSM:Firewall** — Outbound Connections
+- **NSM:Firewall** — proxy or TLS inspection logs
+- **NSM:Flow** — log entries indicating network connection initiation on macOS
+- **NSM:Flow** — New TCP/443 or TCP/80 to domain not previously seen for the user/host
+- **NSM:Flow** — conn.log
+- **NSM:Flow** — Outbound connection to *.tunnels.api.visualstudio.com or *.devtunnels.ms
+- **NSM:Flow** — Connections to *.devtunnels.ms or tunnels.api.visualstudio.com
+- **NSM:Flow** — HTTPs connection to tunnels.api.visualstudio.com
+- **NSM:Flow** — Outbound or inbound TFTP file transfers of ROMMON or firmware binaries
+- **NSM:Flow** — connection: TCP connections to ports 139/445 to multiple hosts
+- **NSM:Flow** — connection: SMB connections to multiple internal hosts
+- **NSM:Flow** — Outbound HTTP/S initiated by newly installed interpreter process
+- **NSM:Flow** — outbound connections to RMM services or to unusual destination ports
+- **NSM:Flow** — Multiple failed connections (conn_state=REJ/S0 or history has 'R') across distinct ports from the same src_ip followed by success to a specific port.
+- **NSM:Flow** — Sequence of REJ/S0 then SF success from same src_ip within TimeWindow.
+- **NSM:Flow** — Series of denied/closed flows to distinct ports then success to mgmt port from same src_ip within TimeWindow.
+- **NSM:Flow** — Outbound traffic spike through formerly blocked ports/subnets following config change
+- **NSM:Flow** — New egress to Internet by the same UID/host shortly after terminal exec
+- **NSM:Flow** — connection: Inbound connections to SSH or VPN ports
+- **NSM:Flow** — External access to container ports (2375, 6443)
+- **NSM:Flow** — remote access
+- **NSM:Flow** — Outbound Connections
+- **NSM:Flow** — connection attempts
+- **NSM:Flow** — High-volume or repeated SNMP GETBULK/GETNEXT queries from untrusted or external IPs
+- **NSM:Flow** — outbound connections from host during or immediately after image build
+- **NSM:Flow** — new outbound connection from browser/office lineage
+- **NSM:Flow** — new outbound connection from exploited lineage
+- **NSM:Flow** — Multiple failed connections to closed ports (history contains 'R' or conn_state in {REJ, S0}) followed by a successful handshake to a new port from same src within TimeWindowKnock
+- **NSM:Flow** — Closed-port hits followed by success from same src_ip
+- **NSM:Flow** — Port-knock pattern from one src to device unicast,broadcast,network addresses on same port within TimeWindowKnock
+- **NSM:Flow** — Unexpected inbound/outbound TFTP traffic for device image files
+- **NSM:Flow** — Unexpected or unauthorized inbound connections to SNMP, NETCONF, or RESTCONF services
+- **snmp:access** — GETBULK/GETNEXT requests for OIDs associated with configuration parameters
+- **WinEventLog:Microsoft-Windows-Bits-Client/Operational** — BITS job lifecycle events such as job create/modify/transfer/complete and URL/remote name fields
+- **WinEventLog:Microsoft-Windows-WLAN-AutoConfig** — EventCode=8001, 8002, 8003
+- **WinEventLog:Security** — EventCode=5156, 5157
+- **WinEventLog:Sysmon** — EventCode=3; process-to-broker connection
+- **WinEventLog:Sysmon** — EventCode=3; connection to DNS/DoH destination with process identity
+- **WinEventLog:Sysmon** — EventCode=3; Python-originated connection to OT or external destination
+- **WinEventLog:Sysmon** — EventCode=3, 22
+- **WinEventLog:System** — EventCode=8001
+- **android:EnterpriseNetworkLog** — DevicePolicyManager.retrieveNetworkLogs(): DnsEvent / ConnectEvent; VPN flow metadata
+- **iOS:NetworkExtension** — NEFilterFlow / per-app VPN / secure-web-gateway flow metadata
+- **NSM:Connections** — device establishes new network connections or activates protocols not seen in pre-reboot baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): bind/listen/connect syscalls show one process accepting ICS-protocol connections while also initiating an outbound connection to a non-ICS destination
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): execve of scripting interpreter with sustained network connect() calls to device subnet at rate exceeding poll baseline, by User Identifier (UID) not in service account allowlist
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): firmware updater connecting to device on firmware port, by User Identifier (UID) not in authorized firmware manager UIDs, outside maintenance window schedule
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): connect() syscall on port (e.g., 80, 443, 8080, etc.) to destination not in approved vendor domains, from Industrial Control Systems (ICS) service process
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): write Application Programming Interface (API) invocation rate to single Input/Output (I/O) point from Industrial Control Systems (ICS) service User Identifier (UID) exceeds max write rate per point
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): connect syscalls show a host outside the approved SCADA/master set opening ICS-protocol connections to multiple field devices
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): connect syscall from an ICS service/application process to a destination outside the approved network or vendor-service baseline
+- **auditd:SYSCALL** — Linux Audit SYSCALL/EXECVE/SOCKADDR records (configured audit rule): socket/connect activity from a process outside the approved ICS monitoring-tool baseline to an ICS multicast destination/group
+- **NSM:Connections** — device process crash or unexpected restart immediately followed by privileged protocol command succeeding from same source session
+- **NSM:Connections** — rapid sequential connection attempts to same device Internet Protocol (IP) address across multiple Industrial Control System (ICS) protocol ports from source not in approved Supervisory Control and Data Acquisition (SCADA) servers
+- **WinEventLog:Sysmon** — EventCode=3 process holds connections to both device subnet and external/inter-zone destination simultaneously, combined with proxy-capable process spawn
+- **WinEventLog:Sysmon** — EventCode=3 to device subnet within auth-to-device window of the anomalous logon
+- **WinEventLog:Sysmon** — EventCode=3 network connection to an RDP/VNC service on an ICS Windows host from a source outside the approved management CIDR baseline
+- **WinEventLog:Security** — EventCode=5157 or firewall rule changes blocking Industrial Control Systems (ICS) command message traffic
+- **WinEventLog:Sysmon** — EventCode=3 on remote service ports (e.g., 22, 445, 3389, 5985/5986) between hosts not in approved communication matrix
+- **WinEventLog:Sysmon** — Microsoft-Windows-Sysmon/Operational Event ID 3 NetworkConnect: inbound connection rate to Industrial Control Systems (ICS) application port exceeds threshold per minute from unexpected sources
+- **WinEventLog:Sysmon** — EventCode=3 on port 80/443/8080 from process not matching Industrial Control Systems (ICS) vendor update process allowlist
+- **WinEventLog:Sysmon** — EventCode=3 same process holding connections to both device subnet and external Internet Protocol (IP) address simultaneously
+- **WinEventLog:Sysmon** — EventCode=3 from resulting process to destinations not in approved destinations list
+- **WinEventLog:Sysmon** — EventCode=3 unexpected Windows host opening Industrial Control Systems (ICS) protocol connections to multiple field device Internet Protocol (IP) addresses in polling pattern characteristic of master station
+- **WinEventLog:Sysmon** — EventCode=3 on Hypertext Transfer Protocol (HTTP)/Hypertext Transfer Protocol Secure (HTTPS)/Domain Name System (DNS) port from process not recognized as Industrial Control Systems (ICS) vendor application
+- **WinEventLog:Sysmon** — EventCode=3 to device subnet from process not in authorized Industrial Control Systems (ICS) applications
+- **WinEventLog:Sysmon** — EventCode=3 outbound User Datagram Protocol (UDP) broadcast traffic from process not in recognized Industrial Control Systems (ICS) asset management tools
+- **WinEventLog:Sysmon** — EventCode=3 outbound connection from a process outside the approved ICS monitoring-tool baseline to an ICS multicast destination
+
+## Analytics using this component
+
+- [AN0001 - Analytic 0001](../Analytics/AN0001.md)
+- [AN0002 - Analytic 0002](../Analytics/AN0002.md)
+- [AN0030 - Analytic 0030](../Analytics/AN0030.md)
+- [AN0032 - Analytic 0032](../Analytics/AN0032.md)
+- [AN0033 - Analytic 0033](../Analytics/AN0033.md)
+- [AN0052 - Analytic 0052](../Analytics/AN0052.md)
+- [AN0071 - Analytic 0071](../Analytics/AN0071.md)
+- [AN0075 - Analytic 0075](../Analytics/AN0075.md)
+- [AN0080 - Analytic 0080](../Analytics/AN0080.md)
+- [AN0100 - Analytic 0100](../Analytics/AN0100.md)
+- [AN0102 - Analytic 0102](../Analytics/AN0102.md)
+- [AN0109 - Analytic 0109](../Analytics/AN0109.md)
+- [AN0118 - Analytic 0118](../Analytics/AN0118.md)
+- [AN0123 - Analytic 0123](../Analytics/AN0123.md)
+- [AN0130 - Analytic 0130](../Analytics/AN0130.md)
+- [AN0131 - Analytic 0131](../Analytics/AN0131.md)
+- [AN0145 - Analytic 0145](../Analytics/AN0145.md)
+- [AN0158 - Analytic 0158](../Analytics/AN0158.md)
+- [AN0159 - Analytic 0159](../Analytics/AN0159.md)
+- [AN0160 - Analytic 0160](../Analytics/AN0160.md)
+- [AN0161 - Analytic 0161](../Analytics/AN0161.md)
+- [AN0165 - Analytic 0165](../Analytics/AN0165.md)
+- [AN0167 - Analytic 0167](../Analytics/AN0167.md)
+- [AN0178 - Analytic 0178](../Analytics/AN0178.md)
+- [AN0179 - Analytic 0179](../Analytics/AN0179.md)
+- [AN0180 - Analytic 0180](../Analytics/AN0180.md)
+- [AN0185 - Analytic 0185](../Analytics/AN0185.md)
+- [AN0204 - Analytic 0204](../Analytics/AN0204.md)
+- [AN0207 - Analytic 0207](../Analytics/AN0207.md)
+- [AN0212 - Analytic 0212](../Analytics/AN0212.md)
+- [AN0216 - Analytic 0216](../Analytics/AN0216.md)
+- [AN0219 - Analytic 0219](../Analytics/AN0219.md)
+- [AN0226 - Analytic 0226](../Analytics/AN0226.md)
+- [AN0227 - Analytic 0227](../Analytics/AN0227.md)
+- [AN0228 - Analytic 0228](../Analytics/AN0228.md)
+- [AN0238 - Analytic 0238](../Analytics/AN0238.md)
+- [AN0251 - Analytic 0251](../Analytics/AN0251.md)
+- [AN0274 - Analytic 0274](../Analytics/AN0274.md)
+- [AN0285 - Analytic 0285](../Analytics/AN0285.md)
+- [AN0298 - Analytic 0298](../Analytics/AN0298.md)
+- [AN0302 - Analytic 0302](../Analytics/AN0302.md)
+- [AN0320 - Analytic 0320](../Analytics/AN0320.md)
+- [AN0327 - Analytic 0327](../Analytics/AN0327.md)
+- [AN0331 - Analytic 0331](../Analytics/AN0331.md)
+- [AN0332 - Analytic 0332](../Analytics/AN0332.md)
+- [AN0333 - Analytic 0333](../Analytics/AN0333.md)
+- [AN0345 - Analytic 0345](../Analytics/AN0345.md)
+- [AN0346 - Analytic 0346](../Analytics/AN0346.md)
+- [AN0367 - Analytic 0367](../Analytics/AN0367.md)
+- [AN0368 - Analytic 0368](../Analytics/AN0368.md)
+- [AN0371 - Analytic 0371](../Analytics/AN0371.md)
+- [AN0375 - Analytic 0375](../Analytics/AN0375.md)
+- [AN0376 - Analytic 0376](../Analytics/AN0376.md)
+- [AN0377 - Analytic 0377](../Analytics/AN0377.md)
+- [AN0379 - Analytic 0379](../Analytics/AN0379.md)
+- [AN0400 - Analytic 0400](../Analytics/AN0400.md)
+- [AN0423 - Analytic 0423](../Analytics/AN0423.md)
+- [AN0424 - Analytic 0424](../Analytics/AN0424.md)
+- [AN0436 - Analytic 0436](../Analytics/AN0436.md)
+- [AN0445 - Analytic 0445](../Analytics/AN0445.md)
+- [AN0462 - Analytic 0462](../Analytics/AN0462.md)
+- [AN0463 - Analytic 0463](../Analytics/AN0463.md)
+- [AN0464 - Analytic 0464](../Analytics/AN0464.md)
+- [AN0485 - Analytic 0485](../Analytics/AN0485.md)
+- [AN0488 - Analytic 0488](../Analytics/AN0488.md)
+- [AN0489 - Analytic 0489](../Analytics/AN0489.md)
+- [AN0497 - Analytic 0497](../Analytics/AN0497.md)
+- [AN0498 - Analytic 0498](../Analytics/AN0498.md)
+- [AN0499 - Analytic 0499](../Analytics/AN0499.md)
+- [AN0513 - Analytic 0513](../Analytics/AN0513.md)
+- [AN0514 - Analytic 0514](../Analytics/AN0514.md)
+- [AN0515 - Analytic 0515](../Analytics/AN0515.md)
+- [AN0564 - Analytic 0564](../Analytics/AN0564.md)
+- [AN0568 - Analytic 0568](../Analytics/AN0568.md)
+- [AN0576 - Analytic 0576](../Analytics/AN0576.md)
+- [AN0590 - Analytic 0590](../Analytics/AN0590.md)
+- [AN0596 - Analytic 0596](../Analytics/AN0596.md)
+- [AN0597 - Analytic 0597](../Analytics/AN0597.md)
+- [AN0598 - Analytic 0598](../Analytics/AN0598.md)
+- [AN0622 - Analytic 0622](../Analytics/AN0622.md)
+- [AN0633 - Analytic 0633](../Analytics/AN0633.md)
+- [AN0637 - Analytic 0637](../Analytics/AN0637.md)
+- [AN0647 - Analytic 0647](../Analytics/AN0647.md)
+- [AN0651 - Analytic 0651](../Analytics/AN0651.md)
+- [AN0654 - Analytic 0654](../Analytics/AN0654.md)
+- [AN0655 - Analytic 0655](../Analytics/AN0655.md)
+- [AN0677 - Analytic 0677](../Analytics/AN0677.md)
+- [AN0679 - Analytic 0679](../Analytics/AN0679.md)
+- [AN0690 - Analytic 0690](../Analytics/AN0690.md)
+- [AN0700 - Analytic 0700](../Analytics/AN0700.md)
+- [AN0702 - Analytic 0702](../Analytics/AN0702.md)
+- [AN0710 - Analytic 0710](../Analytics/AN0710.md)
+- [AN0714 - Analytic 0714](../Analytics/AN0714.md)
+- [AN0715 - Analytic 0715](../Analytics/AN0715.md)
+- [AN0716 - Analytic 0716](../Analytics/AN0716.md)
+- [AN0728 - Analytic 0728](../Analytics/AN0728.md)
+- [AN0729 - Analytic 0729](../Analytics/AN0729.md)
+- [AN0741 - Analytic 0741](../Analytics/AN0741.md)
+- [AN0750 - Analytic 0750](../Analytics/AN0750.md)
+- [AN0753 - Analytic 0753](../Analytics/AN0753.md)
+- [AN0759 - Analytic 0759](../Analytics/AN0759.md)
+- [AN0760 - Analytic 0760](../Analytics/AN0760.md)
+- [AN0785 - Analytic 0785](../Analytics/AN0785.md)
+- [AN0787 - Analytic 0787](../Analytics/AN0787.md)
+- [AN0791 - Analytic 0791](../Analytics/AN0791.md)
+- [AN0797 - Analytic 0797](../Analytics/AN0797.md)
+- [AN0823 - Analytic 0823](../Analytics/AN0823.md)
+- [AN0842 - Analytic 0842](../Analytics/AN0842.md)
+- [AN0843 - Analytic 0843](../Analytics/AN0843.md)
+- [AN0844 - Analytic 0844](../Analytics/AN0844.md)
+- [AN0845 - Analytic 0845](../Analytics/AN0845.md)
+- [AN0855 - Analytic 0855](../Analytics/AN0855.md)
+- [AN0859 - Analytic 0859](../Analytics/AN0859.md)
+- [AN0862 - Analytic 0862](../Analytics/AN0862.md)
+- [AN0895 - Analytic 0895](../Analytics/AN0895.md)
+- [AN0922 - Analytic 0922](../Analytics/AN0922.md)
+- [AN0924 - Analytic 0924](../Analytics/AN0924.md)
+- [AN0925 - Analytic 0925](../Analytics/AN0925.md)
+- [AN0926 - Analytic 0926](../Analytics/AN0926.md)
+- [AN0927 - Analytic 0927](../Analytics/AN0927.md)
+- [AN0928 - Analytic 0928](../Analytics/AN0928.md)
+- [AN0931 - Analytic 0931](../Analytics/AN0931.md)
+- [AN0932 - Analytic 0932](../Analytics/AN0932.md)
+- [AN0962 - Analytic 0962](../Analytics/AN0962.md)
+- [AN0963 - Analytic 0963](../Analytics/AN0963.md)
+- [AN0968 - Analytic 0968](../Analytics/AN0968.md)
+- [AN0969 - Analytic 0969](../Analytics/AN0969.md)
+- [AN0988 - Analytic 0988](../Analytics/AN0988.md)
+- [AN0989 - Analytic 0989](../Analytics/AN0989.md)
+- [AN1004 - Analytic 1004](../Analytics/AN1004.md)
+- [AN1005 - Analytic 1005](../Analytics/AN1005.md)
+- [AN1006 - Analytic 1006](../Analytics/AN1006.md)
+- [AN1007 - Analytic 1007](../Analytics/AN1007.md)
+- [AN1015 - Analytic 1015](../Analytics/AN1015.md)
+- [AN1016 - Analytic 1016](../Analytics/AN1016.md)
+- [AN1020 - Analytic 1020](../Analytics/AN1020.md)
+- [AN1022 - Analytic 1022](../Analytics/AN1022.md)
+- [AN1023 - Analytic 1023](../Analytics/AN1023.md)
+- [AN1028 - Analytic 1028](../Analytics/AN1028.md)
+- [AN1031 - Analytic 1031](../Analytics/AN1031.md)
+- [AN1057 - Analytic 1057](../Analytics/AN1057.md)
+- [AN1060 - Analytic 1060](../Analytics/AN1060.md)
+- [AN1084 - Analytic 1084](../Analytics/AN1084.md)
+- [AN1091 - Analytic 1091](../Analytics/AN1091.md)
+- [AN1113 - Analytic 1113](../Analytics/AN1113.md)
+- [AN1114 - Analytic 1114](../Analytics/AN1114.md)
+- [AN1115 - Analytic 1115](../Analytics/AN1115.md)
+- [AN1118 - Analytic 1118](../Analytics/AN1118.md)
+- [AN1119 - Analytic 1119](../Analytics/AN1119.md)
+- [AN1121 - Analytic 1121](../Analytics/AN1121.md)
+- [AN1131 - Analytic 1131](../Analytics/AN1131.md)
+- [AN1132 - Analytic 1132](../Analytics/AN1132.md)
+- [AN1134 - Analytic 1134](../Analytics/AN1134.md)
+- [AN1140 - Analytic 1140](../Analytics/AN1140.md)
+- [AN1144 - Analytic 1144](../Analytics/AN1144.md)
+- [AN1148 - Analytic 1148](../Analytics/AN1148.md)
+- [AN1161 - Analytic 1161](../Analytics/AN1161.md)
+- [AN1169 - Analytic 1169](../Analytics/AN1169.md)
+- [AN1178 - Analytic 1178](../Analytics/AN1178.md)
+- [AN1185 - Analytic 1185](../Analytics/AN1185.md)
+- [AN1189 - Analytic 1189](../Analytics/AN1189.md)
+- [AN1190 - Analytic 1190](../Analytics/AN1190.md)
+- [AN1191 - Analytic 1191](../Analytics/AN1191.md)
+- [AN1192 - Analytic 1192](../Analytics/AN1192.md)
+- [AN1207 - Analytic 1207](../Analytics/AN1207.md)
+- [AN1225 - Analytic 1225](../Analytics/AN1225.md)
+- [AN1229 - Analytic 1229](../Analytics/AN1229.md)
+- [AN1231 - Analytic 1231](../Analytics/AN1231.md)
+- [AN1232 - Analytic 1232](../Analytics/AN1232.md)
+- [AN1249 - Analytic 1249](../Analytics/AN1249.md)
+- [AN1254 - Analytic 1254](../Analytics/AN1254.md)
+- [AN1255 - Analytic 1255](../Analytics/AN1255.md)
+- [AN1261 - Analytic 1261](../Analytics/AN1261.md)
+- [AN1294 - Analytic 1294](../Analytics/AN1294.md)
+- [AN1296 - Analytic 1296](../Analytics/AN1296.md)
+- [AN1297 - Analytic 1297](../Analytics/AN1297.md)
+- [AN1305 - Analytic 1305](../Analytics/AN1305.md)
+- [AN1308 - Analytic 1308](../Analytics/AN1308.md)
+- [AN1309 - Analytic 1309](../Analytics/AN1309.md)
+- [AN1310 - Analytic 1310](../Analytics/AN1310.md)
+- [AN1314 - Analytic 1314](../Analytics/AN1314.md)
+- [AN1315 - Analytic 1315](../Analytics/AN1315.md)
+- [AN1316 - Analytic 1316](../Analytics/AN1316.md)
+- [AN1331 - Analytic 1331](../Analytics/AN1331.md)
+- [AN1335 - Analytic 1335](../Analytics/AN1335.md)
+- [AN1344 - Analytic 1344](../Analytics/AN1344.md)
+- [AN1366 - Analytic 1366](../Analytics/AN1366.md)
+- [AN1367 - Analytic 1367](../Analytics/AN1367.md)
+- [AN1368 - Analytic 1368](../Analytics/AN1368.md)
+- [AN1376 - Analytic 1376](../Analytics/AN1376.md)
+- [AN1377 - Analytic 1377](../Analytics/AN1377.md)
+- [AN1378 - Analytic 1378](../Analytics/AN1378.md)
+- [AN1379 - Analytic 1379](../Analytics/AN1379.md)
+- [AN1381 - Analytic 1381](../Analytics/AN1381.md)
+- [AN1382 - Analytic 1382](../Analytics/AN1382.md)
+- [AN1383 - Analytic 1383](../Analytics/AN1383.md)
+- [AN1389 - Analytic 1389](../Analytics/AN1389.md)
+- [AN1390 - Analytic 1390](../Analytics/AN1390.md)
+- [AN1391 - Analytic 1391](../Analytics/AN1391.md)
+- [AN1397 - Analytic 1397](../Analytics/AN1397.md)
+- [AN1398 - Analytic 1398](../Analytics/AN1398.md)
+- [AN1407 - Analytic 1407](../Analytics/AN1407.md)
+- [AN1413 - Analytic 1413](../Analytics/AN1413.md)
+- [AN1414 - Analytic 1414](../Analytics/AN1414.md)
+- [AN1434 - Analytic 1434](../Analytics/AN1434.md)
+- [AN1448 - Analytic 1448](../Analytics/AN1448.md)
+- [AN1449 - Analytic 1449](../Analytics/AN1449.md)
+- [AN1450 - Analytic 1450](../Analytics/AN1450.md)
+- [AN1451 - Analytic 1451](../Analytics/AN1451.md)
+- [AN1464 - Analytic 1464](../Analytics/AN1464.md)
+- [AN1468 - Analytic 1468](../Analytics/AN1468.md)
+- [AN1476 - Analytic 1476](../Analytics/AN1476.md)
+- [AN1477 - Analytic 1477](../Analytics/AN1477.md)
+- [AN1478 - Analytic 1478](../Analytics/AN1478.md)
+- [AN1483 - Analytic 1483](../Analytics/AN1483.md)
+- [AN1484 - Analytic 1484](../Analytics/AN1484.md)
+- [AN1489 - Analytic 1489](../Analytics/AN1489.md)
+- [AN1496 - Analytic 1496](../Analytics/AN1496.md)
+- [AN1511 - Analytic 1511](../Analytics/AN1511.md)
+- [AN1515 - Analytic 1515](../Analytics/AN1515.md)
+- [AN1531 - Analytic 1531](../Analytics/AN1531.md)
+- [AN1532 - Analytic 1532](../Analytics/AN1532.md)
+- [AN1533 - Analytic 1533](../Analytics/AN1533.md)
+- [AN1535 - Analytic 1535](../Analytics/AN1535.md)
+- [AN1548 - Analytic 1548](../Analytics/AN1548.md)
+- [AN1551 - Analytic 1551](../Analytics/AN1551.md)
+- [AN1552 - Analytic 1552](../Analytics/AN1552.md)
+- [AN1564 - Analytic 1564](../Analytics/AN1564.md)
+- [AN1571 - Analytic 1571](../Analytics/AN1571.md)
+- [AN1583 - Analytic 1583](../Analytics/AN1583.md)
+- [AN1584 - Analytic 1584](../Analytics/AN1584.md)
+- [AN1599 - Analytic 1599](../Analytics/AN1599.md)
+- [AN1603 - Analytic 1603](../Analytics/AN1603.md)
+- [AN1610 - Analytic 1610](../Analytics/AN1610.md)
+- [AN1620 - Analytic 1620](../Analytics/AN1620.md)
+- [AN1630 - Analytic 1630](../Analytics/AN1630.md)
+- [AN2029 - Analytic 2029](../Analytics/AN2029.md)
+- [AN2031 - Analytic 2031](../Analytics/AN2031.md)
+- [AN2032 - Analytic 2032](../Analytics/AN2032.md)
+- [AN2035 - Analytic 2035](../Analytics/AN2035.md)
+- [AN2036 - Analytic 2036](../Analytics/AN2036.md)
+- [AN2037 - Analytic 2037](../Analytics/AN2037.md)
+- [AN2043 - Analytic 2043](../Analytics/AN2043.md)
+- [AN2063 - Analytic 2063](../Analytics/AN2063.md)
+- [AN2065 - Analytic 2065](../Analytics/AN2065.md)
+- [AN2080 - Analytic 2080](../Analytics/AN2080.md)
